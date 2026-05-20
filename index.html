@@ -10,778 +10,268 @@
   <link rel="manifest" href="manifest.json" />
   <title>Expiry Tracker</title>
   <style>
-    /* ══════════════════════════════════════
-       TOKENS
-    ══════════════════════════════════════ */
+    /* ══ TOKENS ══ */
     :root {
-      --page-bg:    #F7F1EB;
-      --card-bg:    #FFFFFF;
-      --accent:     #E8613A;
-      --accent-lt:  #FBE9E4;
-      --text:       #2B2424;
-      --text-2:     #6B6060;
-      --border:     #EDE6DF;
-      --muted-bg:   #F5EEE8;
-      --green:      #00BE7C;
-      --green-lt:   #E0F7EE;
-      --yellow:     #C4841D;
-      --yellow-lt:  #FDF3E0;
-      --red:        #D94040;
-      --red-lt:     #FDECEC;
-      --shadow:     0 4px 24px rgba(43,36,36,.09);
-      --shadow-sm:  0 1px 6px rgba(43,36,36,.07);
-      --r:          16px;
+      --page-bg:   #F7F1EB; --card-bg:  #FFFFFF;
+      --accent:    #E8613A; --accent-lt:#FBE9E4;
+      --text:      #2B2424; --text-2:   #6B6060;
+      --border:    #EDE6DF; --muted-bg: #F5EEE8;
+      --green:     #00BE7C; --green-lt: #E0F7EE;
+      --yellow:    #C4841D; --yellow-lt:#FDF3E0;
+      --red:       #D94040; --red-lt:   #FDECEC;
+      --shadow:    0 4px 24px rgba(43,36,36,.09);
+      --shadow-sm: 0 1px 6px rgba(43,36,36,.07);
+      --r: 16px;
       --st: env(safe-area-inset-top,0px);
       --sb: env(safe-area-inset-bottom,0px);
     }
     [data-theme="dark"] {
-      --page-bg:   #1C1816;
-      --card-bg:   #272220;
-      --accent:    #E8613A;
-      --accent-lt: #3D2219;
-      --text:      #F0EAE4;
-      --text-2:    #9A8F88;
-      --border:    rgba(240,234,228,.1);
-      --muted-bg:  #1F1B19;
-      --green:     #00BE7C;
-      --green-lt:  #0D2E22;
-      --yellow:    #D4963C;
-      --yellow-lt: #2E2210;
-      --red:       #E05050;
-      --red-lt:    #2E1414;
+      --page-bg:   #1C1816; --card-bg:  #272220;
+      --accent:    #E8613A; --accent-lt:#3D2219;
+      --text:      #F0EAE4; --text-2:   #9A8F88;
+      --border:    rgba(240,234,228,.1); --muted-bg:#1F1B19;
+      --green:     #00BE7C; --green-lt: #0D2E22;
+      --yellow:    #D4963C; --yellow-lt:#2E2210;
+      --red:       #E05050; --red-lt:   #2E1414;
       --shadow:    0 4px 24px rgba(0,0,0,.3);
       --shadow-sm: 0 1px 6px rgba(0,0,0,.2);
     }
 
-    /* ══════════════════════════════════════
-       BASE
-    ══════════════════════════════════════ */
+    /* ══ BASE ══ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-      background: var(--page-bg);
-      color: var(--text);
-      min-height: 100dvh;
-      -webkit-font-smoothing: antialiased;
-      transition: background .3s, color .3s;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; background: var(--page-bg); color: var(--text); min-height: 100dvh; -webkit-font-smoothing: antialiased; transition: background .3s, color .3s; }
     button { font-family: inherit; cursor: pointer; }
 
-    /* ══════════════════════════════════════
-       LAYOUT SHELL
-    ══════════════════════════════════════ */
-    #app {
-      display: flex;
-      flex-direction: column;
-      min-height: 100dvh;
-    }
+    /* ══ SHELL ══ */
+    #app { display: flex; flex-direction: column; min-height: 100dvh; }
 
-    /* ══════════════════════════════════════
-       TOP HEADER  — BAO breadcrumb bar
-    ══════════════════════════════════════ */
-    .top-bar {
-      background: var(--card-bg);
-      border-bottom: 1.5px solid var(--border);
-      padding: calc(var(--st) + 12px) 16px 12px;
-      display: flex;
-      align-items: center;
-      gap: 0;
-      position: sticky;
-      top: 0;
-      z-index: 80;
-      box-shadow: var(--shadow-sm);
-    }
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex: 1;
-      min-width: 0;
-    }
-    .bao-logo {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: -0.5px;
-      line-height: 1;
-    }
-    .bc-sep {
-      color: var(--text-2);
-      font-size: 15px;
-      font-weight: 300;
-      line-height: 1;
-      margin: 0 1px;
-    }
-    .bc-section {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -.2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .help-btn {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: none;
-      color: var(--text-2);
-      font-size: 12px;
-      font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      margin-left: 6px;
-    }
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: 10px;
-      flex-shrink: 0;
-    }
-    .badge-pill {
-      background: var(--accent);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 20px;
-      display: none;
-    }
-    .icon-btn {
-      background: var(--muted-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 9px;
-      padding: 5px 8px;
-      font-size: 14px;
-      color: var(--text-2);
-      line-height: 1;
-      transition: background .15s;
-    }
-    .btn-cta {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 9px;
-      padding: 7px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .1px;
-      box-shadow: 0 2px 10px rgba(232,97,58,.35);
-      transition: opacity .15s, transform .1s;
-      white-space: nowrap;
-    }
+    /* ══ TOP BAR ══ */
+    .top-bar { background: var(--card-bg); border-bottom: 1.5px solid var(--border); padding: calc(var(--st) + 12px) 16px 12px; display: flex; align-items: center; position: sticky; top: 0; z-index: 80; box-shadow: var(--shadow-sm); }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+    .bc-section { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .help-btn { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); background: none; color: var(--text-2); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 6px; }
+    .top-actions { display: flex; align-items: center; gap: 8px; margin-left: 10px; flex-shrink: 0; }
+    .badge-pill { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 20px; display: none; }
+    .icon-btn { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 5px 8px; font-size: 14px; color: var(--text-2); line-height: 1; }
+    .btn-cta { background: var(--accent); color: #fff; border: none; border-radius: 9px; padding: 7px 14px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 10px rgba(232,97,58,.35); white-space: nowrap; }
     .btn-cta:active { opacity: .85; transform: scale(.96); }
 
-    /* ══════════════════════════════════════
-       MAIN SCROLL AREA
-    ══════════════════════════════════════ */
-    .main-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 14px 0;
-      -webkit-overflow-scrolling: touch;
-    }
+    /* ══ SCROLL ══ */
+    .main-scroll { flex: 1; overflow-y: auto; padding: 14px 14px 0; -webkit-overflow-scrolling: touch; }
 
-    /* ══════════════════════════════════════
-       PAGES
-    ══════════════════════════════════════ */
+    /* ══ PAGES ══ */
     .page { display: none; padding-bottom: 16px; }
     .page.active { display: block; }
     #camera-page.active { display: flex; flex-direction: column; }
 
-    /* ══════════════════════════════════════
-       BAO CARD
-    ══════════════════════════════════════ */
-    .bao-card {
-      background: var(--card-bg);
-      border-radius: var(--r);
-      border: 1.5px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-    .bao-card-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      border-bottom: 1.5px solid var(--border);
-      background: var(--card-bg);
-    }
-    .bao-card-head .head-icon { font-size: 15px; }
-    .bao-card-head .head-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      flex: 1;
-      letter-spacing: -.1px;
-    }
-    .bao-card-head .head-action {
-      font-size: 20px;
-      color: var(--accent);
-      background: none;
-      border: none;
-      line-height: 1;
-      padding: 2px;
-    }
+    /* ══ CARD ══ */
+    .bao-card { background: var(--card-bg); border-radius: var(--r); border: 1.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 12px; }
+    .bao-card-head { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1.5px solid var(--border); }
+    .head-icon { font-size: 15px; }
+    .head-title { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; letter-spacing: -.1px; }
+    .head-action { font-size: 20px; color: var(--accent); background: none; border: none; line-height: 1; padding: 2px; }
 
-    /* ══════════════════════════════════════
-       STATS GRID  (inside bao-card)
-    ══════════════════════════════════════ */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .stat-cell {
-      padding: 16px 10px;
-      text-align: center;
-      border-right: 1.5px solid var(--border);
-    }
+    /* ══ STATS ══ */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .stat-cell { padding: 16px 10px; text-align: center; border-right: 1.5px solid var(--border); }
     .stat-cell:last-child { border-right: none; }
-    .stat-num {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1;
-    }
-    .stat-lbl {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-2);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      margin-top: 4px;
-    }
+    .stat-num { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+    .stat-lbl { font-size: 10px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .6px; margin-top: 4px; }
     .stat-cell.s-red .stat-num   { color: var(--red); }
     .stat-cell.s-yellow .stat-num { color: var(--yellow); }
     .stat-cell.s-green .stat-num  { color: var(--green); }
 
-    /* ══════════════════════════════════════
-       ITEM LIST  — BAO numbered item style
-    ══════════════════════════════════════ */
-    .bao-item-list { }
-    .bao-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 11px 16px;
-      border-bottom: 1.5px solid var(--border);
-      cursor: pointer;
-      transition: background .12s;
-      position: relative;
-    }
+    /* ══ ITEM LIST ══ */
+    .bao-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1.5px solid var(--border); position: relative; }
     .bao-item:last-child { border-bottom: none; }
     .bao-item:active { background: var(--muted-bg); }
-
-    .item-num {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-2);
-      width: 18px;
-      flex-shrink: 0;
-    }
-    .item-emoji { font-size: 22px; flex-shrink: 0; }
+    .item-num { font-size: 12px; font-weight: 700; color: var(--text-2); width: 18px; flex-shrink: 0; }
+    .item-emoji { font-size: 20px; flex-shrink: 0; }
+    .item-thumb { width: 50px; height: 38px; border-radius: 7px; object-fit: cover; flex-shrink: 0; border: 1.5px solid var(--border); }
     .item-body { flex: 1; min-width: 0; }
-    .item-name-text {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .item-sub {
-      font-size: 11px;
-      color: var(--text-2);
-      margin-top: 1px;
-    }
-    .item-tag {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 20px;
-      flex-shrink: 0;
-      letter-spacing: .1px;
-    }
+    .item-name-text { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+    .item-tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; flex-shrink: 0; letter-spacing: .1px; white-space: nowrap; }
     .tag-red    { background: var(--red-lt);    color: var(--red); }
     .tag-yellow { background: var(--yellow-lt); color: var(--yellow); }
     .tag-green  { background: var(--green-lt);  color: var(--green); }
     .tag-orange { background: var(--accent-lt); color: var(--accent); }
-    .item-del-btn {
-      background: none;
-      border: none;
-      color: var(--text-2);
-      font-size: 16px;
-      padding: 4px;
-      opacity: .5;
-      flex-shrink: 0;
-      transition: opacity .15s;
-    }
+    .item-del-btn { background: none; border: none; color: var(--text-2); font-size: 16px; padding: 4px; opacity: .5; flex-shrink: 0; }
     .item-del-btn:active { opacity: 1; }
-    /* status stripe */
-    .bao-item::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 8px; bottom: 8px;
-      width: 3px;
-      border-radius: 0 3px 3px 0;
-    }
+    .bao-item::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; }
     .bao-item.s-red::before    { background: var(--red); }
     .bao-item.s-yellow::before { background: var(--yellow); }
     .bao-item.s-orange::before { background: var(--accent); }
     .bao-item.s-green::before  { background: var(--green); }
 
-    /* ══════════════════════════════════════
-       ADD BAR  — BAO "+ Add New Item" row
-    ══════════════════════════════════════ */
-    .add-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 11px 16px;
-      border-top: 1.5px solid var(--border);
-      background: var(--muted-bg);
-    }
+    /* ══ ADD BAR ══ */
+    .add-bar { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-top: 1.5px solid var(--border); background: var(--muted-bg); }
     .add-bar-label { font-size: 13px; color: var(--text-2); font-weight: 500; }
-    .add-bar-btn {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 2px 8px rgba(232,97,58,.3);
-      transition: opacity .15s;
-    }
+    .add-bar-btn { display: flex; align-items: center; gap: 5px; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(232,97,58,.3); }
     .add-bar-btn:active { opacity: .85; }
 
-    /* ══════════════════════════════════════
-       BAO FORM FIELDS
-    ══════════════════════════════════════ */
-    .field-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 16px;
-      border-bottom: 1.5px solid var(--border);
-    }
+    /* ══ FORM ══ */
+    .field-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-bottom: 1.5px solid var(--border); }
     .field-row:last-child { border-bottom: none; }
-    .field-label {
-      font-size: 13px;
-      color: var(--text-2);
-      font-weight: 500;
-      width: 110px;
-      flex-shrink: 0;
-      padding-top: 2px;
-    }
+    .field-label { font-size: 13px; color: var(--text-2); font-weight: 500; width: 110px; flex-shrink: 0; padding-top: 2px; }
     .field-value { flex: 1; min-width: 0; }
-    .bao-input {
-      width: 100%;
-      background: var(--muted-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 9px 12px;
-      font-size: 14px;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-      -webkit-appearance: none;
-    }
-    .bao-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-lt);
-    }
+    .bao-input { width: 100%; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 14px; color: var(--text); outline: none; -webkit-appearance: none; transition: border-color .2s, box-shadow .2s; }
+    .bao-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-lt); }
     .bao-input::placeholder { color: var(--text-2); }
-    .bao-name-input {
-      width: 100%;
-      background: none;
-      border: none;
-      border-bottom: 1.5px solid var(--border);
-      border-radius: 0;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text);
-      outline: none;
-    }
+    .bao-name-input { width: 100%; background: none; border: none; border-bottom: 1.5px solid var(--border); padding: 12px 16px; font-size: 15px; font-weight: 500; color: var(--text); outline: none; font-family: inherit; }
     .bao-name-input::placeholder { color: var(--text-2); }
-    .bao-select {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--muted-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 9px 12px;
-      font-size: 14px;
-      color: var(--text);
-      width: 100%;
-      cursor: pointer;
-      -webkit-appearance: none;
-      outline: none;
-    }
-    .bao-select:focus { border-color: var(--accent); }
-
-    /* BAO Toggle Switch */
     .toggle-group { display: flex; flex-direction: column; gap: 10px; }
     .toggle-row { display: flex; align-items: center; gap: 10px; }
     .toggle-label { font-size: 13px; color: var(--text); font-weight: 500; flex: 1; }
-    .toggle {
-      position: relative;
-      width: 42px; height: 24px;
-      flex-shrink: 0;
-    }
+    .toggle { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
     .toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .toggle-track {
-      position: absolute;
-      inset: 0;
-      background: #D0C8C2;
-      border-radius: 24px;
-      transition: background .2s;
-      cursor: pointer;
-    }
-    .toggle-thumb {
-      position: absolute;
-      top: 3px; left: 3px;
-      width: 18px; height: 18px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0 1px 4px rgba(0,0,0,.25);
-      transition: transform .2s;
-      pointer-events: none;
-    }
+    .toggle-track { position: absolute; inset: 0; background: #D0C8C2; border-radius: 24px; transition: background .2s; cursor: pointer; }
+    .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.25); transition: transform .2s; pointer-events: none; }
     .toggle input:checked ~ .toggle-track { background: var(--accent); }
     .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
     [data-theme="dark"] .toggle-track { background: #4A4040; }
-
-    /* Emoji picker */
     .emoji-row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .emoji-opt {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      border: 1.5px solid var(--border);
-      background: var(--muted-bg);
-      font-size: 20px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color .12s, background .12s;
-    }
-    .emoji-opt.on {
-      border-color: var(--accent);
-      background: var(--accent-lt);
-    }
+    .emoji-opt { width: 40px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--muted-bg); font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .12s, background .12s; }
+    .emoji-opt.on { border-color: var(--accent); background: var(--accent-lt); }
 
-    /* ══════════════════════════════════════
-       CAMERA
-    ══════════════════════════════════════ */
-    .camera-wrap {
-      border-radius: var(--r);
-      overflow: hidden;
-      background: #1A1210;
-      aspect-ratio: 4/3;
-      position: relative;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow);
-    }
+    /* ══ CAMERA ══ */
+    .camera-wrap { border-radius: var(--r); overflow: hidden; background: #1A1210; aspect-ratio: 4/3; position: relative; margin-bottom: 12px; box-shadow: var(--shadow); }
     #video { width: 100%; height: 100%; object-fit: cover; display: block; }
     #canvas { display: none; }
     #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .scan-frame-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
     .scan-frame { width: 68%; height: 34%; border: 2px solid rgba(232,97,58,.9); border-radius: 14px; box-shadow: 0 0 0 9999px rgba(0,0,0,.45); }
     .scan-label { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.9); }
-
-    /* ══════════════════════════════════════
-       CAMERA BUTTONS
-    ══════════════════════════════════════ */
     .cam-btn-row { display: flex; gap: 10px; margin-bottom: 12px; }
-    .cam-btn {
-      flex: 1;
-      padding: 13px;
-      border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      transition: opacity .15s, transform .1s;
-    }
+    .cam-btn { flex: 1; padding: 13px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; transition: opacity .15s, transform .1s; }
     .cam-btn:active { transform: scale(.97); opacity: .85; }
     .cam-btn.primary { background: var(--accent); color: #fff; box-shadow: 0 3px 12px rgba(232,97,58,.35); }
     .cam-btn.secondary { background: var(--card-bg); color: var(--text); border: 1.5px solid var(--border); box-shadow: var(--shadow-sm); }
-
-    /* OCR status row */
-    .ocr-row {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      padding: 11px 16px;
-      background: var(--card-bg);
-      border-radius: 12px;
-      border: 1.5px solid var(--border);
-      margin-bottom: 12px;
-      box-shadow: var(--shadow-sm);
-    }
+    .ocr-row { display: none; align-items: center; gap: 10px; padding: 11px 16px; background: var(--card-bg); border-radius: 12px; border: 1.5px solid var(--border); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
     .ocr-row.show { display: flex; }
-    .spin {
-      width: 18px; height: 18px;
-      border: 2.5px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      flex-shrink: 0;
-    }
+    .spin { width: 18px; height: 18px; border: 2.5px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
     #ocr-text { font-size: 13px; color: var(--text-2); font-weight: 500; }
-
-    /* confirm form hidden until scan */
     #add-form { display: none; }
     #add-form.show { display: block; }
 
-    /* ══════════════════════════════════════
-       SYNC BOTTOM BAR  — BAO "Last saved"
-    ══════════════════════════════════════ */
-    .sync-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--card-bg);
-      border-top: 1.5px solid var(--border);
-    }
-    .sync-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .sync-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      flex-shrink: 0;
-    }
+    /* ══ SYNC BAR ══ */
+    .sync-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--card-bg); border-top: 1.5px solid var(--border); }
+    .sync-bar-left { display: flex; align-items: center; gap: 6px; }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
     .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
     .sync-label { font-size: 11px; color: var(--text-2); font-weight: 500; }
-    .sync-refresh {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--muted-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 5px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-2);
-    }
-    .sync-refresh:active { background: var(--border); }
+    .sync-refresh { display: flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--text-2); }
 
-    /* ══════════════════════════════════════
-       BOTTOM NAV  — BAO sidebar adapted
-    ══════════════════════════════════════ */
-    .bottom-nav {
-      display: flex;
-      background: var(--card-bg);
-      border-top: 1.5px solid var(--border);
-      padding-bottom: var(--sb);
-    }
-    .nav-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      padding: 10px 4px 8px;
-      background: none;
-      border: none;
-      color: var(--text-2);
-      font-size: 11px;
-      font-weight: 600;
-      transition: color .15s;
-    }
+    /* ══ BOTTOM NAV ══ */
+    .bottom-nav { display: flex; background: var(--card-bg); border-top: 1.5px solid var(--border); padding-bottom: var(--sb); }
+    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 4px 8px; background: none; border: none; color: var(--text-2); font-size: 11px; font-weight: 600; transition: color .15s; }
     .nav-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .nav-btn.active { color: var(--accent); }
     .nav-btn.active svg { stroke: var(--accent); }
 
-    /* ══════════════════════════════════════
-       NOTIFY
-    ══════════════════════════════════════ */
-    #notify-bar {
-      position: fixed; top: 0; left: 0; right: 0;
-      background: var(--accent);
-      color: #fff;
-      padding: 14px 20px;
-      text-align: center;
-      font-size: 14px; font-weight: 600;
-      z-index: 9999;
-      transform: translateY(-100%);
-      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
-      border-radius: 0 0 14px 14px;
-    }
+    /* ══ NOTIFY ══ */
+    #notify-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--accent); color: #fff; padding: 14px 20px; text-align: center; font-size: 14px; font-weight: 600; z-index: 9999; transform: translateY(-100%); transition: transform .3s cubic-bezier(.34,1.56,.64,1); border-radius: 0 0 14px 14px; }
     #notify-bar.show { transform: translateY(0); }
 
-    /* ══════════════════════════════════════
-       EMPTY STATE
-    ══════════════════════════════════════ */
-    .empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-2);
-    }
+    /* ══ EMPTY ══ */
+    .empty { text-align: center; padding: 40px 20px; color: var(--text-2); }
     .empty .e-icon { font-size: 44px; margin-bottom: 12px; opacity: .6; }
     .empty p { font-size: 14px; line-height: 1.6; }
 
-    /* ══════════════════════════════════════
-       SIDEBAR BRAND  (hidden on mobile)
-    ══════════════════════════════════════ */
+    /* ══ SETTINGS PAGE ══ */
+    .settings-section { padding: 14px 16px; border-bottom: 1.5px solid var(--border); }
+    .settings-section:last-child { border-bottom: none; }
+    .settings-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-2); margin-bottom: 12px; }
+    .settings-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .settings-row:last-child { margin-bottom: 0; }
+    .settings-lbl { font-size: 13px; color: var(--text); font-weight: 500; flex: 1; }
+    .settings-val { font-size: 13px; font-weight: 800; color: var(--accent); min-width: 34px; text-align: right; }
+    .range-input { -webkit-appearance: none; width: 100%; height: 4px; border-radius: 4px; background: var(--border); outline: none; margin-top: 6px; cursor: pointer; }
+    .range-input::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 2px 6px rgba(232,97,58,.4); }
+    .range-input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-2); margin-top: 4px; }
+    .cat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .cat-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 8px 5px 10px; }
+    .cat-chip-emoji { font-size: 15px; }
+    .cat-chip-name { font-size: 12px; font-weight: 500; color: var(--text); }
+    .cat-chip-del { background: none; border: none; color: var(--text-2); font-size: 15px; cursor: pointer; padding: 0 0 0 3px; line-height: 1; }
+    .cat-chip-del:hover { color: var(--red); }
+    .cat-add-row { display: flex; gap: 8px; }
+    .cat-emoji-in { width: 46px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 4px; font-size: 18px; text-align: center; outline: none; font-family: inherit; }
+    .cat-name-in { flex: 1; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--text); outline: none; font-family: inherit; }
+    .cat-emoji-in:focus, .cat-name-in:focus { border-color: var(--accent); }
+    .cat-add-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; }
+    .danger-btn { background: var(--red-lt); color: var(--red); border: 1.5px solid var(--red); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; }
+
+    /* ══ SIDEBAR BRAND / ADD  (hidden mobile) ══ */
     .sidebar-brand { display: none; }
+    .sidebar-add-btn { display: none; }
 
     /* ══════════════════════════════════════
-       DESKTOP LAYOUT  ≥ 768px
+       DESKTOP  ≥ 768px
     ══════════════════════════════════════ */
     @media (min-width: 768px) {
-
-      /* Fixed top bar — full width */
-      .top-bar {
-        position: fixed;
-        left: 0; right: 0; top: 0;
-        z-index: 90;
-        height: 62px;
-        padding: 0 24px;
-        display: flex;
-        align-items: center;
-      }
+      /* Fixed top bar */
+      .top-bar { position: fixed; left: 0; right: 0; top: 0; z-index: 90; height: 62px; padding: 0 24px; display: flex; align-items: center; }
 
       /* App shell offset */
-      #app {
-        padding-left: 220px;
-        padding-top: 62px;
-      }
+      #app { padding-left: 220px; padding-top: 62px; }
 
       /* ── Sidebar brand ── */
-      .sidebar-brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 16px 16px 14px;
-        border-bottom: 1.5px solid var(--border);
-        flex-shrink: 0;
-      }
-      .sidebar-brand-icon {
-        width: 34px; height: 34px;
-        background: var(--accent);
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(232,97,58,.30);
-      }
-      .sidebar-brand-name {
-        font-size: 13px;
-        font-weight: 800;
-        color: var(--text);
-        letter-spacing: -.3px;
-        line-height: 1.2;
-      }
-      .sidebar-brand-sub {
-        font-size: 10px;
-        color: var(--text-2);
-        font-weight: 500;
-        letter-spacing: .3px;
-        text-transform: uppercase;
-      }
+      .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 16px 16px 14px; border-bottom: 1.5px solid var(--border); flex-shrink: 0; }
+      .sidebar-brand-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(232,97,58,.28); }
+      .sidebar-brand-name { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -.3px; line-height: 1.2; }
+      .sidebar-brand-sub { font-size: 10px; color: var(--text-2); font-weight: 500; letter-spacing: .3px; text-transform: uppercase; }
 
-      /* ── Left sidebar — bottom-nav becomes side-nav ── */
-      .bottom-nav {
-        position: fixed;
-        left: 0;
-        top: 62px;
-        bottom: 54px;
-        width: 220px;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-start;
-        border-top: none;
-        border-right: 1.5px solid var(--border);
-        padding: 8px 0 0;
-        gap: 0;
-        overflow-y: auto;
-        z-index: 80;
-        background: var(--card-bg);
-        box-shadow: 2px 0 16px rgba(43,36,36,.07);
-      }
-      .nav-btn {
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 12px;
-        padding: 11px 14px;
-        border-radius: 10px;
-        margin: 2px 8px;
-        font-size: 13px;
-        font-weight: 600;
-        flex: none;
-        width: calc(100% - 16px);
-      }
+      /* ── Left sidebar ── */
+      .bottom-nav { position: fixed; left: 0; top: 62px; bottom: 54px; width: 220px; flex-direction: column; align-items: stretch; justify-content: flex-start; border-top: none; border-right: 1.5px solid var(--border); padding: 8px 0 0; gap: 0; overflow-y: auto; z-index: 80; background: var(--card-bg); box-shadow: 2px 0 16px rgba(43,36,36,.07); }
+      .nav-btn { flex-direction: row; justify-content: flex-start; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; margin: 2px 8px; font-size: 13px; font-weight: 600; flex: none; width: calc(100% - 16px); }
       .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
       .nav-btn.active { background: var(--accent-lt); }
 
-      /* ── Sync bar — pinned to bottom of sidebar ── */
-      .sync-bar {
-        position: fixed;
-        left: 0; bottom: 0;
-        width: 220px; height: 54px;
-        border-right: 1.5px solid var(--border);
-        border-top: 1.5px solid var(--border);
-        background: var(--card-bg);
-        z-index: 80;
-        padding: 0 12px;
-        flex-direction: row;
-        align-items: center;
-      }
-      .sync-bar-left {
-        flex: 1;
-        min-width: 0;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1px;
-      }
+      /* ── Sidebar Add CTA ── */
+      .sidebar-add-btn { display: block; padding: 8px 8px 10px; margin-top: auto; }
+      .sidebar-add-btn button { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(232,97,58,.28); }
+
+      /* ── Sync bar at bottom of sidebar ── */
+      .sync-bar { position: fixed; left: 0; bottom: 0; width: 220px; height: 54px; border-right: 1.5px solid var(--border); border-top: 1.5px solid var(--border); background: var(--card-bg); z-index: 80; padding: 0 12px; }
+      .sync-bar-left { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1px; }
       .sync-label { font-size: 10px; line-height: 1.3; }
       .sync-refresh { padding: 4px 8px; font-size: 11px; flex-shrink: 0; }
 
-      /* ── Main content area ── */
-      .main-scroll {
-        max-width: 920px;
-        padding: 24px 28px 20px;
-      }
+      /* ── Main content ── */
+      .main-scroll { padding: 24px 28px 24px; }
 
-      /* Dashboard: 2-column grid */
-      #dashboard-page.active {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0 16px;
-        align-items: start;
-      }
-      #dashboard-page .bao-card:first-child { grid-column: 1 / -1; }
+      /* Hide add-bar on desktop */
+      .add-bar { display: none; }
 
-      /* Bigger stat numbers */
+      /* Cards: compact, content-sized, max 450px */
+      .bao-card { max-width: 450px; margin-bottom: 16px; }
+
+      /* Item lists: scrollable with max height */
+      .bao-item-list { max-height: 260px; overflow-y: auto; }
+
+      /* Dashboard: flex-wrap cards */
+      #dashboard-page.active { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+      #dashboard-page.active .bao-card:first-child { max-width: 916px; width: 100%; }
+
+      /* Bigger stats */
       .stat-num { font-size: 34px; }
 
-      /* Camera: widescreen ratio */
-      .camera-wrap { aspect-ratio: 16/9; max-height: 54vh; }
+      /* Camera: widescreen, compact */
+      .camera-wrap { aspect-ratio: 16/9; max-height: 54vh; max-width: 450px; }
+      .cam-btn-row { max-width: 450px; }
+      .ocr-row { max-width: 450px; }
 
-      /* Wider field labels */
-      .field-label { width: 140px; }
+      /* Field labels */
+      .field-label { width: 130px; }
 
-      /* Cards: slightly more breathing room */
-      .bao-card { margin-bottom: 16px; }
+      /* Settings page */
+      #settings-page.active { display: block; }
 
-      /* Notification bar offset on desktop */
+      /* Notification offset */
       #notify-bar { left: 220px; border-radius: 0 0 14px 14px; }
     }
   </style>
@@ -804,13 +294,12 @@
     </div>
   </header>
 
-  <!-- ════ SCROLLABLE CONTENT ════ -->
+  <!-- ════ MAIN SCROLL ════ -->
   <div class="main-scroll">
 
     <!-- ── DASHBOARD ── -->
     <div class="page active" id="dashboard-page">
 
-      <!-- Stats card -->
       <div class="bao-card">
         <div class="bao-card-head">
           <span class="head-icon">⚡</span>
@@ -832,7 +321,6 @@
         </div>
       </div>
 
-      <!-- Urgent items card -->
       <div class="bao-card">
         <div class="bao-card-head">
           <span class="head-icon">⚠️</span>
@@ -843,7 +331,7 @@
         </div>
         <div class="add-bar">
           <span class="add-bar-label">Add New Item</span>
-          <button class="add-bar-btn" onclick="switchTab('manual')">Add <span>＋</span></button>
+          <button class="add-bar-btn" onclick="switchTab('manual')">Add ＋</button>
         </div>
       </div>
 
@@ -870,7 +358,6 @@
         <span id="ocr-text">Reading expiry date…</span>
       </div>
 
-      <!-- Confirm card — shown after scan -->
       <div id="add-form">
         <div class="bao-card">
           <div class="bao-card-head">
@@ -878,29 +365,14 @@
             <span class="head-title">Confirm Item Details</span>
             <button class="head-action" onclick="retakePhoto()">↺</button>
           </div>
-          <input class="bao-name-input" type="text" id="scan-name" placeholder="Enter product name…" />
+          <input class="bao-name-input" type="text" id="scan-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
           <div class="field-row">
             <span class="field-label">Expiry Date</span>
-            <div class="field-value">
-              <input class="bao-input" type="date" id="scan-date" />
-            </div>
+            <div class="field-value"><input class="bao-input" type="date" id="scan-date" /></div>
           </div>
           <div class="field-row">
             <span class="field-label">Category</span>
-            <div class="field-value">
-              <div class="emoji-row" id="emoji-picker-scan">
-                <button class="emoji-opt on" data-emoji="🥛" onclick="selectEmoji(this,'scan')">🥛</button>
-                <button class="emoji-opt" data-emoji="🥩" onclick="selectEmoji(this,'scan')">🥩</button>
-                <button class="emoji-opt" data-emoji="🧴" onclick="selectEmoji(this,'scan')">🧴</button>
-                <button class="emoji-opt" data-emoji="💊" onclick="selectEmoji(this,'scan')">💊</button>
-                <button class="emoji-opt" data-emoji="🥫" onclick="selectEmoji(this,'scan')">🥫</button>
-                <button class="emoji-opt" data-emoji="🍞" onclick="selectEmoji(this,'scan')">🍞</button>
-                <button class="emoji-opt" data-emoji="🧀" onclick="selectEmoji(this,'scan')">🧀</button>
-                <button class="emoji-opt" data-emoji="🥚" onclick="selectEmoji(this,'scan')">🥚</button>
-                <button class="emoji-opt" data-emoji="🫙" onclick="selectEmoji(this,'scan')">🫙</button>
-                <button class="emoji-opt" data-emoji="🧃" onclick="selectEmoji(this,'scan')">🧃</button>
-              </div>
-            </div>
+            <div class="field-value"><div class="emoji-row" id="emoji-picker-scan"></div></div>
           </div>
           <div class="add-bar">
             <span class="add-bar-label">Save to cloud</span>
@@ -918,52 +390,35 @@
           <span class="head-icon">📋</span>
           <span class="head-title">New Item</span>
         </div>
-        <input class="bao-name-input" type="text" id="manual-name" placeholder="Enter product name…" />
+        <input class="bao-name-input" type="text" id="manual-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
         <div class="field-row">
           <span class="field-label">Expiry Date</span>
-          <div class="field-value">
-            <input class="bao-input" type="date" id="manual-date" />
-          </div>
+          <div class="field-value"><input class="bao-input" type="date" id="manual-date" /></div>
         </div>
         <div class="field-row">
-          <span class="field-label">Item Settings</span>
+          <span class="field-label">Options</span>
           <div class="field-value">
             <div class="toggle-group">
               <div class="toggle-row">
                 <label class="toggle">
                   <input type="checkbox" id="toggle-alert" checked />
-                  <div class="toggle-track"></div>
-                  <div class="toggle-thumb"></div>
+                  <div class="toggle-track"></div><div class="toggle-thumb"></div>
                 </label>
                 <span class="toggle-label">Enable expiry alerts</span>
               </div>
               <div class="toggle-row">
                 <label class="toggle">
                   <input type="checkbox" id="toggle-notes" />
-                  <div class="toggle-track"></div>
-                  <div class="toggle-thumb"></div>
+                  <div class="toggle-track"></div><div class="toggle-thumb"></div>
                 </label>
                 <span class="toggle-label">Show in dashboard</span>
               </div>
             </div>
           </div>
         </div>
-        <div class="field-row">
+        <div class="field-row" style="border-bottom:none;">
           <span class="field-label">Category</span>
-          <div class="field-value">
-            <div class="emoji-row" id="emoji-picker-manual">
-              <button class="emoji-opt on" data-emoji="🥛" onclick="selectEmoji(this,'manual')">🥛</button>
-              <button class="emoji-opt" data-emoji="🥩" onclick="selectEmoji(this,'manual')">🥩</button>
-              <button class="emoji-opt" data-emoji="🧴" onclick="selectEmoji(this,'manual')">🧴</button>
-              <button class="emoji-opt" data-emoji="💊" onclick="selectEmoji(this,'manual')">💊</button>
-              <button class="emoji-opt" data-emoji="🥫" onclick="selectEmoji(this,'manual')">🥫</button>
-              <button class="emoji-opt" data-emoji="🍞" onclick="selectEmoji(this,'manual')">🍞</button>
-              <button class="emoji-opt" data-emoji="🧀" onclick="selectEmoji(this,'manual')">🧀</button>
-              <button class="emoji-opt" data-emoji="🥚" onclick="selectEmoji(this,'manual')">🥚</button>
-              <button class="emoji-opt" data-emoji="🫙" onclick="selectEmoji(this,'manual')">🫙</button>
-              <button class="emoji-opt" data-emoji="🧃" onclick="selectEmoji(this,'manual')">🧃</button>
-            </div>
-          </div>
+          <div class="field-value"><div class="emoji-row" id="emoji-picker-manual"></div></div>
         </div>
         <div class="add-bar">
           <span class="add-bar-label">Add New Item</span>
@@ -994,9 +449,79 @@
       </div>
     </div><!-- /list -->
 
+    <!-- ── SETTINGS ── -->
+    <div class="page" id="settings-page">
+
+      <!-- Thresholds -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">⏰</span>
+          <span class="head-title">Expiry Thresholds</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Expiring Soon (Yellow)</div>
+          <div class="settings-row">
+            <span class="settings-lbl">Alert me within</span>
+            <span class="settings-val" id="soon-val">14d</span>
+          </div>
+          <input type="range" class="range-input" id="soon-range" min="1" max="60" value="14" oninput="updateSoonDays(this.value)" />
+          <div class="range-labels"><span>1 day</span><span>60 days</span></div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Critical Alert (Orange)</div>
+          <div class="settings-row">
+            <span class="settings-lbl">Critical within</span>
+            <span class="settings-val" id="critical-val">3d</span>
+          </div>
+          <input type="range" class="range-input" id="critical-range" min="1" max="14" value="3" oninput="updateCriticalDays(this.value)" />
+          <div class="range-labels"><span>1 day</span><span>14 days</span></div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">🏷️</span>
+          <span class="head-title">Product Categories</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Active Categories</div>
+          <div class="cat-list" id="cat-list"></div>
+          <div class="settings-heading">Add Category</div>
+          <div class="cat-add-row">
+            <input class="cat-emoji-in" type="text" id="new-cat-emoji" placeholder="🆕" maxlength="2" />
+            <input class="cat-name-in" type="text" id="new-cat-name" placeholder="Category name…" />
+            <button class="cat-add-btn" onclick="addCategory()">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">ℹ️</span>
+          <span class="head-title">About</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-row">
+            <span class="settings-lbl">Version</span>
+            <span style="font-size:12px;color:var(--text-2);">2.0</span>
+          </div>
+          <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <span class="settings-lbl">Device ID</span>
+            <span style="font-size:10px;color:var(--text-2);word-break:break-all;line-height:1.4;" id="device-id-display"></span>
+          </div>
+          <div class="settings-row" style="margin-top:6px;">
+            <button class="danger-btn" onclick="clearLocalImages()">🗑 Clear Cached Photos</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /settings -->
+
   </div><!-- /main-scroll -->
 
-  <!-- ════ SYNC BAR — BAO "Last saved" ════ -->
+  <!-- ════ SYNC BAR ════ -->
   <div class="sync-bar">
     <div class="sync-bar-left">
       <div class="sync-dot" id="sync-dot"></div>
@@ -1005,9 +530,9 @@
     <button class="sync-refresh" onclick="refresh()">↺ Refresh</button>
   </div>
 
-  <!-- ════ BOTTOM NAV — BAO sidebar ════ -->
+  <!-- ════ BOTTOM NAV / DESKTOP SIDEBAR ════ -->
   <nav class="bottom-nav">
-    <!-- Brand logo — visible only on desktop sidebar -->
+    <!-- Sidebar brand — desktop only -->
     <div class="sidebar-brand">
       <div class="sidebar-brand-icon">📦</div>
       <div>
@@ -1015,6 +540,7 @@
         <div class="sidebar-brand-sub">Food &amp; Product</div>
       </div>
     </div>
+
     <button class="nav-btn active" id="tab-dashboard" onclick="switchTab('dashboard')">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Home
@@ -1031,37 +557,200 @@
       <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       All
     </button>
+    <button class="nav-btn" id="tab-settings" onclick="switchTab('settings')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </button>
+
+    <!-- Desktop only: Add CTA at bottom of sidebar -->
+    <div class="sidebar-add-btn">
+      <button onclick="switchTab('manual')">＋ Add Item</button>
+    </div>
   </nav>
 
 </div><!-- /app -->
+
+<!-- ════ PRODUCT AUTOCOMPLETE ════ -->
+<datalist id="products-list">
+  <option value="Milk"><option value="Semi-Skimmed Milk"><option value="Whole Milk">
+  <option value="Oat Milk"><option value="Almond Milk"><option value="Soy Milk">
+  <option value="Eggs"><option value="Butter"><option value="Cheese">
+  <option value="Cheddar Cheese"><option value="Mozzarella"><option value="Cream Cheese">
+  <option value="Parmesan"><option value="Feta Cheese"><option value="Brie">
+  <option value="Yogurt"><option value="Greek Yogurt"><option value="Cream">
+  <option value="Heavy Cream"><option value="Sour Cream"><option value="Whipped Cream">
+  <option value="Chicken Breast"><option value="Chicken Thighs"><option value="Whole Chicken">
+  <option value="Ground Beef"><option value="Beef Steak"><option value="Beef Mince">
+  <option value="Salmon Fillet"><option value="Tuna"><option value="Cod Fillet">
+  <option value="Pork Chops"><option value="Bacon"><option value="Ham">
+  <option value="Turkey"><option value="Shrimp"><option value="Prawns">
+  <option value="Bread"><option value="White Bread"><option value="Whole Wheat Bread">
+  <option value="Sourdough Bread"><option value="Bagels"><option value="Tortillas">
+  <option value="Pita Bread"><option value="Croissants"><option value="Rolls">
+  <option value="Orange Juice"><option value="Apple Juice"><option value="Grape Juice">
+  <option value="Tomato Juice"><option value="Coconut Water"><option value="Sparkling Water">
+  <option value="Tomatoes"><option value="Lettuce"><option value="Spinach">
+  <option value="Carrots"><option value="Broccoli"><option value="Cucumber">
+  <option value="Bell Peppers"><option value="Mushrooms"><option value="Onions">
+  <option value="Garlic"><option value="Kale"><option value="Celery">
+  <option value="Strawberries"><option value="Blueberries"><option value="Raspberries">
+  <option value="Bananas"><option value="Apples"><option value="Avocado">
+  <option value="Grapes"><option value="Mango"><option value="Pineapple">
+  <option value="Canned Tomatoes"><option value="Canned Beans"><option value="Canned Corn">
+  <option value="Canned Tuna"><option value="Canned Salmon"><option value="Canned Soup">
+  <option value="Tomato Paste"><option value="Tomato Sauce"><option value="Pasta Sauce">
+  <option value="Hummus"><option value="Salsa"><option value="Peanut Butter">
+  <option value="Jam"><option value="Honey"><option value="Mayonnaise">
+  <option value="Mustard"><option value="Ketchup"><option value="Soy Sauce">
+  <option value="Hot Sauce"><option value="Olive Oil"><option value="Vegetable Oil">
+  <option value="Aspirin"><option value="Ibuprofen"><option value="Paracetamol">
+  <option value="Vitamin C"><option value="Vitamin D"><option value="Multivitamins">
+  <option value="Fish Oil"><option value="Antihistamine"><option value="Cough Syrup">
+  <option value="Cold Medicine"><option value="Antacid"><option value="Probiotics">
+  <option value="Shampoo"><option value="Conditioner"><option value="Body Lotion">
+  <option value="Sunscreen"><option value="Face Cream"><option value="Toothpaste">
+  <option value="Hand Sanitizer"><option value="Contact Lens Solution"><option value="Eye Drops">
+  <option value="Hydrogen Peroxide"><option value="Baby Formula"><option value="Baby Food">
+  <option value="Baby Wipes"><option value="Infant Paracetamol"><option value="Nappy Cream">
+  <option value="Pasta"><option value="Rice"><option value="Oats">
+  <option value="Cereal"><option value="Crackers"><option value="Biscuits">
+  <option value="Chocolate"><option value="Ice Cream"><option value="Frozen Pizza">
+  <option value="Frozen Peas"><option value="Frozen Berries">
+</datalist>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ THEME ═══ */
-(function(){
-  const t = localStorage.getItem('expiry_theme') || 'light';
-  applyTheme(t);
-})();
+(function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   const btn = document.getElementById('theme-btn');
   const meta = document.getElementById('meta-theme-color');
-  if (t === 'dark') {
-    if (btn) btn.textContent = '🌙';
-    if (meta) meta.content = '#1C1816';
-  } else {
-    if (btn) btn.textContent = '☀️';
-    if (meta) meta.content = '#F7F1EB';
-  }
+  if (t === 'dark') { if(btn) btn.textContent='🌙'; if(meta) meta.content='#1C1816'; }
+  else              { if(btn) btn.textContent='☀️'; if(meta) meta.content='#F7F1EB'; }
   localStorage.setItem('expiry_theme', t);
 }
-function toggleTheme() {
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+function toggleTheme() { applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); }
+
+/* ═══ SETTINGS ═══ */
+let SOON_DAYS     = parseInt(localStorage.getItem('expiry_soon_days')     || '14');
+let CRITICAL_DAYS = parseInt(localStorage.getItem('expiry_critical_days') || '3');
+
+function updateSoonDays(val) {
+  SOON_DAYS = parseInt(val);
+  localStorage.setItem('expiry_soon_days', SOON_DAYS);
+  document.getElementById('soon-val').textContent = SOON_DAYS + 'd';
+  if (CRITICAL_DAYS > SOON_DAYS) { CRITICAL_DAYS = SOON_DAYS; updateCriticalDays(CRITICAL_DAYS); }
+}
+function updateCriticalDays(val) {
+  CRITICAL_DAYS = Math.min(parseInt(val), SOON_DAYS);
+  localStorage.setItem('expiry_critical_days', CRITICAL_DAYS);
+  const el = document.getElementById('critical-val');
+  if (el) el.textContent = CRITICAL_DAYS + 'd';
+  const r = document.getElementById('critical-range');
+  if (r) { r.max = SOON_DAYS; r.value = CRITICAL_DAYS; }
+}
+
+/* ═══ CATEGORIES ═══ */
+const DEFAULT_CATS = [
+  {emoji:'🥛',name:'Dairy'}, {emoji:'🥩',name:'Meat'}, {emoji:'🧴',name:'Beauty'},
+  {emoji:'💊',name:'Medicine'}, {emoji:'🥫',name:'Canned'}, {emoji:'🍞',name:'Bread'},
+  {emoji:'🧀',name:'Cheese'}, {emoji:'🥚',name:'Eggs'}, {emoji:'🫙',name:'Pantry'},
+  {emoji:'🧃',name:'Drinks'}, {emoji:'🥦',name:'Veg'}, {emoji:'🍓',name:'Fruit'},
+  {emoji:'❄️',name:'Frozen'}, {emoji:'🧹',name:'Cleaning'},
+];
+let CATEGORIES = JSON.parse(localStorage.getItem('expiry_cats') || JSON.stringify(DEFAULT_CATS));
+let emojiScan = CATEGORIES[0]?.emoji || '📦';
+let emojiManual = CATEGORIES[0]?.emoji || '📦';
+
+function saveCategories() { localStorage.setItem('expiry_cats', JSON.stringify(CATEGORIES)); }
+
+function renderCatList() {
+  const el = document.getElementById('cat-list');
+  if (!el) return;
+  el.innerHTML = CATEGORIES.map((c, i) =>
+    `<span class="cat-chip">
+      <span class="cat-chip-emoji">${c.emoji}</span>
+      <span class="cat-chip-name">${esc(c.name)}</span>
+      <button class="cat-chip-del" onclick="removeCategory(${i})" title="Remove">×</button>
+    </span>`
+  ).join('');
+}
+
+function addCategory() {
+  const eEl = document.getElementById('new-cat-emoji');
+  const nEl = document.getElementById('new-cat-name');
+  const emoji = eEl.value.trim();
+  const name  = nEl.value.trim();
+  if (!emoji || !name) { notify('⚠️ Enter both an emoji and a name'); return; }
+  CATEGORIES.push({emoji, name});
+  saveCategories();
+  renderCatList();
+  renderCategoryPicker('scan');
+  renderCategoryPicker('manual');
+  eEl.value = ''; nEl.value = '';
+  notify('✅ Category "' + name + '" added');
+}
+
+function removeCategory(idx) {
+  if (CATEGORIES.length <= 1) { notify('⚠️ Keep at least one category'); return; }
+  const removed = CATEGORIES.splice(idx, 1)[0];
+  saveCategories();
+  renderCatList();
+  renderCategoryPicker('scan');
+  renderCategoryPicker('manual');
+  notify('Removed "' + removed.name + '"');
+}
+
+function renderCategoryPicker(ctx) {
+  const el = document.getElementById('emoji-picker-' + ctx);
+  if (!el) return;
+  el.innerHTML = CATEGORIES.map((c, i) =>
+    `<button class="emoji-opt${i===0?' on':''}" data-emoji="${c.emoji}" onclick="selectEmoji(this,'${ctx}')" title="${esc(c.name)}">${c.emoji}</button>`
+  ).join('');
+  if (ctx === 'scan')   emojiScan   = CATEGORIES[0]?.emoji || '📦';
+  if (ctx === 'manual') emojiManual = CATEGORIES[0]?.emoji || '📦';
+}
+
+function selectEmoji(btn, ctx) {
+  document.getElementById('emoji-picker-' + ctx).querySelectorAll('.emoji-opt').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  if (ctx === 'scan')   emojiScan   = btn.dataset.emoji;
+  if (ctx === 'manual') emojiManual = btn.dataset.emoji;
+}
+
+/* ═══ LOCAL IMAGE STORE ═══ */
+let capturedThumb = null;
+
+function getThumbnail(canvas) {
+  const t = document.createElement('canvas');
+  t.width = 190; t.height = 130;
+  t.getContext('2d').drawImage(canvas, 0, 0, 190, 130);
+  return t.toDataURL('image/jpeg', 0.55);
+}
+function saveImageLocally(id, dataUrl) {
+  try {
+    const imgs = JSON.parse(localStorage.getItem('expiry_images') || '{}');
+    imgs[id] = dataUrl;
+    localStorage.setItem('expiry_images', JSON.stringify(imgs));
+  } catch(e) { /* localStorage quota exceeded — skip silently */ }
+}
+function getImageLocally(id) {
+  const imgs = JSON.parse(localStorage.getItem('expiry_images') || '{}');
+  return imgs[id] || null;
+}
+function deleteImageLocally(id) {
+  const imgs = JSON.parse(localStorage.getItem('expiry_images') || '{}');
+  delete imgs[id]; localStorage.setItem('expiry_images', JSON.stringify(imgs));
+}
+function clearLocalImages() {
+  localStorage.removeItem('expiry_images');
+  notify('🗑 Cached photos cleared');
 }
 
 /* ═══ SUPABASE ═══ */
-const SUPABASE_URL = 'https://viupqrjyszvvcpnxrmsq.supabase.co';
+const SUPABASE_URL      = 'https://viupqrjyszvvcpnxrmsq.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdXBxcmp5c3p2dmNwbnhybXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTY2ODgsImV4cCI6MjA5NDg3MjY4OH0.-j_X1M4_FBDuax4Gpd3tOHYdgs-fdWN2sPTbhYlG7qk';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 function getDeviceId() {
@@ -1072,19 +761,16 @@ function getDeviceId() {
 const DEVICE_ID = getDeviceId();
 
 /* ═══ SYNC UI ═══ */
-let lastSynced = null;
 function setSyncing(on) {
   const dot = document.getElementById('sync-dot');
   const lbl = document.getElementById('sync-label');
-  if (on) {
-    dot.className = 'sync-dot syncing';
-    lbl.textContent = 'Syncing…';
-  } else {
-    dot.className = 'sync-dot';
-    lastSynced = new Date();
-    const t = lastSynced.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    const d = lastSynced.toLocaleDateString('en-GB').replace(/\//g,'.');
-    lbl.textContent = 'Last synced: ' + d + ', ' + t;
+  if (on) { dot.className='sync-dot syncing'; lbl.textContent='Syncing…'; }
+  else {
+    dot.className='sync-dot';
+    const now = new Date();
+    const t = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
+    const d = now.toLocaleDateString('en-GB').replace(/\//g,'.');
+    lbl.textContent = 'Last synced: '+d+', '+t;
   }
 }
 async function refresh() { await renderDashboard(); await renderAll(); }
@@ -1092,73 +778,78 @@ async function refresh() { await renderDashboard(); await renderAll(); }
 /* ═══ DB ═══ */
 async function dbGetAll() {
   setSyncing(true);
-  const { data, error } = await sb.from('items').select('*').eq('device_id', DEVICE_ID).order('expiry', { ascending: true });
+  const { data, error } = await sb.from('items').select('*').eq('device_id', DEVICE_ID).order('expiry',{ascending:true});
   setSyncing(false);
-  if (error) { notify('⚠️ ' + error.message); return []; }
+  if (error) { notify('⚠️ '+error.message); return []; }
   return data || [];
 }
 async function dbAdd(item) {
   setSyncing(true);
-  const { data, error } = await sb.from('items').insert([{ ...item, device_id: DEVICE_ID }]).select().single();
+  const { data, error } = await sb.from('items').insert([{...item, device_id:DEVICE_ID}]).select().single();
   setSyncing(false);
-  if (error) { notify('⚠️ ' + error.message); return null; }
+  if (error) { notify('⚠️ '+error.message); return null; }
   return data;
 }
 async function dbDelete(id) {
   setSyncing(true);
-  const { error } = await sb.from('items').delete().eq('id', id).eq('device_id', DEVICE_ID);
+  const { error } = await sb.from('items').delete().eq('id',id).eq('device_id',DEVICE_ID);
   setSyncing(false);
-  if (error) notify('⚠️ ' + error.message);
+  if (error) notify('⚠️ '+error.message);
 }
 
 /* ═══ HELPERS ═══ */
-function daysUntil(s) { const t = new Date(); t.setHours(0,0,0,0); return Math.round((new Date(s+'T00:00:00')-t)/86400000); }
-function getStatus(d) { return d<0?'s-red':d<=3?'s-orange':d<=14?'s-yellow':'s-green'; }
-function getTag(d)    { return d<0?'tag-red':d<=3?'tag-orange':d<=14?'tag-yellow':'tag-green'; }
-function daysLabel(d) { if(d<0)return 'Expired '+Math.abs(d)+'d ago'; if(d===0)return 'Expires TODAY'; if(d===1)return 'Tomorrow'; return d+' days'; }
+function daysUntil(s) { const t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(s+'T00:00:00')-t)/86400000); }
+function getStatus(d) { return d<0?'s-red':d<=CRITICAL_DAYS?'s-orange':d<=SOON_DAYS?'s-yellow':'s-green'; }
+function getTag(d)    { return d<0?'tag-red':d<=CRITICAL_DAYS?'tag-orange':d<=SOON_DAYS?'tag-yellow':'tag-green'; }
+function daysLabel(d) { if(d<0)return 'Expired '+Math.abs(d)+'d ago'; if(d===0)return 'Today!'; if(d===1)return 'Tomorrow'; return d+' days'; }
 function fmtDate(s)   { return new Date(s+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s)       { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function notify(msg) {
   const b = document.getElementById('notify-bar');
-  b.textContent = msg; b.classList.add('show');
-  setTimeout(() => b.classList.remove('show'), 3000);
+  b.textContent=msg; b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'),3000);
 }
 
 /* ═══ TABS ═══ */
-const PAGE_TITLES = { dashboard: 'Expiry Tracker', camera: 'Scan Item', manual: 'New Item', list: 'All Items' };
+const PAGE_TITLES = {dashboard:'Expiry Tracker',camera:'Scan Item',manual:'New Item',list:'All Items',settings:'Settings'};
 let stream = null;
 function switchTab(tab) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(tab+'-page').classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
+  const btn = document.getElementById('tab-'+tab);
+  if (btn) btn.classList.add('active');
   document.getElementById('bc-title').textContent = PAGE_TITLES[tab];
-  if (tab === 'camera') startCamera(); else stopCamera();
-  if (tab === 'dashboard') renderDashboard();
-  if (tab === 'list') renderAll();
+  if (tab==='camera') startCamera(); else stopCamera();
+  if (tab==='dashboard') renderDashboard();
+  if (tab==='list') renderAll();
+  if (tab==='settings') renderSettingsPage();
 }
 
 /* ═══ CAMERA ═══ */
 async function startCamera() {
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode:'environment', width:{ ideal:1280 } } });
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}}});
     const v = document.getElementById('video');
-    v.srcObject = stream; v.style.display = 'block';
-    document.getElementById('preview-img').style.display = 'none';
-    document.getElementById('scan-overlay').style.display = 'flex';
-    document.getElementById('scan-hint').style.display = 'block';
-    document.getElementById('capture-btn').style.display = 'flex';
-    document.getElementById('retake-btn').style.display = 'none';
+    v.srcObject=stream; v.style.display='block';
+    document.getElementById('preview-img').style.display='none';
+    document.getElementById('scan-overlay').style.display='flex';
+    document.getElementById('scan-hint').style.display='block';
+    document.getElementById('capture-btn').style.display='flex';
+    document.getElementById('retake-btn').style.display='none';
     document.getElementById('add-form').classList.remove('show');
     document.getElementById('ocr-status').classList.remove('show');
-  } catch(e) { notify('Camera access denied — allow in Safari Settings'); }
+    capturedThumb = null;
+  } catch(e) { notify('Camera access denied — allow in Settings'); }
 }
 function stopCamera() { if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } }
+
 function capturePhoto() {
   const v=document.getElementById('video'), c=document.getElementById('canvas');
   c.width=v.videoWidth; c.height=v.videoHeight;
   c.getContext('2d').drawImage(v,0,0);
+  capturedThumb = getThumbnail(c);
   const img=document.getElementById('preview-img');
   img.src=c.toDataURL('image/jpeg',.92); img.style.display='block'; v.style.display='none';
   document.getElementById('scan-overlay').style.display='none';
@@ -1170,6 +861,7 @@ function capturePhoto() {
 function retakePhoto() {
   document.getElementById('add-form').classList.remove('show');
   document.getElementById('ocr-status').classList.remove('show');
+  capturedThumb = null;
   startCamera();
 }
 
@@ -1208,15 +900,7 @@ function showConfirm(date) {
   document.getElementById('add-form').classList.add('show');
   document.getElementById('scan-date').value = date || '';
   document.getElementById('scan-name').value = '';
-  notify(date ? '📅 Detected: '+fmtDate(date) : 'No date detected — enter manually');
-}
-
-/* ═══ EMOJI ═══ */
-let emojiScan='🥛', emojiManual='🥛';
-function selectEmoji(btn, ctx) {
-  document.getElementById('emoji-picker-'+ctx).querySelectorAll('.emoji-opt').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  if(ctx==='scan') emojiScan=btn.dataset.emoji; else emojiManual=btn.dataset.emoji;
+  notify(date?'📅 Detected: '+fmtDate(date):'No date detected — enter manually');
 }
 
 /* ═══ SAVE ═══ */
@@ -1226,7 +910,14 @@ async function saveScannedItem() {
   if(!name){ notify('⚠️ Enter a product name'); return; }
   if(!date){ notify('⚠️ Enter the expiry date'); return; }
   const item=await dbAdd({name,expiry:date,icon:emojiScan,added:new Date().toISOString()});
-  if(item){ notify('✅ "'+name+'" saved!'); document.getElementById('add-form').classList.remove('show'); document.getElementById('ocr-status').classList.remove('show'); retakePhoto(); }
+  if(item){
+    if(capturedThumb) saveImageLocally(item.id, capturedThumb);
+    notify('✅ "'+name+'" saved!');
+    document.getElementById('add-form').classList.remove('show');
+    document.getElementById('ocr-status').classList.remove('show');
+    capturedThumb = null;
+    retakePhoto();
+  }
 }
 async function saveManualItem() {
   const name=document.getElementById('manual-name').value.trim();
@@ -1244,12 +935,14 @@ async function saveManualItem() {
 
 /* ═══ RENDER ═══ */
 function buildItem(item, idx) {
-  const days=daysUntil(item.expiry);
-  const div=document.createElement('div');
-  div.className='bao-item '+getStatus(days);
-  div.innerHTML=`
+  const days = daysUntil(item.expiry);
+  const img  = getImageLocally(item.id);
+  const div  = document.createElement('div');
+  div.className = 'bao-item '+getStatus(days);
+  div.innerHTML = `
     <span class="item-num">${idx+1}.</span>
     <span class="item-emoji">${item.icon||'📦'}</span>
+    ${img?`<img class="item-thumb" src="${img}" alt="photo" />`:''}
     <div class="item-body">
       <div class="item-name-text">${esc(item.name)}</div>
       <div class="item-sub">${fmtDate(item.expiry)}</div>
@@ -1260,21 +953,21 @@ function buildItem(item, idx) {
 }
 
 async function renderDashboard() {
-  const list=document.getElementById('dashboard-list');
+  const list = document.getElementById('dashboard-list');
   list.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
-  const items=await dbGetAll();
-  const expired=items.filter(i=>daysUntil(i.expiry)<0);
-  const soon   =items.filter(i=>{ const d=daysUntil(i.expiry); return d>=0&&d<=14; });
-  const ok     =items.filter(i=>daysUntil(i.expiry)>14);
-  document.getElementById('count-expired').textContent=expired.length;
-  document.getElementById('count-soon').textContent=soon.length;
-  document.getElementById('count-ok').textContent=ok.length;
-  const n=expired.length+soon.length;
-  const badge=document.getElementById('alert-badge');
-  badge.style.display=n>0?'inline':'none'; badge.textContent=n;
-  list.innerHTML='';
-  const urgent=[...expired,...soon].sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
-  if(!urgent.length){
+  const items = await dbGetAll();
+  const expired = items.filter(i=>daysUntil(i.expiry)<0);
+  const soon    = items.filter(i=>{ const d=daysUntil(i.expiry); return d>=0&&d<=SOON_DAYS; });
+  const ok      = items.filter(i=>daysUntil(i.expiry)>SOON_DAYS);
+  document.getElementById('count-expired').textContent = expired.length;
+  document.getElementById('count-soon').textContent    = soon.length;
+  document.getElementById('count-ok').textContent      = ok.length;
+  const n = expired.length + soon.length;
+  const badge = document.getElementById('alert-badge');
+  badge.style.display = n>0?'inline':'none'; badge.textContent = n;
+  list.innerHTML = '';
+  const urgent = [...expired,...soon].sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
+  if (!urgent.length) {
     list.innerHTML='<div class="empty"><div class="e-icon">✅</div><p>All clear!<br/>Nothing expiring soon.</p></div>';
   } else {
     urgent.forEach((item,i)=>list.appendChild(buildItem(item,i)));
@@ -1282,13 +975,13 @@ async function renderDashboard() {
 }
 
 async function renderAll() {
-  const list=document.getElementById('all-list');
+  const list = document.getElementById('all-list');
   list.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
-  const items=await dbGetAll();
-  const sort=document.getElementById('sort-select').value;
+  const items = await dbGetAll();
+  const sort  = document.getElementById('sort-select').value;
   items.sort((a,b)=>sort==='expiry'?new Date(a.expiry)-new Date(b.expiry):sort==='name'?a.name.localeCompare(b.name):new Date(b.added)-new Date(a.added));
-  list.innerHTML='';
-  if(!items.length){
+  list.innerHTML = '';
+  if (!items.length) {
     list.innerHTML='<div class="empty"><div class="e-icon">📦</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>';
   } else {
     items.forEach((item,i)=>list.appendChild(buildItem(item,i)));
@@ -1296,14 +989,27 @@ async function renderAll() {
 }
 
 async function deleteItem(id) {
+  deleteImageLocally(id);
   await dbDelete(id);
   notify('🗑 Deleted');
-  renderDashboard();
-  renderAll();
+  renderDashboard(); renderAll();
+}
+
+/* ═══ SETTINGS PAGE ═══ */
+function renderSettingsPage() {
+  const sr = document.getElementById('soon-range');
+  const cr = document.getElementById('critical-range');
+  if (sr) { sr.value = SOON_DAYS; document.getElementById('soon-val').textContent = SOON_DAYS+'d'; }
+  if (cr) { cr.max = SOON_DAYS; cr.value = CRITICAL_DAYS; document.getElementById('critical-val').textContent = CRITICAL_DAYS+'d'; }
+  const dev = document.getElementById('device-id-display');
+  if (dev) dev.textContent = DEVICE_ID;
+  renderCatList();
 }
 
 /* ═══ INIT ═══ */
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+renderCategoryPicker('scan');
+renderCategoryPicker('manual');
 document.getElementById('manual-date').value = new Date().toISOString().split('T')[0];
 renderDashboard();
 </script>

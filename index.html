@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Expiry Tracker" />
+  <meta name="theme-color" content="#F0E7DF" id="meta-theme-color" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Expiry Tracker</title>
+  <style>
+    /* ── LIGHT MODE (brand palette) ── */
+    :root {
+      --bg:      #F0E7DF;
+      --surface: #FFFFFF;
+      --accent:  #FF5632;
+      --text:    #2B2727;
+      --muted:   #7a7a9d;
+      --border:  rgba(53,55,91,.12);
+      --green:   #00BE7C;
+      --yellow:  #B15224;
+      --orange:  #FF5632;
+      --red:     #FF3257;
+      --nav-bg:  #FFFFFF;
+      --nav-border: rgba(53,55,91,.1);
+      --r:16px;
+      --st:env(safe-area-inset-top,0px);
+      --sb:env(safe-area-inset-bottom,0px);
+    }
+    /* ── DARK MODE (brand-based dark) ── */
+    [data-theme="dark"] {
+      --bg:      #1C1D3A;
+      --surface: #252650;
+      --accent:  #FF5632;
+      --text:    #F0E7DF;
+      --muted:   #9395b0;
+      --border:  rgba(240,231,223,.08);
+      --green:   #00BE7C;
+      --yellow:  #B15224;
+      --orange:  #FF5632;
+      --red:     #FF3257;
+      --nav-bg:  #1C1D3A;
+      --nav-border: rgba(240,231,223,.07);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;transition:background .25s,color .25s}
+    #app{display:flex;flex-direction:column;min-height:100dvh}
+
+    /* ── HEADER ── */
+    header{padding:calc(var(--st) + 16px) 20px 16px;background:var(--nav-bg);border-bottom:1px solid var(--nav-border);display:flex;align-items:center;gap:12px;transition:background .25s}
+    header .logo{font-size:28px}
+    header h1{font-size:20px;font-weight:700;color:var(--text)}
+    header .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px;display:none}
+    .theme-toggle{background:none;border:1.5px solid var(--border);border-radius:20px;padding:6px 10px;font-size:18px;cursor:pointer;color:var(--text);transition:all .2s;margin-left:auto;flex-shrink:0}
+    .theme-toggle:active{transform:scale(.9)}
+    header .badge + .theme-toggle{margin-left:8px}
+
+    /* ── TABS ── */
+    .tabs{display:flex;background:var(--nav-bg);border-bottom:1px solid var(--nav-border);transition:background .25s}
+    .tab-btn{flex:1;padding:12px;background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;border-bottom:2px solid transparent;transition:color .2s}
+    .tab-btn .icon{font-size:22px}
+    .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+    /* ── PAGES ── */
+    .page{display:none;flex:1;overflow-y:auto;padding:20px 16px calc(var(--sb) + 20px)}
+    .page.active{display:block}
+
+    /* ── SUMMARY CARDS ── */
+    .summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+    .summary-card{background:var(--surface);border-radius:var(--r);padding:14px 10px;text-align:center;border:1px solid var(--border);transition:background .25s}
+    .summary-card .num{font-size:28px;font-weight:800}
+    .summary-card .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+    .summary-card.danger .num{color:var(--red)}
+    .summary-card.warn .num{color:var(--orange)}
+    .summary-card.ok .num{color:var(--green)}
+
+    /* ── SECTION LABEL ── */
+    .sec{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+
+    /* ── ITEM CARDS ── */
+    .item-list{display:flex;flex-direction:column;gap:10px}
+    .item-card{background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-left:4px solid var(--green);transition:background .25s}
+    .item-card.expired{border-left-color:var(--red)}
+    .item-card.critical{border-left-color:var(--orange)}
+    .item-card.warning{border-left-color:var(--yellow)}
+    .item-card.good{border-left-color:var(--green)}
+    .item-icon{font-size:30px;flex-shrink:0}
+    .item-info{flex:1;min-width:0}
+    .item-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+    .item-date{font-size:12px;color:var(--muted);margin-top:3px}
+    .item-days{font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+    .expired .item-days{background:rgba(255,50,87,.15);color:var(--red)}
+    .critical .item-days{background:rgba(255,86,50,.15);color:var(--orange)}
+    .warning .item-days{background:rgba(177,82,36,.15);color:var(--yellow)}
+    .good .item-days{background:rgba(0,190,124,.15);color:var(--green)}
+    .item-del{background:rgba(255,50,87,.1);border:none;color:var(--red);font-size:16px;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+    .empty-state .icon{font-size:56px;margin-bottom:16px}
+    .empty-state p{font-size:15px;line-height:1.5}
+
+    /* ── CAMERA ── */
+    #camera-page{display:none}
+    #camera-page.active{display:flex;flex-direction:column}
+    .camera-area{position:relative;background:#000;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;margin-bottom:16px}
+    #video{width:100%;height:100%;object-fit:cover;display:block}
+    #canvas{display:none}
+    #preview-img{width:100%;height:100%;object-fit:cover;display:none}
+    .scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .scan-frame{width:70%;height:35%;border:2px solid rgba(255,86,50,.85);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.4)}
+    .scan-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:12px;color:rgba(255,255,255,.9);padding:6px}
+
+    /* ── BUTTONS ── */
+    .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border:none;border-radius:var(--r);font-size:16px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s}
+    .btn:active{transform:scale(.98);opacity:.85}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .btn-success{background:var(--green);color:#fff}
+    .btn-row{display:flex;gap:10px;margin-bottom:12px}
+    .btn-row .btn{flex:1}
+
+    /* ── OCR STATUS ── */
+    #ocr-status{background:var(--surface);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;display:none;align-items:center;gap:12px;border:1px solid var(--border)}
+    #ocr-status.visible{display:flex}
+    .spinner{width:22px;height:22px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #ocr-text{font-size:13px;color:var(--muted)}
+
+    /* ── FORMS ── */
+    #add-form{background:var(--surface);border-radius:var(--r);padding:18px;display:none;flex-direction:column;gap:14px;border:1px solid var(--border);margin-bottom:12px}
+    #add-form.visible{display:flex}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+    .form-input{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:16px;width:100%;outline:none;transition:border-color .2s}
+    .form-input:focus{border-color:var(--accent)}
+    select.form-input{-webkit-appearance:none}
+    .emoji-picker{display:flex;flex-wrap:wrap;gap:8px}
+    .emoji-btn{font-size:24px;width:44px;height:44px;border-radius:10px;border:2px solid transparent;background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+    .emoji-btn.selected{border-color:var(--accent);background:rgba(255,86,50,.12)}
+    #manual-form{background:var(--surface);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;border:1px solid var(--border)}
+
+    /* ── NOTIFY BAR ── */
+    #notify-bar{position:fixed;top:0;left:0;right:0;background:var(--accent);color:#fff;padding:16px 20px;text-align:center;font-size:14px;font-weight:600;z-index:9999;transform:translateY(-100%);transition:transform .3s ease}
+    #notify-bar.show{transform:translateY(0)}
+
+    /* ── SYNC INDICATOR ── */
+    #sync-indicator{position:fixed;bottom:calc(var(--sb) + 70px);right:16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;color:var(--muted);display:none;align-items:center;gap:6px;z-index:100}
+    #sync-indicator.show{display:flex}
+    #sync-indicator .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    #sync-indicator .dot.syncing{background:var(--orange);animation:pulse 1s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  </style>
+</head>
+<body>
+<div id="notify-bar"></div>
+<div id="sync-indicator"><span class="dot" id="sync-dot"></span><span id="sync-text">Synced</span></div>
+<div id="app">
+  <header>
+    <span class="logo">📦</span>
+    <h1>Expiry Tracker</h1>
+    <span class="badge" id="alert-badge">!</span>
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark mode">☀️</button>
+  </header>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('dashboard')" id="tab-dashboard"><span class="icon">🏠</span>Home</button>
+    <button class="tab-btn" onclick="switchTab('camera')" id="tab-camera"><span class="icon">📷</span>Scan</button>
+    <button class="tab-btn" onclick="switchTab('manual')" id="tab-manual"><span class="icon">✏️</span>Add</button>
+    <button class="tab-btn" onclick="switchTab('list')" id="tab-list"><span class="icon">📋</span>All</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="dashboard-page">
+    <div class="summary-row">
+      <div class="summary-card danger"><div class="num" id="count-expired">0</div><div class="lbl">Expired</div></div>
+      <div class="summary-card warn"><div class="num" id="count-soon">0</div><div class="lbl">Expiring Soon</div></div>
+      <div class="summary-card ok"><div class="num" id="count-ok">0</div><div class="lbl">Good</div></div>
+    </div>
+    <div class="sec">⚠️ Needs Attention</div>
+    <div class="item-list" id="dashboard-list">
+      <div class="empty-state"><div class="icon">⏳</div><p>Loading your items…</p></div>
+    </div>
+  </div>
+
+  <!-- CAMERA -->
+  <div class="page" id="camera-page">
+    <div class="camera-area">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas"></canvas>
+      <img id="preview-img" alt="Captured" />
+      <div class="scan-overlay" id="scan-overlay"><div class="scan-frame"></div></div>
+      <div class="scan-hint" id="scan-hint">Aim at the expiry date label</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="capture-btn" onclick="capturePhoto()">📸 Capture</button>
+      <button class="btn btn-secondary" id="retake-btn" onclick="retakePhoto()" style="display:none;">🔄 Retake</button>
+    </div>
+    <div id="ocr-status"><div class="spinner"></div><span id="ocr-text">Reading expiry date…</span></div>
+    <div id="add-form">
+      <div class="sec" style="margin-bottom:0;">📦 Confirm Details</div>
+      <div class="form-group"><label class="form-label">Product Name</label><input class="form-input" type="text" id="scan-name" placeholder="e.g. Milk, Medication…" /></div>
+      <div class="form-group"><label class="form-label">Expiry Date</label><input class="form-input" type="date" id="scan-date" /></div>
+      <div class="form-group">
+        <label class="form-label">Category Icon</label>
+        <div class="emoji-picker" id="emoji-picker-scan">
+          <button class="emoji-btn selected" data-emoji="🥛" onclick="selectEmoji(this,'scan')">🥛</button>
+          <button class="emoji-btn" data-emoji="🥩" onclick="selectEmoji(this,'scan')">🥩</button>
+          <button class="emoji-btn" data-emoji="🧴" onclick="selectEmoji(this,'scan')">🧴</button>
+          <button class="emoji-btn" data-emoji="💊" onclick="selectEmoji(this,'scan')">💊</button>
+          <button class="emoji-btn" data-emoji="🥫" onclick="selectEmoji(this,'scan')">🥫</button>
+          <button class="emoji-btn" data-emoji="🍞" onclick="selectEmoji(this,'scan')">🍞</button>
+          <button class="emoji-btn" data-emoji="🧀" onclick="selectEmoji(this,'scan')">🧀</button>
+          <button class="emoji-btn" data-emoji="🥚" onclick="selectEmoji(this,'scan')">🥚</button>
+          <button class="emoji-btn" data-emoji="🫙" onclick="selectEmoji(this,'scan')">🫙</button>
+          <button class="emoji-btn" data-emoji="🧃" onclick="selectEmoji(this,'scan')">🧃</button>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="saveScannedItem()">✅ Save Item</button>
+    </div>
+  </div>
+
+  <!-- MANUAL ADD -->
+  <div class="page" id="manual-page">
+    <div class="sec">✏️ Add Item Manually</div>
+    <div id="manual-form">
+      <div class="form-group"><label class="form-label">Product Name</label><input class="form-input" type="text" id="manual-name" placeholder="e.g. Orange Juice, Sunscreen…" /></div>
+      <div class="form-group"><label class="form-label">Expiry Date</label><input class="form-input" type="date" id="manual-date" /></div>
+      <div class="form-group">
+        <label class="form-label">Category Icon</label>
+        <div class="emoji-picker" id="emoji-picker-manual">
+          <button class="emoji-btn selected" data-emoji="🥛" onclick="selectEmoji(this,'manual')">🥛</button>
+          <button class="emoji-btn" data-emoji="🥩" onclick="selectEmoji(this,'manual')">🥩</button>
+          <button class="emoji-btn" data-emoji="🧴" onclick="selectEmoji(this,'manual')">🧴</button>
+          <button class="emoji-btn" data-emoji="💊" onclick="selectEmoji(this,'manual')">💊</button>
+          <button class="emoji-btn" data-emoji="🥫" onclick="selectEmoji(this,'manual')">🥫</button>
+          <button class="emoji-btn" data-emoji="🍞" onclick="selectEmoji(this,'manual')">🍞</button>
+          <button class="emoji-btn" data-emoji="🧀" onclick="selectEmoji(this,'manual')">🧀</button>
+          <button class="emoji-btn" data-emoji="🥚" onclick="selectEmoji(this,'manual')">🥚</button>
+          <button class="emoji-btn" data-emoji="🫙" onclick="selectEmoji(this,'manual')">🫙</button>
+          <button class="emoji-btn" data-emoji="🧃" onclick="selectEmoji(this,'manual')">🧃</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveManualItem()">➕ Add Item</button>
+    </div>
+  </div>
+
+  <!-- ALL ITEMS -->
+  <div class="page" id="list-page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div class="sec" style="margin-bottom:0;">📋 All Items</div>
+      <select id="sort-select" class="form-input" style="width:auto;padding:6px 10px;font-size:13px;" onchange="renderAll()">
+        <option value="expiry">Soonest First</option>
+        <option value="name">By Name</option>
+        <option value="added">Recently Added</option>
+      </select>
+    </div>
+    <div class="item-list" id="all-list">
+      <div class="empty-state"><div class="icon">📦</div><p>No items yet.</p></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+<script>
+/* ═══════════════════════════════════
+   THEME
+═══════════════════════════════════ */
+(function() {
+  const saved = localStorage.getItem('expiry_theme') || 'light';
+  applyTheme(saved);
+})();
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-btn');
+  const meta = document.getElementById('meta-theme-color');
+  if (theme === 'dark') {
+    if (btn) btn.textContent = '🌙';
+    if (meta) meta.content = '#1C1D3A';
+  } else {
+    if (btn) btn.textContent = '☀️';
+    if (meta) meta.content = '#F0E7DF';
+  }
+  localStorage.setItem('expiry_theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+/* ═══════════════════════════════════
+   SUPABASE CONFIG
+═══════════════════════════════════ */
+const SUPABASE_URL = 'https://viupqrjyszvvcpnxrmsq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdXBxcmp5c3p2dmNwbnhybXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTY2ODgsImV4cCI6MjA5NDg3MjY4OH0.-j_X1M4_FBDuax4Gpd3tOHYdgs-fdWN2sPTbhYlG7qk';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function getDeviceId() {
+  let id = localStorage.getItem('expiry_device_id');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('expiry_device_id', id); }
+  return id;
+}
+const DEVICE_ID = getDeviceId();
+
+/* ═══════════════════════════════════
+   DATABASE HELPERS
+═══════════════════════════════════ */
+function setSyncing(on) {
+  const ind = document.getElementById('sync-indicator');
+  const dot = document.getElementById('sync-dot');
+  const txt = document.getElementById('sync-text');
+  ind.classList.add('show');
+  dot.className = 'dot' + (on ? ' syncing' : '');
+  txt.textContent = on ? 'Syncing…' : 'Synced ☁️';
+  if (!on) setTimeout(() => ind.classList.remove('show'), 2000);
+}
+
+async function dbGetAll() {
+  setSyncing(true);
+  const { data, error } = await sb.from('items')
+    .select('*').eq('device_id', DEVICE_ID).order('expiry', { ascending: true });
+  setSyncing(false);
+  if (error) { notify('⚠️ Sync error: ' + error.message); return []; }
+  return data || [];
+}
+
+async function dbAdd(item) {
+  setSyncing(true);
+  const { data, error } = await sb.from('items')
+    .insert([{ ...item, device_id: DEVICE_ID }]).select().single();
+  setSyncing(false);
+  if (error) { notify('⚠️ Save error: ' + error.message); return null; }
+  return data;
+}
+
+async function dbDelete(id) {
+  setSyncing(true);
+  const { error } = await sb.from('items').delete().eq('id', id).eq('device_id', DEVICE_ID);
+  setSyncing(false);
+  if (error) notify('⚠️ Delete error: ' + error.message);
+}
+
+/* ═══════════════════════════════════
+   HELPERS
+═══════════════════════════════════ */
+function daysUntil(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((new Date(dateStr + 'T00:00:00') - today) / 86400000);
+}
+function getStatus(d) {
+  if (d < 0) return 'expired';
+  if (d <= 3) return 'critical';
+  if (d <= 14) return 'warning';
+  return 'good';
+}
+function daysLabel(d) {
+  if (d < 0) return 'Expired ' + Math.abs(d) + 'd ago';
+  if (d === 0) return 'Expires TODAY';
+  if (d === 1) return 'Expires tomorrow';
+  return d + ' days left';
+}
+function fmtDate(s) {
+  return new Date(s + 'T00:00:00').toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+}
+function notify(msg) {
+  const b = document.getElementById('notify-bar');
+  b.textContent = msg; b.classList.add('show');
+  setTimeout(() => b.classList.remove('show'), 3200);
+}
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ═══════════════════════════════════
+   TABS
+═══════════════════════════════════ */
+let stream = null;
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tab + '-page').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'camera') startCamera(); else stopCamera();
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'list') renderAll();
+}
+
+/* ═══════════════════════════════════
+   CAMERA
+═══════════════════════════════════ */
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } } });
+    const v = document.getElementById('video');
+    v.srcObject = stream; v.style.display = 'block';
+    document.getElementById('preview-img').style.display = 'none';
+    document.getElementById('scan-overlay').style.display = 'flex';
+    document.getElementById('scan-hint').style.display = 'block';
+    document.getElementById('capture-btn').style.display = 'flex';
+    document.getElementById('retake-btn').style.display = 'none';
+    document.getElementById('add-form').classList.remove('visible');
+    document.getElementById('ocr-status').classList.remove('visible');
+  } catch(e) { notify('Camera access denied — allow it in Safari Settings'); }
+}
+function stopCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+}
+function capturePhoto() {
+  const v = document.getElementById('video'), c = document.getElementById('canvas');
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext('2d').drawImage(v, 0, 0);
+  const img = document.getElementById('preview-img');
+  img.src = c.toDataURL('image/jpeg', 0.92); img.style.display = 'block'; v.style.display = 'none';
+  document.getElementById('scan-overlay').style.display = 'none';
+  document.getElementById('scan-hint').style.display = 'none';
+  document.getElementById('capture-btn').style.display = 'none';
+  document.getElementById('retake-btn').style.display = 'flex';
+  stopCamera(); runOCR(c);
+}
+function retakePhoto() {
+  document.getElementById('add-form').classList.remove('visible');
+  document.getElementById('ocr-status').classList.remove('visible');
+  document.getElementById('scan-hint').style.display = 'block';
+  startCamera();
+}
+
+/* ═══════════════════════════════════
+   OCR + DATE EXTRACTION
+═══════════════════════════════════ */
+async function runOCR(canvas) {
+  const status = document.getElementById('ocr-status'), ocrText = document.getElementById('ocr-text');
+  status.classList.add('visible'); ocrText.textContent = 'Initialising OCR…';
+  try {
+    const worker = await Tesseract.createWorker('eng', 1, {
+      logger: m => { if (m.status === 'recognizing text') ocrText.textContent = 'Reading… ' + Math.round(m.progress * 100) + '%'; }
+    });
+    const { data: { text } } = await worker.recognize(canvas);
+    await worker.terminate();
+    const date = extractDate(text);
+    ocrText.textContent = date ? 'Date detected: ' + fmtDate(date) : 'No date found — enter manually';
+    showAddForm(date);
+  } catch(e) { ocrText.textContent = 'OCR failed — please enter date manually'; showAddForm(null); }
+}
+
+function extractDate(rawText) {
+  const t = rawText.toUpperCase();
+  const M = {JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
+  const mk = (y,m,d) => {
+    const yy=parseInt(y),mm=parseInt(m),dd=parseInt(d);
+    if(isNaN(yy)||isNaN(mm)||isNaN(dd)||mm<1||mm>12||dd<1||dd>31||yy<2020||yy>2040) return null;
+    return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+  };
+  const patterns = [
+    { re:/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/, fn:m=>mk(m[3],m[2],m[1]) },
+    { re:/(\d{4})[\/\-\.](\d{2})[\/\-\.](\d{2})/, fn:m=>mk(m[1],m[2],m[3]) },
+    { re:/(\d{1,2})\s+(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+(\d{4})/, fn:m=>mk(m[3],M[m[2]],m[1]) },
+    { re:/(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+(\d{1,2})[,\s]+(\d{4})/, fn:m=>mk(m[3],M[m[1]],m[2]) },
+    { re:/(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[\/\s](\d{4})/, fn:m=>mk(m[2],M[m[1]],1) },
+    { re:/\b(\d{1,2})[\/\-](\d{4})\b/, fn:m=>mk(m[2],m[1],1) },
+    { re:/\b(\d{2})[\/\-](\d{2})\b/, fn:m=>{ const mm=parseInt(m[1]),yy=parseInt(m[2]); return (mm>=1&&mm<=12&&yy>=25&&yy<=40)?mk(2000+yy,mm,1):null; } },
+  ];
+  for(const {re,fn} of patterns){ const match=t.match(re); if(match){ const d=fn(match); if(d) return d; } }
+  return null;
+}
+
+/* ═══════════════════════════════════
+   FORM
+═══════════════════════════════════ */
+function showAddForm(date) {
+  document.getElementById('add-form').classList.add('visible');
+  document.getElementById('scan-date').value = date || '';
+  document.getElementById('scan-name').value = '';
+  notify(date ? '📅 Detected: ' + fmtDate(date) : 'No date detected — please enter manually');
+}
+
+let emojiScan = '🥛', emojiManual = '🥛';
+function selectEmoji(btn, ctx) {
+  document.getElementById('emoji-picker-' + ctx).querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if (ctx === 'scan') emojiScan = btn.dataset.emoji; else emojiManual = btn.dataset.emoji;
+}
+
+async function saveScannedItem() {
+  const name = document.getElementById('scan-name').value.trim();
+  const date = document.getElementById('scan-date').value;
+  if (!name) { notify('⚠️ Enter a product name'); return; }
+  if (!date) { notify('⚠️ Enter the expiry date'); return; }
+  const item = await dbAdd({ name, expiry: date, icon: emojiScan, added: new Date().toISOString() });
+  if (item) {
+    notify('✅ "' + name + '" saved to cloud!');
+    document.getElementById('add-form').classList.remove('visible');
+    document.getElementById('ocr-status').classList.remove('visible');
+    retakePhoto();
+  }
+}
+
+async function saveManualItem() {
+  const name = document.getElementById('manual-name').value.trim();
+  const date = document.getElementById('manual-date').value;
+  if (!name) { notify('⚠️ Enter a product name'); return; }
+  if (!date) { notify('⚠️ Enter the expiry date'); return; }
+  const item = await dbAdd({ name, expiry: date, icon: emojiManual, added: new Date().toISOString() });
+  if (item) {
+    notify('✅ "' + name + '" saved to cloud!');
+    document.getElementById('manual-name').value = '';
+    document.getElementById('manual-date').value = new Date().toISOString().split('T')[0];
+    renderDashboard();
+  }
+}
+
+/* ═══════════════════════════════════
+   RENDER
+═══════════════════════════════════ */
+function buildCard(item) {
+  const days = daysUntil(item.expiry), status = getStatus(days);
+  const div = document.createElement('div');
+  div.className = 'item-card ' + status;
+  div.innerHTML = `<div class="item-icon">${item.icon||'📦'}</div><div class="item-info"><div class="item-name">${esc(item.name)}</div><div class="item-date">Expires ${fmtDate(item.expiry)}</div></div><div class="item-days">${daysLabel(days)}</div><button class="item-del" onclick="deleteItem('${item.id}')">🗑</button>`;
+  return div;
+}
+
+async function renderDashboard() {
+  document.getElementById('dashboard-list').innerHTML = '<div class="empty-state"><div class="icon">⏳</div><p>Loading…</p></div>';
+  const items = await dbGetAll();
+  const expired = items.filter(i => daysUntil(i.expiry) < 0);
+  const soon    = items.filter(i => { const d = daysUntil(i.expiry); return d >= 0 && d <= 14; });
+  const ok      = items.filter(i => daysUntil(i.expiry) > 14);
+  document.getElementById('count-expired').textContent = expired.length;
+  document.getElementById('count-soon').textContent = soon.length;
+  document.getElementById('count-ok').textContent = ok.length;
+  const n = expired.length + soon.length;
+  const badge = document.getElementById('alert-badge');
+  badge.style.display = n > 0 ? 'inline' : 'none'; badge.textContent = n;
+  const list = document.getElementById('dashboard-list');
+  list.innerHTML = '';
+  const urgent = [...expired, ...soon].sort((a,b) => new Date(a.expiry)-new Date(b.expiry));
+  if (!urgent.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>All clear! Nothing expiring soon.<br/>Tap <strong>Scan</strong> to add items.</p></div>';
+  } else { urgent.forEach(i => list.appendChild(buildCard(i))); }
+}
+
+async function renderAll() {
+  document.getElementById('all-list').innerHTML = '<div class="empty-state"><div class="icon">⏳</div><p>Loading…</p></div>';
+  const items = await dbGetAll();
+  const sort = document.getElementById('sort-select').value;
+  items.sort((a,b) => sort==='expiry' ? new Date(a.expiry)-new Date(b.expiry) : sort==='name' ? a.name.localeCompare(b.name) : new Date(b.added)-new Date(a.added));
+  const list = document.getElementById('all-list');
+  list.innerHTML = '';
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">📦</div><p>No items yet.<br/>Use <strong>Scan</strong> or <strong>Add</strong> to begin.</p></div>';
+  } else { items.forEach(i => list.appendChild(buildCard(i))); }
+}
+
+async function deleteItem(id) {
+  await dbDelete(id);
+  notify('🗑 Item deleted');
+  renderDashboard(); renderAll();
+}
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+document.getElementById('manual-date').value = new Date().toISOString().split('T')[0];
+renderDashboard();
+</script>
+</body>
+</html>

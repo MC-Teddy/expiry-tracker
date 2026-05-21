@@ -16,7 +16,7 @@
       --accent:    #E8613A; --accent-lt:#FBE9E4;
       --text:      #2B2424; --text-2:   #6B6060;
       --border:    #EDE6DF; --muted-bg: #F5EEE8;
-      --green:     #00BE7C; --green-lt: #E0F7EE;
+      --green:     #00BE7C; --green-lt: #E5F9F1;
       --yellow:    #C4841D; --yellow-lt:#FDF3E0;
       --red:       #D94040; --red-lt:   #FDECEC;
       --shadow:    0 4px 24px rgba(43,36,36,.09);
@@ -70,16 +70,29 @@
     .head-icon { font-size: 15px; }
     .head-title { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; letter-spacing: -.1px; }
     .head-action { font-size: 20px; color: var(--accent); background: none; border: none; line-height: 1; padding: 2px; }
+    .head-badge { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .head-badge.green { background: var(--green); }
 
     /* ══ STATS ══ */
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .stat-cell { padding: 16px 10px; text-align: center; border-right: 1.5px solid var(--border); }
+    .stat-cell { padding: 20px 12px 16px; text-align: center; border-right: 1.5px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 0; }
     .stat-cell:last-child { border-right: none; }
-    .stat-num { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
-    .stat-lbl { font-size: 10px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .6px; margin-top: 4px; }
-    .stat-cell.s-red .stat-num   { color: var(--red); }
+    .stat-icon-wrap { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 8px; }
+    .stat-num { font-size: 30px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+    .stat-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; margin-top: 5px; }
+    .stat-sub { font-size: 11px; margin-top: 4px; font-weight: 500; }
+    .stat-cell.s-red  .stat-icon-wrap { background: var(--red-lt); }
+    .stat-cell.s-yellow .stat-icon-wrap { background: var(--yellow-lt); }
+    .stat-cell.s-green  .stat-icon-wrap { background: var(--green-lt); }
+    .stat-cell.s-red  .stat-num { color: var(--red); }
     .stat-cell.s-yellow .stat-num { color: var(--yellow); }
-    .stat-cell.s-green .stat-num  { color: var(--green); }
+    .stat-cell.s-green  .stat-num { color: var(--green); }
+    .stat-cell.s-red  .stat-lbl { color: var(--red); }
+    .stat-cell.s-yellow .stat-lbl { color: var(--yellow); }
+    .stat-cell.s-green  .stat-lbl { color: var(--green); }
+    .stat-cell.s-red  .stat-sub { color: var(--text-2); }
+    .stat-cell.s-yellow .stat-sub { color: var(--text-2); }
+    .stat-cell.s-green  .stat-sub { color: var(--text-2); }
 
     /* ══ ITEM LIST ══ */
     .bao-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1.5px solid var(--border); position: relative; }
@@ -107,7 +120,7 @@
     /* ══ ADD BAR ══ */
     .add-bar { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-top: 1.5px solid var(--border); background: var(--muted-bg); }
     .add-bar-label { font-size: 13px; color: var(--text-2); font-weight: 500; }
-    .add-bar-btn { display: flex; align-items: center; gap: 5px; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(232,97,58,.3); }
+    .add-bar-btn { display: flex; align-items: center; gap: 5px; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(232,97,58,.3); }
     .add-bar-btn:active { opacity: .85; }
 
     /* ══ FORM ══ */
@@ -115,7 +128,7 @@
     .field-row:last-child { border-bottom: none; }
     .field-label { font-size: 13px; color: var(--text-2); font-weight: 500; width: 110px; flex-shrink: 0; padding-top: 2px; }
     .field-value { flex: 1; min-width: 0; }
-    .bao-input { width: 100%; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 14px; color: var(--text); outline: none; -webkit-appearance: none; transition: border-color .2s, box-shadow .2s; }
+    .bao-input { width: 100%; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 14px; color: var(--text); outline: none; -webkit-appearance: none; transition: border-color .2s, box-shadow .2s; font-family: inherit; }
     .bao-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-lt); }
     .bao-input::placeholder { color: var(--text-2); }
     .bao-name-input { width: 100%; background: none; border: none; border-bottom: 1.5px solid var(--border); padding: 12px 16px; font-size: 15px; font-weight: 500; color: var(--text); outline: none; font-family: inherit; }
@@ -175,12 +188,12 @@
     #notify-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--accent); color: #fff; padding: 14px 20px; text-align: center; font-size: 14px; font-weight: 600; z-index: 9999; transform: translateY(-100%); transition: transform .3s cubic-bezier(.34,1.56,.64,1); border-radius: 0 0 14px 14px; }
     #notify-bar.show { transform: translateY(0); }
 
-    /* ══ EMPTY ══ */
-    .empty { text-align: center; padding: 40px 20px; color: var(--text-2); }
-    .empty .e-icon { font-size: 44px; margin-bottom: 12px; opacity: .6; }
+    /* ══ EMPTY STATE ══ */
+    .empty { text-align: center; padding: 32px 20px; color: var(--text-2); }
+    .empty .e-icon { font-size: 40px; margin-bottom: 10px; opacity: .65; }
     .empty p { font-size: 14px; line-height: 1.6; }
 
-    /* ══ SETTINGS PAGE ══ */
+    /* ══ SETTINGS ══ */
     .settings-section { padding: 14px 16px; border-bottom: 1.5px solid var(--border); }
     .settings-section:last-child { border-bottom: none; }
     .settings-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-2); margin-bottom: 12px; }
@@ -204,10 +217,10 @@
     .cat-emoji-in:focus, .cat-name-in:focus { border-color: var(--accent); }
     .cat-add-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; }
     .danger-btn { background: var(--red-lt); color: var(--red); border: 1.5px solid var(--red); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; }
+    .ghost-btn { background: var(--muted-bg); color: var(--text-2); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 600; }
 
-    /* ══ SIDEBAR BRAND / ADD  (hidden mobile) ══ */
+    /* ══ SIDEBAR BRAND (hidden mobile) ══ */
     .sidebar-brand { display: none; }
-    .sidebar-add-btn { display: none; }
 
     /* ══════════════════════════════════════
        DESKTOP  ≥ 768px
@@ -216,59 +229,58 @@
       /* Fixed top bar */
       .top-bar { position: fixed; left: 0; right: 0; top: 0; z-index: 90; height: 62px; padding: 0 24px; display: flex; align-items: center; }
 
-      /* App shell offset */
+      /* App shell */
       #app { padding-left: 220px; padding-top: 62px; }
 
-      /* ── Sidebar brand ── */
+      /* Sidebar brand */
       .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 16px 16px 14px; border-bottom: 1.5px solid var(--border); flex-shrink: 0; }
       .sidebar-brand-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(232,97,58,.28); }
       .sidebar-brand-name { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -.3px; line-height: 1.2; }
       .sidebar-brand-sub { font-size: 10px; color: var(--text-2); font-weight: 500; letter-spacing: .3px; text-transform: uppercase; }
 
-      /* ── Left sidebar ── */
+      /* Left sidebar */
       .bottom-nav { position: fixed; left: 0; top: 62px; bottom: 54px; width: 220px; flex-direction: column; align-items: stretch; justify-content: flex-start; border-top: none; border-right: 1.5px solid var(--border); padding: 8px 0 0; gap: 0; overflow-y: auto; z-index: 80; background: var(--card-bg); box-shadow: 2px 0 16px rgba(43,36,36,.07); }
       .nav-btn { flex-direction: row; justify-content: flex-start; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; margin: 2px 8px; font-size: 13px; font-weight: 600; flex: none; width: calc(100% - 16px); }
       .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
       .nav-btn.active { background: var(--accent-lt); }
 
-      /* ── Sidebar Add CTA ── */
-      .sidebar-add-btn { display: block; padding: 8px 8px 10px; margin-top: auto; }
-      .sidebar-add-btn button { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(232,97,58,.28); }
-
-      /* ── Sync bar at bottom of sidebar ── */
+      /* Sync bar at bottom of sidebar */
       .sync-bar { position: fixed; left: 0; bottom: 0; width: 220px; height: 54px; border-right: 1.5px solid var(--border); border-top: 1.5px solid var(--border); background: var(--card-bg); z-index: 80; padding: 0 12px; }
       .sync-bar-left { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1px; }
       .sync-label { font-size: 10px; line-height: 1.3; }
       .sync-refresh { padding: 4px 8px; font-size: 11px; flex-shrink: 0; }
 
-      /* ── Main content ── */
+      /* Main content */
       .main-scroll { padding: 24px 28px 24px; }
 
-      /* Hide add-bar on desktop */
-      .add-bar { display: none; }
+      /* Hide add-bar ONLY on dashboard & list pages; keep visible on add/scan */
+      #dashboard-page .add-bar,
+      #list-page .add-bar { display: none; }
 
       /* Cards: compact, content-sized, max 450px */
       .bao-card { max-width: 450px; margin-bottom: 16px; }
 
-      /* Item lists: scrollable with max height */
+      /* Item lists: scrollable */
       .bao-item-list { max-height: 260px; overflow-y: auto; }
 
-      /* Dashboard: flex-wrap cards */
+      /* Dashboard layout */
       #dashboard-page.active { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
-      #dashboard-page.active .bao-card:first-child { max-width: 916px; width: 100%; }
+      /* Stats card full width */
+      #dashboard-page.active > .bao-card:first-child { max-width: 100%; width: 100%; }
 
-      /* Bigger stats */
-      .stat-num { font-size: 34px; }
+      /* Bigger stats on desktop */
+      .stat-num { font-size: 36px; }
+      .stat-icon-wrap { width: 44px; height: 44px; font-size: 20px; }
 
-      /* Camera: widescreen, compact */
+      /* Camera */
       .camera-wrap { aspect-ratio: 16/9; max-height: 54vh; max-width: 450px; }
       .cam-btn-row { max-width: 450px; }
       .ocr-row { max-width: 450px; }
 
-      /* Field labels */
+      /* Field labels wider */
       .field-label { width: 130px; }
 
-      /* Settings page */
+      /* Settings page cards */
       #settings-page.active { display: block; }
 
       /* Notification offset */
@@ -300,31 +312,41 @@
     <!-- ── DASHBOARD ── -->
     <div class="page active" id="dashboard-page">
 
+      <!-- Stats card — spans full width on desktop -->
       <div class="bao-card">
         <div class="bao-card-head">
           <span class="head-icon">⚡</span>
           <span class="head-title">Overview</span>
+          <span style="font-size:11px;color:var(--text-2);font-weight:500;" id="overview-date"></span>
         </div>
         <div class="stats-grid">
           <div class="stat-cell s-red">
+            <div class="stat-icon-wrap">🚨</div>
             <div class="stat-num" id="count-expired">0</div>
             <div class="stat-lbl">Expired</div>
+            <div class="stat-sub" id="sub-expired">Loading…</div>
           </div>
           <div class="stat-cell s-yellow">
+            <div class="stat-icon-wrap">⏳</div>
             <div class="stat-num" id="count-soon">0</div>
             <div class="stat-lbl">Expiring Soon</div>
+            <div class="stat-sub" id="sub-soon">Loading…</div>
           </div>
           <div class="stat-cell s-green">
+            <div class="stat-icon-wrap">✅</div>
             <div class="stat-num" id="count-ok">0</div>
             <div class="stat-lbl">Good</div>
+            <div class="stat-sub" id="sub-ok">Loading…</div>
           </div>
         </div>
       </div>
 
+      <!-- Needs Attention card -->
       <div class="bao-card">
         <div class="bao-card-head">
           <span class="head-icon">⚠️</span>
           <span class="head-title">Needs Attention</span>
+          <span class="head-badge" id="attention-badge" style="display:none;">0</span>
         </div>
         <div class="bao-item-list" id="dashboard-list">
           <div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>
@@ -335,11 +357,26 @@
         </div>
       </div>
 
+      <!-- Good Items card (desktop only, second column) -->
+      <div class="bao-card" id="good-card">
+        <div class="bao-card-head">
+          <span class="head-icon">🟢</span>
+          <span class="head-title">All Good</span>
+          <span class="head-badge green" id="good-badge" style="display:none;">0</span>
+        </div>
+        <div class="bao-item-list" id="good-list">
+          <div class="empty"><div class="e-icon">📦</div><p>Loading…</p></div>
+        </div>
+        <div class="add-bar">
+          <span class="add-bar-label">View All Items</span>
+          <button class="add-bar-btn" onclick="switchTab('list')" style="background:var(--green);box-shadow:0 2px 8px rgba(0,190,124,.3);">View →</button>
+        </div>
+      </div>
+
     </div><!-- /dashboard -->
 
     <!-- ── SCAN ── -->
     <div class="page" id="camera-page">
-
       <div class="camera-wrap">
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas"></canvas>
@@ -347,17 +384,14 @@
         <div class="scan-frame-overlay" id="scan-overlay"><div class="scan-frame"></div></div>
         <div class="scan-label" id="scan-hint">Aim at the expiry date label</div>
       </div>
-
       <div class="cam-btn-row">
         <button class="cam-btn primary" id="capture-btn" onclick="capturePhoto()">📸 Capture</button>
         <button class="cam-btn secondary" id="retake-btn" onclick="retakePhoto()" style="display:none;">🔄 Retake</button>
       </div>
-
       <div class="ocr-row" id="ocr-status">
         <div class="spin"></div>
         <span id="ocr-text">Reading expiry date…</span>
       </div>
-
       <div id="add-form">
         <div class="bao-card">
           <div class="bao-card-head">
@@ -380,7 +414,6 @@
           </div>
         </div>
       </div>
-
     </div><!-- /camera -->
 
     <!-- ── MANUAL ADD ── -->
@@ -420,8 +453,9 @@
           <span class="field-label">Category</span>
           <div class="field-value"><div class="emoji-row" id="emoji-picker-manual"></div></div>
         </div>
+        <!-- Add bar visible on both mobile AND desktop for this page -->
         <div class="add-bar">
-          <span class="add-bar-label">Add New Item</span>
+          <span class="add-bar-label">Save Item</span>
           <button class="add-bar-btn" onclick="saveManualItem()">Add ＋</button>
         </div>
       </div>
@@ -496,6 +530,24 @@
         </div>
       </div>
 
+      <!-- Autocomplete Product List -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">🔍</span>
+          <span class="head-title">Autocomplete Products</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Product Suggestions</div>
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">These appear as suggestions when typing a product name. One product per line.</p>
+          <textarea class="bao-input" id="products-textarea" rows="8" style="resize:vertical;font-size:12px;line-height:1.9;"></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button class="cat-add-btn" onclick="saveProductList()">💾 Save List</button>
+            <button class="ghost-btn" onclick="resetProductList()">Reset to Default</button>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="product-count-label"></div>
+        </div>
+      </div>
+
       <!-- About -->
       <div class="bao-card">
         <div class="bao-card-head">
@@ -505,13 +557,13 @@
         <div class="settings-section">
           <div class="settings-row">
             <span class="settings-lbl">Version</span>
-            <span style="font-size:12px;color:var(--text-2);">2.0</span>
+            <span style="font-size:12px;color:var(--text-2);">2.1</span>
           </div>
           <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
             <span class="settings-lbl">Device ID</span>
             <span style="font-size:10px;color:var(--text-2);word-break:break-all;line-height:1.4;" id="device-id-display"></span>
           </div>
-          <div class="settings-row" style="margin-top:6px;">
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
             <button class="danger-btn" onclick="clearLocalImages()">🗑 Clear Cached Photos</button>
           </div>
         </div>
@@ -532,7 +584,6 @@
 
   <!-- ════ BOTTOM NAV / DESKTOP SIDEBAR ════ -->
   <nav class="bottom-nav">
-    <!-- Sidebar brand — desktop only -->
     <div class="sidebar-brand">
       <div class="sidebar-brand-icon">📦</div>
       <div>
@@ -540,7 +591,6 @@
         <div class="sidebar-brand-sub">Food &amp; Product</div>
       </div>
     </div>
-
     <button class="nav-btn active" id="tab-dashboard" onclick="switchTab('dashboard')">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Home
@@ -561,62 +611,12 @@
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
       Settings
     </button>
-
-    <!-- Desktop only: Add CTA at bottom of sidebar -->
-    <div class="sidebar-add-btn">
-      <button onclick="switchTab('manual')">＋ Add Item</button>
-    </div>
   </nav>
 
 </div><!-- /app -->
 
-<!-- ════ PRODUCT AUTOCOMPLETE ════ -->
-<datalist id="products-list">
-  <option value="Milk"><option value="Semi-Skimmed Milk"><option value="Whole Milk">
-  <option value="Oat Milk"><option value="Almond Milk"><option value="Soy Milk">
-  <option value="Eggs"><option value="Butter"><option value="Cheese">
-  <option value="Cheddar Cheese"><option value="Mozzarella"><option value="Cream Cheese">
-  <option value="Parmesan"><option value="Feta Cheese"><option value="Brie">
-  <option value="Yogurt"><option value="Greek Yogurt"><option value="Cream">
-  <option value="Heavy Cream"><option value="Sour Cream"><option value="Whipped Cream">
-  <option value="Chicken Breast"><option value="Chicken Thighs"><option value="Whole Chicken">
-  <option value="Ground Beef"><option value="Beef Steak"><option value="Beef Mince">
-  <option value="Salmon Fillet"><option value="Tuna"><option value="Cod Fillet">
-  <option value="Pork Chops"><option value="Bacon"><option value="Ham">
-  <option value="Turkey"><option value="Shrimp"><option value="Prawns">
-  <option value="Bread"><option value="White Bread"><option value="Whole Wheat Bread">
-  <option value="Sourdough Bread"><option value="Bagels"><option value="Tortillas">
-  <option value="Pita Bread"><option value="Croissants"><option value="Rolls">
-  <option value="Orange Juice"><option value="Apple Juice"><option value="Grape Juice">
-  <option value="Tomato Juice"><option value="Coconut Water"><option value="Sparkling Water">
-  <option value="Tomatoes"><option value="Lettuce"><option value="Spinach">
-  <option value="Carrots"><option value="Broccoli"><option value="Cucumber">
-  <option value="Bell Peppers"><option value="Mushrooms"><option value="Onions">
-  <option value="Garlic"><option value="Kale"><option value="Celery">
-  <option value="Strawberries"><option value="Blueberries"><option value="Raspberries">
-  <option value="Bananas"><option value="Apples"><option value="Avocado">
-  <option value="Grapes"><option value="Mango"><option value="Pineapple">
-  <option value="Canned Tomatoes"><option value="Canned Beans"><option value="Canned Corn">
-  <option value="Canned Tuna"><option value="Canned Salmon"><option value="Canned Soup">
-  <option value="Tomato Paste"><option value="Tomato Sauce"><option value="Pasta Sauce">
-  <option value="Hummus"><option value="Salsa"><option value="Peanut Butter">
-  <option value="Jam"><option value="Honey"><option value="Mayonnaise">
-  <option value="Mustard"><option value="Ketchup"><option value="Soy Sauce">
-  <option value="Hot Sauce"><option value="Olive Oil"><option value="Vegetable Oil">
-  <option value="Aspirin"><option value="Ibuprofen"><option value="Paracetamol">
-  <option value="Vitamin C"><option value="Vitamin D"><option value="Multivitamins">
-  <option value="Fish Oil"><option value="Antihistamine"><option value="Cough Syrup">
-  <option value="Cold Medicine"><option value="Antacid"><option value="Probiotics">
-  <option value="Shampoo"><option value="Conditioner"><option value="Body Lotion">
-  <option value="Sunscreen"><option value="Face Cream"><option value="Toothpaste">
-  <option value="Hand Sanitizer"><option value="Contact Lens Solution"><option value="Eye Drops">
-  <option value="Hydrogen Peroxide"><option value="Baby Formula"><option value="Baby Food">
-  <option value="Baby Wipes"><option value="Infant Paracetamol"><option value="Nappy Cream">
-  <option value="Pasta"><option value="Rice"><option value="Oats">
-  <option value="Cereal"><option value="Crackers"><option value="Biscuits">
-  <option value="Chocolate"><option value="Ice Cream"><option value="Frozen Pizza">
-  <option value="Frozen Peas"><option value="Frozen Berries">
-</datalist>
+<!-- Autocomplete datalist — populated dynamically by JS -->
+<datalist id="products-list"></datalist>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
@@ -625,214 +625,196 @@
 (function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  const btn = document.getElementById('theme-btn');
-  const meta = document.getElementById('meta-theme-color');
-  if (t === 'dark') { if(btn) btn.textContent='🌙'; if(meta) meta.content='#1C1816'; }
-  else              { if(btn) btn.textContent='☀️'; if(meta) meta.content='#F7F1EB'; }
+  const btn=document.getElementById('theme-btn'), meta=document.getElementById('meta-theme-color');
+  if(t==='dark'){ if(btn)btn.textContent='🌙'; if(meta)meta.content='#1C1816'; }
+  else          { if(btn)btn.textContent='☀️'; if(meta)meta.content='#F7F1EB'; }
   localStorage.setItem('expiry_theme', t);
 }
-function toggleTheme() { applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); }
+function toggleTheme(){ applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); }
 
 /* ═══ SETTINGS ═══ */
 let SOON_DAYS     = parseInt(localStorage.getItem('expiry_soon_days')     || '14');
 let CRITICAL_DAYS = parseInt(localStorage.getItem('expiry_critical_days') || '3');
-
 function updateSoonDays(val) {
-  SOON_DAYS = parseInt(val);
-  localStorage.setItem('expiry_soon_days', SOON_DAYS);
-  document.getElementById('soon-val').textContent = SOON_DAYS + 'd';
-  if (CRITICAL_DAYS > SOON_DAYS) { CRITICAL_DAYS = SOON_DAYS; updateCriticalDays(CRITICAL_DAYS); }
+  SOON_DAYS = parseInt(val); localStorage.setItem('expiry_soon_days', SOON_DAYS);
+  document.getElementById('soon-val').textContent = SOON_DAYS+'d';
+  if(CRITICAL_DAYS>SOON_DAYS){ CRITICAL_DAYS=SOON_DAYS; updateCriticalDays(CRITICAL_DAYS); }
 }
 function updateCriticalDays(val) {
-  CRITICAL_DAYS = Math.min(parseInt(val), SOON_DAYS);
-  localStorage.setItem('expiry_critical_days', CRITICAL_DAYS);
-  const el = document.getElementById('critical-val');
-  if (el) el.textContent = CRITICAL_DAYS + 'd';
-  const r = document.getElementById('critical-range');
-  if (r) { r.max = SOON_DAYS; r.value = CRITICAL_DAYS; }
+  CRITICAL_DAYS = Math.min(parseInt(val), SOON_DAYS); localStorage.setItem('expiry_critical_days', CRITICAL_DAYS);
+  const el=document.getElementById('critical-val'); if(el) el.textContent=CRITICAL_DAYS+'d';
+  const r=document.getElementById('critical-range'); if(r){ r.max=SOON_DAYS; r.value=CRITICAL_DAYS; }
+}
+
+/* ═══ PRODUCTS AUTOCOMPLETE ═══ */
+const DEFAULT_PRODUCTS = [
+  'Milk','Semi-Skimmed Milk','Whole Milk','Oat Milk','Almond Milk','Soy Milk',
+  'Eggs','Butter','Cheese','Cheddar Cheese','Mozzarella','Cream Cheese','Parmesan','Feta Cheese','Brie',
+  'Yogurt','Greek Yogurt','Cream','Heavy Cream','Sour Cream','Whipped Cream',
+  'Chicken Breast','Chicken Thighs','Whole Chicken','Ground Beef','Beef Steak','Beef Mince',
+  'Salmon Fillet','Tuna','Cod Fillet','Pork Chops','Bacon','Ham','Turkey','Shrimp','Prawns',
+  'Bread','White Bread','Whole Wheat Bread','Sourdough Bread','Bagels','Tortillas','Pita Bread','Croissants','Rolls',
+  'Orange Juice','Apple Juice','Grape Juice','Tomato Juice','Coconut Water','Sparkling Water',
+  'Tomatoes','Lettuce','Spinach','Carrots','Broccoli','Cucumber','Bell Peppers','Mushrooms','Onions','Garlic','Kale','Celery',
+  'Strawberries','Blueberries','Raspberries','Bananas','Apples','Avocado','Grapes','Mango','Pineapple',
+  'Canned Tomatoes','Canned Beans','Canned Corn','Canned Tuna','Canned Salmon','Canned Soup',
+  'Tomato Paste','Tomato Sauce','Pasta Sauce','Hummus','Salsa','Peanut Butter','Jam','Honey',
+  'Mayonnaise','Mustard','Ketchup','Soy Sauce','Hot Sauce','Olive Oil','Vegetable Oil',
+  'Aspirin','Ibuprofen','Paracetamol','Vitamin C','Vitamin D','Multivitamins','Fish Oil',
+  'Antihistamine','Cough Syrup','Cold Medicine','Antacid','Probiotics',
+  'Shampoo','Conditioner','Body Lotion','Sunscreen','Face Cream','Toothpaste',
+  'Hand Sanitizer','Contact Lens Solution','Eye Drops','Hydrogen Peroxide',
+  'Baby Formula','Baby Food','Baby Wipes','Infant Paracetamol','Nappy Cream',
+  'Pasta','Rice','Oats','Cereal','Crackers','Biscuits','Chocolate','Ice Cream',
+  'Frozen Pizza','Frozen Peas','Frozen Berries',
+];
+let PRODUCTS = JSON.parse(localStorage.getItem('expiry_products') || 'null') || [...DEFAULT_PRODUCTS];
+
+function saveProducts() { localStorage.setItem('expiry_products', JSON.stringify(PRODUCTS)); }
+function renderDatalist() {
+  const dl = document.getElementById('products-list');
+  dl.innerHTML = PRODUCTS.map(p => `<option value="${esc(p)}">`).join('');
+}
+function saveProductList() {
+  const ta = document.getElementById('products-textarea');
+  PRODUCTS = ta.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  saveProducts(); renderDatalist();
+  document.getElementById('product-count-label').textContent = PRODUCTS.length + ' products in list';
+  notify('✅ Product list saved — ' + PRODUCTS.length + ' items');
+}
+function resetProductList() {
+  PRODUCTS = [...DEFAULT_PRODUCTS];
+  saveProducts(); renderDatalist();
+  const ta = document.getElementById('products-textarea');
+  if(ta) ta.value = PRODUCTS.join('\n');
+  document.getElementById('product-count-label').textContent = PRODUCTS.length + ' products in list';
+  notify('↺ Reset to default list');
 }
 
 /* ═══ CATEGORIES ═══ */
 const DEFAULT_CATS = [
-  {emoji:'🥛',name:'Dairy'}, {emoji:'🥩',name:'Meat'}, {emoji:'🧴',name:'Beauty'},
-  {emoji:'💊',name:'Medicine'}, {emoji:'🥫',name:'Canned'}, {emoji:'🍞',name:'Bread'},
-  {emoji:'🧀',name:'Cheese'}, {emoji:'🥚',name:'Eggs'}, {emoji:'🫙',name:'Pantry'},
-  {emoji:'🧃',name:'Drinks'}, {emoji:'🥦',name:'Veg'}, {emoji:'🍓',name:'Fruit'},
-  {emoji:'❄️',name:'Frozen'}, {emoji:'🧹',name:'Cleaning'},
+  {emoji:'🥛',name:'Dairy'},{emoji:'🥩',name:'Meat'},{emoji:'🧴',name:'Beauty'},
+  {emoji:'💊',name:'Medicine'},{emoji:'🥫',name:'Canned'},{emoji:'🍞',name:'Bread'},
+  {emoji:'🧀',name:'Cheese'},{emoji:'🥚',name:'Eggs'},{emoji:'🫙',name:'Pantry'},
+  {emoji:'🧃',name:'Drinks'},{emoji:'🥦',name:'Veg'},{emoji:'🍓',name:'Fruit'},
+  {emoji:'❄️',name:'Frozen'},{emoji:'🧹',name:'Cleaning'},
 ];
 let CATEGORIES = JSON.parse(localStorage.getItem('expiry_cats') || JSON.stringify(DEFAULT_CATS));
-let emojiScan = CATEGORIES[0]?.emoji || '📦';
-let emojiManual = CATEGORIES[0]?.emoji || '📦';
+let emojiScan = CATEGORIES[0]?.emoji||'📦', emojiManual = CATEGORIES[0]?.emoji||'📦';
 
 function saveCategories() { localStorage.setItem('expiry_cats', JSON.stringify(CATEGORIES)); }
-
 function renderCatList() {
-  const el = document.getElementById('cat-list');
-  if (!el) return;
-  el.innerHTML = CATEGORIES.map((c, i) =>
+  const el=document.getElementById('cat-list'); if(!el) return;
+  el.innerHTML=CATEGORIES.map((c,i)=>
     `<span class="cat-chip">
       <span class="cat-chip-emoji">${c.emoji}</span>
       <span class="cat-chip-name">${esc(c.name)}</span>
-      <button class="cat-chip-del" onclick="removeCategory(${i})" title="Remove">×</button>
+      <button class="cat-chip-del" onclick="removeCategory(${i})">×</button>
     </span>`
   ).join('');
 }
-
 function addCategory() {
-  const eEl = document.getElementById('new-cat-emoji');
-  const nEl = document.getElementById('new-cat-name');
-  const emoji = eEl.value.trim();
-  const name  = nEl.value.trim();
-  if (!emoji || !name) { notify('⚠️ Enter both an emoji and a name'); return; }
-  CATEGORIES.push({emoji, name});
-  saveCategories();
-  renderCatList();
-  renderCategoryPicker('scan');
-  renderCategoryPicker('manual');
-  eEl.value = ''; nEl.value = '';
-  notify('✅ Category "' + name + '" added');
+  const eEl=document.getElementById('new-cat-emoji'), nEl=document.getElementById('new-cat-name');
+  const emoji=eEl.value.trim(), name=nEl.value.trim();
+  if(!emoji||!name){ notify('⚠️ Enter both emoji and name'); return; }
+  CATEGORIES.push({emoji,name}); saveCategories();
+  renderCatList(); renderCategoryPicker('scan'); renderCategoryPicker('manual');
+  eEl.value=''; nEl.value=''; notify('✅ Category "'+name+'" added');
 }
-
 function removeCategory(idx) {
-  if (CATEGORIES.length <= 1) { notify('⚠️ Keep at least one category'); return; }
-  const removed = CATEGORIES.splice(idx, 1)[0];
-  saveCategories();
-  renderCatList();
-  renderCategoryPicker('scan');
-  renderCategoryPicker('manual');
-  notify('Removed "' + removed.name + '"');
+  if(CATEGORIES.length<=1){ notify('⚠️ Keep at least one category'); return; }
+  const removed=CATEGORIES.splice(idx,1)[0]; saveCategories();
+  renderCatList(); renderCategoryPicker('scan'); renderCategoryPicker('manual');
+  notify('Removed "'+removed.name+'"');
 }
-
 function renderCategoryPicker(ctx) {
-  const el = document.getElementById('emoji-picker-' + ctx);
-  if (!el) return;
-  el.innerHTML = CATEGORIES.map((c, i) =>
+  const el=document.getElementById('emoji-picker-'+ctx); if(!el) return;
+  el.innerHTML=CATEGORIES.map((c,i)=>
     `<button class="emoji-opt${i===0?' on':''}" data-emoji="${c.emoji}" onclick="selectEmoji(this,'${ctx}')" title="${esc(c.name)}">${c.emoji}</button>`
   ).join('');
-  if (ctx === 'scan')   emojiScan   = CATEGORIES[0]?.emoji || '📦';
-  if (ctx === 'manual') emojiManual = CATEGORIES[0]?.emoji || '📦';
+  if(ctx==='scan')   emojiScan  =CATEGORIES[0]?.emoji||'📦';
+  if(ctx==='manual') emojiManual=CATEGORIES[0]?.emoji||'📦';
 }
-
 function selectEmoji(btn, ctx) {
-  document.getElementById('emoji-picker-' + ctx).querySelectorAll('.emoji-opt').forEach(b => b.classList.remove('on'));
+  document.getElementById('emoji-picker-'+ctx).querySelectorAll('.emoji-opt').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
-  if (ctx === 'scan')   emojiScan   = btn.dataset.emoji;
-  if (ctx === 'manual') emojiManual = btn.dataset.emoji;
+  if(ctx==='scan')   emojiScan  =btn.dataset.emoji;
+  if(ctx==='manual') emojiManual=btn.dataset.emoji;
 }
 
 /* ═══ LOCAL IMAGE STORE ═══ */
 let capturedThumb = null;
-
 function getThumbnail(canvas) {
-  const t = document.createElement('canvas');
-  t.width = 190; t.height = 130;
-  t.getContext('2d').drawImage(canvas, 0, 0, 190, 130);
-  return t.toDataURL('image/jpeg', 0.55);
+  const t=document.createElement('canvas'); t.width=190; t.height=130;
+  t.getContext('2d').drawImage(canvas,0,0,190,130);
+  return t.toDataURL('image/jpeg',.55);
 }
-function saveImageLocally(id, dataUrl) {
-  try {
-    const imgs = JSON.parse(localStorage.getItem('expiry_images') || '{}');
-    imgs[id] = dataUrl;
-    localStorage.setItem('expiry_images', JSON.stringify(imgs));
-  } catch(e) { /* localStorage quota exceeded — skip silently */ }
-}
-function getImageLocally(id) {
-  const imgs = JSON.parse(localStorage.getItem('expiry_images') || '{}');
-  return imgs[id] || null;
-}
-function deleteImageLocally(id) {
-  const imgs = JSON.parse(localStorage.getItem('expiry_images') || '{}');
-  delete imgs[id]; localStorage.setItem('expiry_images', JSON.stringify(imgs));
-}
-function clearLocalImages() {
-  localStorage.removeItem('expiry_images');
-  notify('🗑 Cached photos cleared');
-}
+function saveImageLocally(id,dataUrl){ try{ const imgs=JSON.parse(localStorage.getItem('expiry_images')||'{}'); imgs[id]=dataUrl; localStorage.setItem('expiry_images',JSON.stringify(imgs)); }catch(e){} }
+function getImageLocally(id){ return (JSON.parse(localStorage.getItem('expiry_images')||'{}'))[id]||null; }
+function deleteImageLocally(id){ const imgs=JSON.parse(localStorage.getItem('expiry_images')||'{}'); delete imgs[id]; localStorage.setItem('expiry_images',JSON.stringify(imgs)); }
+function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('🗑 Cached photos cleared'); }
 
 /* ═══ SUPABASE ═══ */
-const SUPABASE_URL      = 'https://viupqrjyszvvcpnxrmsq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdXBxcmp5c3p2dmNwbnhybXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTY2ODgsImV4cCI6MjA5NDg3MjY4OH0.-j_X1M4_FBDuax4Gpd3tOHYdgs-fdWN2sPTbhYlG7qk';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-function getDeviceId() {
-  let id = localStorage.getItem('expiry_device_id');
-  if (!id) { id = crypto.randomUUID(); localStorage.setItem('expiry_device_id', id); }
-  return id;
-}
-const DEVICE_ID = getDeviceId();
+const SUPABASE_URL='https://viupqrjyszvvcpnxrmsq.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdXBxcmp5c3p2dmNwbnhybXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTY2ODgsImV4cCI6MjA5NDg3MjY4OH0.-j_X1M4_FBDuax4Gpd3tOHYdgs-fdWN2sPTbhYlG7qk';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+function getDeviceId(){ let id=localStorage.getItem('expiry_device_id'); if(!id){id=crypto.randomUUID();localStorage.setItem('expiry_device_id',id);} return id; }
+const DEVICE_ID=getDeviceId();
 
 /* ═══ SYNC UI ═══ */
-function setSyncing(on) {
-  const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
-  if (on) { dot.className='sync-dot syncing'; lbl.textContent='Syncing…'; }
-  else {
-    dot.className='sync-dot';
-    const now = new Date();
-    const t = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
-    const d = now.toLocaleDateString('en-GB').replace(/\//g,'.');
-    lbl.textContent = 'Last synced: '+d+', '+t;
-  }
+function setSyncing(on){
+  const dot=document.getElementById('sync-dot'), lbl=document.getElementById('sync-label');
+  if(on){ dot.className='sync-dot syncing'; lbl.textContent='Syncing…'; }
+  else{ dot.className='sync-dot'; const now=new Date(); lbl.textContent='Last synced: '+now.toLocaleDateString('en-GB').replace(/\//g,'.')+', '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false}); }
 }
-async function refresh() { await renderDashboard(); await renderAll(); }
+async function refresh(){ await renderDashboard(); await renderAll(); }
 
 /* ═══ DB ═══ */
-async function dbGetAll() {
+async function dbGetAll(){
   setSyncing(true);
-  const { data, error } = await sb.from('items').select('*').eq('device_id', DEVICE_ID).order('expiry',{ascending:true});
-  setSyncing(false);
-  if (error) { notify('⚠️ '+error.message); return []; }
-  return data || [];
+  const{data,error}=await sb.from('items').select('*').eq('device_id',DEVICE_ID).order('expiry',{ascending:true});
+  setSyncing(false); if(error){notify('⚠️ '+error.message);return[];} return data||[];
 }
-async function dbAdd(item) {
+async function dbAdd(item){
   setSyncing(true);
-  const { data, error } = await sb.from('items').insert([{...item, device_id:DEVICE_ID}]).select().single();
-  setSyncing(false);
-  if (error) { notify('⚠️ '+error.message); return null; }
-  return data;
+  const{data,error}=await sb.from('items').insert([{...item,device_id:DEVICE_ID}]).select().single();
+  setSyncing(false); if(error){notify('⚠️ '+error.message);return null;} return data;
 }
-async function dbDelete(id) {
+async function dbDelete(id){
   setSyncing(true);
-  const { error } = await sb.from('items').delete().eq('id',id).eq('device_id',DEVICE_ID);
-  setSyncing(false);
-  if (error) notify('⚠️ '+error.message);
+  const{error}=await sb.from('items').delete().eq('id',id).eq('device_id',DEVICE_ID);
+  setSyncing(false); if(error)notify('⚠️ '+error.message);
 }
 
 /* ═══ HELPERS ═══ */
-function daysUntil(s) { const t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(s+'T00:00:00')-t)/86400000); }
-function getStatus(d) { return d<0?'s-red':d<=CRITICAL_DAYS?'s-orange':d<=SOON_DAYS?'s-yellow':'s-green'; }
-function getTag(d)    { return d<0?'tag-red':d<=CRITICAL_DAYS?'tag-orange':d<=SOON_DAYS?'tag-yellow':'tag-green'; }
-function daysLabel(d) { if(d<0)return 'Expired '+Math.abs(d)+'d ago'; if(d===0)return 'Today!'; if(d===1)return 'Tomorrow'; return d+' days'; }
-function fmtDate(s)   { return new Date(s+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
-function esc(s)       { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function notify(msg) {
-  const b = document.getElementById('notify-bar');
-  b.textContent=msg; b.classList.add('show');
-  setTimeout(()=>b.classList.remove('show'),3000);
-}
+function daysUntil(s){ const t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(s+'T00:00:00')-t)/86400000); }
+function getStatus(d){ return d<0?'s-red':d<=CRITICAL_DAYS?'s-orange':d<=SOON_DAYS?'s-yellow':'s-green'; }
+function getTag(d)   { return d<0?'tag-red':d<=CRITICAL_DAYS?'tag-orange':d<=SOON_DAYS?'tag-yellow':'tag-green'; }
+function daysLabel(d){ if(d<0)return 'Expired '+Math.abs(d)+'d ago'; if(d===0)return 'Today!'; if(d===1)return 'Tomorrow'; return d+' days'; }
+function fmtDate(s)  { return new Date(s+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
+function esc(s)      { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function notify(msg) { const b=document.getElementById('notify-bar'); b.textContent=msg; b.classList.add('show'); setTimeout(()=>b.classList.remove('show'),3000); }
 
 /* ═══ TABS ═══ */
-const PAGE_TITLES = {dashboard:'Expiry Tracker',camera:'Scan Item',manual:'New Item',list:'All Items',settings:'Settings'};
-let stream = null;
-function switchTab(tab) {
+const PAGE_TITLES={dashboard:'Expiry Tracker',camera:'Scan Item',manual:'New Item',list:'All Items',settings:'Settings'};
+let stream=null;
+function switchTab(tab){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(tab+'-page').classList.add('active');
-  const btn = document.getElementById('tab-'+tab);
-  if (btn) btn.classList.add('active');
-  document.getElementById('bc-title').textContent = PAGE_TITLES[tab];
-  if (tab==='camera') startCamera(); else stopCamera();
-  if (tab==='dashboard') renderDashboard();
-  if (tab==='list') renderAll();
-  if (tab==='settings') renderSettingsPage();
+  const btn=document.getElementById('tab-'+tab); if(btn) btn.classList.add('active');
+  document.getElementById('bc-title').textContent=PAGE_TITLES[tab];
+  if(tab==='camera') startCamera(); else stopCamera();
+  if(tab==='dashboard') renderDashboard();
+  if(tab==='list') renderAll();
+  if(tab==='settings') renderSettingsPage();
 }
 
 /* ═══ CAMERA ═══ */
-async function startCamera() {
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}}});
-    const v = document.getElementById('video');
-    v.srcObject=stream; v.style.display='block';
+async function startCamera(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}}});
+    const v=document.getElementById('video'); v.srcObject=stream; v.style.display='block';
     document.getElementById('preview-img').style.display='none';
     document.getElementById('scan-overlay').style.display='flex';
     document.getElementById('scan-hint').style.display='block';
@@ -840,16 +822,14 @@ async function startCamera() {
     document.getElementById('retake-btn').style.display='none';
     document.getElementById('add-form').classList.remove('show');
     document.getElementById('ocr-status').classList.remove('show');
-    capturedThumb = null;
-  } catch(e) { notify('Camera access denied — allow in Settings'); }
+    capturedThumb=null;
+  }catch(e){notify('Camera access denied — allow in Settings');}
 }
-function stopCamera() { if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } }
-
-function capturePhoto() {
-  const v=document.getElementById('video'), c=document.getElementById('canvas');
-  c.width=v.videoWidth; c.height=v.videoHeight;
-  c.getContext('2d').drawImage(v,0,0);
-  capturedThumb = getThumbnail(c);
+function stopCamera(){ if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} }
+function capturePhoto(){
+  const v=document.getElementById('video'),c=document.getElementById('canvas');
+  c.width=v.videoWidth; c.height=v.videoHeight; c.getContext('2d').drawImage(v,0,0);
+  capturedThumb=getThumbnail(c);
   const img=document.getElementById('preview-img');
   img.src=c.toDataURL('image/jpeg',.92); img.style.display='block'; v.style.display='none';
   document.getElementById('scan-overlay').style.display='none';
@@ -858,29 +838,25 @@ function capturePhoto() {
   document.getElementById('retake-btn').style.display='flex';
   stopCamera(); runOCR(c);
 }
-function retakePhoto() {
+function retakePhoto(){
   document.getElementById('add-form').classList.remove('show');
   document.getElementById('ocr-status').classList.remove('show');
-  capturedThumb = null;
-  startCamera();
+  capturedThumb=null; startCamera();
 }
 
 /* ═══ OCR ═══ */
-async function runOCR(canvas) {
-  const st=document.getElementById('ocr-status'), ot=document.getElementById('ocr-text');
+async function runOCR(canvas){
+  const st=document.getElementById('ocr-status'),ot=document.getElementById('ocr-text');
   st.classList.add('show'); ot.textContent='Initialising OCR…';
-  try {
-    const w=await Tesseract.createWorker('eng',1,{
-      logger:m=>{ if(m.status==='recognizing text') ot.textContent='Reading… '+Math.round(m.progress*100)+'%'; }
-    });
-    const {data:{text}}=await w.recognize(canvas);
-    await w.terminate();
+  try{
+    const w=await Tesseract.createWorker('eng',1,{logger:m=>{ if(m.status==='recognizing text') ot.textContent='Reading… '+Math.round(m.progress*100)+'%'; }});
+    const{data:{text}}=await w.recognize(canvas); await w.terminate();
     const date=extractDate(text);
     ot.textContent=date?'Date detected: '+fmtDate(date):'No date found — enter manually';
     showConfirm(date);
-  } catch(e){ ot.textContent='OCR error — enter date manually'; showConfirm(null); }
+  }catch(e){ot.textContent='OCR error — enter date manually';showConfirm(null);}
 }
-function extractDate(raw) {
+function extractDate(raw){
   const t=raw.toUpperCase();
   const M={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
   const mk=(y,m,d)=>{ const yy=+y,mm=+m,dd=+d; if(!yy||mm<1||mm>12||dd<1||dd>31||yy<2020||yy>2040)return null; return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; };
@@ -893,53 +869,40 @@ function extractDate(raw) {
     {r:/\b(\d{1,2})[\/\-](\d{4})\b/,f:m=>mk(m[2],m[1],1)},
     {r:/\b(\d{2})[\/\-](\d{2})\b/,f:m=>{ const mm=+m[1],yy=+m[2]; return(mm>=1&&mm<=12&&yy>=25&&yy<=40)?mk(2000+yy,mm,1):null; }},
   ];
-  for(const{r,f}of P){ const m=t.match(r); if(m){const d=f(m);if(d)return d;} }
-  return null;
+  for(const{r,f}of P){const m=t.match(r);if(m){const d=f(m);if(d)return d;}} return null;
 }
-function showConfirm(date) {
+function showConfirm(date){
   document.getElementById('add-form').classList.add('show');
-  document.getElementById('scan-date').value = date || '';
-  document.getElementById('scan-name').value = '';
+  document.getElementById('scan-date').value=date||'';
+  document.getElementById('scan-name').value='';
   notify(date?'📅 Detected: '+fmtDate(date):'No date detected — enter manually');
 }
 
 /* ═══ SAVE ═══ */
-async function saveScannedItem() {
+async function saveScannedItem(){
   const name=document.getElementById('scan-name').value.trim();
   const date=document.getElementById('scan-date').value;
-  if(!name){ notify('⚠️ Enter a product name'); return; }
-  if(!date){ notify('⚠️ Enter the expiry date'); return; }
+  if(!name){notify('⚠️ Enter a product name');return;}
+  if(!date){notify('⚠️ Enter the expiry date');return;}
   const item=await dbAdd({name,expiry:date,icon:emojiScan,added:new Date().toISOString()});
-  if(item){
-    if(capturedThumb) saveImageLocally(item.id, capturedThumb);
-    notify('✅ "'+name+'" saved!');
-    document.getElementById('add-form').classList.remove('show');
-    document.getElementById('ocr-status').classList.remove('show');
-    capturedThumb = null;
-    retakePhoto();
-  }
+  if(item){ if(capturedThumb)saveImageLocally(item.id,capturedThumb); notify('✅ "'+name+'" saved!'); document.getElementById('add-form').classList.remove('show'); document.getElementById('ocr-status').classList.remove('show'); capturedThumb=null; retakePhoto(); }
 }
-async function saveManualItem() {
+async function saveManualItem(){
   const name=document.getElementById('manual-name').value.trim();
   const date=document.getElementById('manual-date').value;
-  if(!name){ notify('⚠️ Enter a product name'); return; }
-  if(!date){ notify('⚠️ Enter the expiry date'); return; }
+  if(!name){notify('⚠️ Enter a product name');return;}
+  if(!date){notify('⚠️ Enter the expiry date');return;}
   const item=await dbAdd({name,expiry:date,icon:emojiManual,added:new Date().toISOString()});
-  if(item){
-    notify('✅ "'+name+'" saved!');
-    document.getElementById('manual-name').value='';
-    document.getElementById('manual-date').value=new Date().toISOString().split('T')[0];
-    renderDashboard();
-  }
+  if(item){ notify('✅ "'+name+'" saved!'); document.getElementById('manual-name').value=''; document.getElementById('manual-date').value=new Date().toISOString().split('T')[0]; renderDashboard(); }
 }
 
 /* ═══ RENDER ═══ */
-function buildItem(item, idx) {
-  const days = daysUntil(item.expiry);
-  const img  = getImageLocally(item.id);
-  const div  = document.createElement('div');
-  div.className = 'bao-item '+getStatus(days);
-  div.innerHTML = `
+function buildItem(item,idx){
+  const days=daysUntil(item.expiry);
+  const img=getImageLocally(item.id);
+  const div=document.createElement('div');
+  div.className='bao-item '+getStatus(days);
+  div.innerHTML=`
     <span class="item-num">${idx+1}.</span>
     <span class="item-emoji">${item.icon||'📦'}</span>
     ${img?`<img class="item-thumb" src="${img}" alt="photo" />`:''}
@@ -952,65 +915,100 @@ function buildItem(item, idx) {
   return div;
 }
 
-async function renderDashboard() {
-  const list = document.getElementById('dashboard-list');
-  list.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
-  const items = await dbGetAll();
-  const expired = items.filter(i=>daysUntil(i.expiry)<0);
-  const soon    = items.filter(i=>{ const d=daysUntil(i.expiry); return d>=0&&d<=SOON_DAYS; });
-  const ok      = items.filter(i=>daysUntil(i.expiry)>SOON_DAYS);
-  document.getElementById('count-expired').textContent = expired.length;
-  document.getElementById('count-soon').textContent    = soon.length;
-  document.getElementById('count-ok').textContent      = ok.length;
-  const n = expired.length + soon.length;
-  const badge = document.getElementById('alert-badge');
-  badge.style.display = n>0?'inline':'none'; badge.textContent = n;
-  list.innerHTML = '';
-  const urgent = [...expired,...soon].sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
-  if (!urgent.length) {
-    list.innerHTML='<div class="empty"><div class="e-icon">✅</div><p>All clear!<br/>Nothing expiring soon.</p></div>';
-  } else {
-    urgent.forEach((item,i)=>list.appendChild(buildItem(item,i)));
+async function renderDashboard(){
+  const dashList=document.getElementById('dashboard-list');
+  const goodList=document.getElementById('good-list');
+  dashList.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
+  if(goodList) goodList.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
+
+  // Today's date label
+  const dateEl=document.getElementById('overview-date');
+  if(dateEl) dateEl.textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+  const items=await dbGetAll();
+  const expired=items.filter(i=>daysUntil(i.expiry)<0);
+  const soon   =items.filter(i=>{ const d=daysUntil(i.expiry); return d>=0&&d<=SOON_DAYS; });
+  const ok     =items.filter(i=>daysUntil(i.expiry)>SOON_DAYS);
+
+  document.getElementById('count-expired').textContent=expired.length;
+  document.getElementById('count-soon').textContent=soon.length;
+  document.getElementById('count-ok').textContent=ok.length;
+
+  // Stat subtitles
+  const subExp=document.getElementById('sub-expired');
+  const subSoon=document.getElementById('sub-soon');
+  const subOk=document.getElementById('sub-ok');
+  if(subExp)  subExp.textContent  = expired.length===0?'Nothing expired':'Need disposal';
+  if(subSoon) subSoon.textContent = soon.length===0?'None due soon':'Within '+SOON_DAYS+' days';
+  if(subOk)   subOk.textContent   = ok.length===0?'Add items to track':'No action needed';
+
+  // Alert badge
+  const n=expired.length+soon.length;
+  const badge=document.getElementById('alert-badge');
+  badge.style.display=n>0?'inline':'none'; badge.textContent=n;
+
+  // Attention badge
+  const attBadge=document.getElementById('attention-badge');
+  if(attBadge){ attBadge.style.display=n>0?'inline':'none'; attBadge.textContent=n; }
+
+  // Good badge
+  const goodBadge=document.getElementById('good-badge');
+  if(goodBadge){ goodBadge.style.display=ok.length>0?'inline':'none'; goodBadge.textContent=ok.length; }
+
+  // Needs Attention list
+  dashList.innerHTML='';
+  const urgent=[...expired,...soon].sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
+  if(!urgent.length){
+    dashList.innerHTML='<div class="empty"><div class="e-icon">✅</div><p>All clear!<br/>Nothing expiring soon.</p></div>';
+  }else{
+    urgent.forEach((item,i)=>dashList.appendChild(buildItem(item,i)));
+  }
+
+  // All Good list
+  if(goodList){
+    goodList.innerHTML='';
+    if(!ok.length){
+      goodList.innerHTML='<div class="empty"><div class="e-icon">📦</div><p>No items tracked yet.</p></div>';
+    }else{
+      ok.slice(0,8).forEach((item,i)=>goodList.appendChild(buildItem(item,i)));
+    }
   }
 }
 
-async function renderAll() {
-  const list = document.getElementById('all-list');
+async function renderAll(){
+  const list=document.getElementById('all-list');
   list.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
-  const items = await dbGetAll();
-  const sort  = document.getElementById('sort-select').value;
+  const items=await dbGetAll();
+  const sort=document.getElementById('sort-select').value;
   items.sort((a,b)=>sort==='expiry'?new Date(a.expiry)-new Date(b.expiry):sort==='name'?a.name.localeCompare(b.name):new Date(b.added)-new Date(a.added));
-  list.innerHTML = '';
-  if (!items.length) {
-    list.innerHTML='<div class="empty"><div class="e-icon">📦</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>';
-  } else {
-    items.forEach((item,i)=>list.appendChild(buildItem(item,i)));
-  }
+  list.innerHTML='';
+  if(!items.length){ list.innerHTML='<div class="empty"><div class="e-icon">📦</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>'; }
+  else{ items.forEach((item,i)=>list.appendChild(buildItem(item,i))); }
 }
 
-async function deleteItem(id) {
-  deleteImageLocally(id);
-  await dbDelete(id);
-  notify('🗑 Deleted');
-  renderDashboard(); renderAll();
-}
+async function deleteItem(id){ deleteImageLocally(id); await dbDelete(id); notify('🗑 Deleted'); renderDashboard(); renderAll(); }
 
 /* ═══ SETTINGS PAGE ═══ */
-function renderSettingsPage() {
-  const sr = document.getElementById('soon-range');
-  const cr = document.getElementById('critical-range');
-  if (sr) { sr.value = SOON_DAYS; document.getElementById('soon-val').textContent = SOON_DAYS+'d'; }
-  if (cr) { cr.max = SOON_DAYS; cr.value = CRITICAL_DAYS; document.getElementById('critical-val').textContent = CRITICAL_DAYS+'d'; }
-  const dev = document.getElementById('device-id-display');
-  if (dev) dev.textContent = DEVICE_ID;
+function renderSettingsPage(){
+  const sr=document.getElementById('soon-range'), cr=document.getElementById('critical-range');
+  if(sr){sr.value=SOON_DAYS;document.getElementById('soon-val').textContent=SOON_DAYS+'d';}
+  if(cr){cr.max=SOON_DAYS;cr.value=CRITICAL_DAYS;document.getElementById('critical-val').textContent=CRITICAL_DAYS+'d';}
+  const dev=document.getElementById('device-id-display'); if(dev) dev.textContent=DEVICE_ID;
   renderCatList();
+  // Populate products textarea
+  const ta=document.getElementById('products-textarea');
+  if(ta){
+    ta.value=PRODUCTS.join('\n');
+    document.getElementById('product-count-label').textContent=PRODUCTS.length+' products in list';
+  }
 }
 
 /* ═══ INIT ═══ */
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+renderDatalist();
 renderCategoryPicker('scan');
 renderCategoryPicker('manual');
-document.getElementById('manual-date').value = new Date().toISOString().split('T')[0];
+document.getElementById('manual-date').value=new Date().toISOString().split('T')[0];
 renderDashboard();
 </script>
 </body>

@@ -222,6 +222,10 @@
     /* ══ SIDEBAR BRAND (hidden mobile) ══ */
     .sidebar-brand { display: none; }
 
+    /* ══ DASHBOARD: hide add-bar + All Good on mobile ══ */
+    #dashboard-page .add-bar { display: none; }
+    #good-card { display: none; }
+
     /* ══════════════════════════════════════
        DESKTOP  ≥ 768px
     ══════════════════════════════════════ */
@@ -253,9 +257,12 @@
       /* Main content */
       .main-scroll { padding: 24px 28px 24px; }
 
-      /* Hide add-bar ONLY on dashboard & list pages; keep visible on add/scan */
-      #dashboard-page .add-bar,
+      /* Hide add-bar on dashboard & list pages on desktop */
       #list-page .add-bar { display: none; }
+      /* (dashboard add-bar already hidden globally above) */
+
+      /* Show All Good card on desktop */
+      #good-card { display: block; }
 
       /* Cards: compact, content-sized, max 450px */
       .bao-card { max-width: 450px; margin-bottom: 16px; }

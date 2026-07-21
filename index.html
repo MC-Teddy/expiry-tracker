@@ -380,6 +380,8 @@
         </div>
       </div>
 
+      <div style="text-align:center;font-size:11px;color:var(--text-2);font-weight:500;padding:14px 0 4px;" id="app-version-home">Expiry Tracker</div>
+
     </div><!-- /dashboard -->
 
     <!-- ── SCAN ── -->
@@ -519,6 +521,26 @@
         </div>
       </div>
 
+      <!-- Scanning / OCR -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">🔎</span>
+          <span class="head-title">Scanning &amp; OCR</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Cloud OCR (Google Vision)</div>
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">
+            For sharper date reading, paste a Google Cloud Vision API key. Scans use the cloud when online and fall back to on-device OCR automatically. The key is stored only on this device.
+          </p>
+          <input class="bao-input" type="password" id="vision-key-input" placeholder="Google Vision API key…" autocomplete="off" style="font-size:12px;" />
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button class="cat-add-btn" onclick="saveVisionKey()">💾 Save Key</button>
+            <button class="ghost-btn" onclick="clearVisionKey()">Remove</button>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="vision-key-status"></div>
+        </div>
+      </div>
+
       <!-- Categories -->
       <div class="bao-card">
         <div class="bao-card-head">
@@ -564,7 +586,7 @@
         <div class="settings-section">
           <div class="settings-row">
             <span class="settings-lbl">Version</span>
-            <span style="font-size:12px;color:var(--text-2);">2.1</span>
+            <span style="font-size:12px;color:var(--text-2);" id="app-version-settings">—</span>
           </div>
           <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
             <span class="settings-lbl">Device ID</span>
@@ -628,6 +650,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
+/* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
+const APP_VERSION='2.4';
+function renderVersion(){
+  const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
+  const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
+}
+document.addEventListener('DOMContentLoaded',renderVersion);
+
 /* ═══ THEME ═══ */
 (function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
 function applyTheme(t) {
@@ -805,6 +835,28 @@ function notify(msg) { const b=document.getElementById('notify-bar'); b.textCont
 /* ═══ TABS ═══ */
 const PAGE_TITLES={dashboard:'Expiry Tracker',camera:'Scan Item',manual:'New Item',list:'All Items',settings:'Settings'};
 let stream=null;
+
+/* Persistent, pre-warmed OCR worker — created once and reused across every scan
+   instead of being rebuilt+torn down each capture (the old approach reloaded the
+   ~10MB model every time). warmOCR() is idempotent; call it early to overlap the
+   one-time init with the user aiming the camera. */
+let ocrWorkerPromise=null;
+function warmOCR(){
+  if(ocrWorkerPromise) return ocrWorkerPromise;
+  ocrWorkerPromise=(async()=>{
+    const w=await Tesseract.createWorker('eng',1,{logger:m=>{
+      if(m.status==='recognizing text'){ const ot=document.getElementById('ocr-text');
+        if(ot&&ot.dataset.live==='1') ot.textContent='Reading… '+Math.round(m.progress*100)+'%'; }
+    }});
+    // 6 = assume a single uniform block of text; whitelist trims scene noise & symbols.
+    await w.setParameters({
+      tessedit_pageseg_mode:'6',
+      tessedit_char_whitelist:'0123456789/-.:  ABCDEFGHIJLMNOPRSTUVYabcdefghijlmnoprstuvy'
+    });
+    return w;
+  })().catch(e=>{ ocrWorkerPromise=null; throw e; });
+  return ocrWorkerPromise;
+}
 function switchTab(tab){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -830,6 +882,7 @@ async function startCamera(){
     document.getElementById('add-form').classList.remove('show');
     document.getElementById('ocr-status').classList.remove('show');
     capturedThumb=null;
+    warmOCR().catch(()=>{}); // preload OCR while the user lines up the shot
   }catch(e){notify('Camera access denied — allow in Settings');}
 }
 function stopCamera(){ if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} }
@@ -852,16 +905,82 @@ function retakePhoto(){
 }
 
 /* ═══ OCR ═══ */
+/* Crop to the scan-frame region (a bit wider than the on-screen guide to tolerate
+   aim error), upscale small crops so glyphs are tall enough to read, then greyscale
+   + contrast-stretch. Far fewer pixels than the full frame and much cleaner input,
+   so recognition is both faster and more accurate. */
+function preprocessForOCR(src){
+  const cw=Math.round(src.width*0.74), ch=Math.round(src.height*0.42);
+  const cx=Math.round((src.width-cw)/2), cy=Math.round((src.height-ch)/2);
+  const scale=Math.max(1,Math.min(3,1100/cw));
+  const out=document.createElement('canvas');
+  out.width=Math.round(cw*scale); out.height=Math.round(ch*scale);
+  const ctx=out.getContext('2d');
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
+  ctx.drawImage(src,cx,cy,cw,ch,0,0,out.width,out.height);
+  const img=ctx.getImageData(0,0,out.width,out.height),d=img.data;
+  for(let i=0;i<d.length;i+=4){
+    let g=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+    g=(g-128)*1.6+128;                 // contrast stretch
+    d[i]=d[i+1]=d[i+2]=g<0?0:g>255?255:g;
+  }
+  ctx.putImageData(img,0,0);
+  return out;
+}
+/* ── Cloud OCR (Google Vision) ── stored per-device in localStorage ── */
+function getVisionKey(){ return (localStorage.getItem('expiry_vision_key')||'').trim(); }
+function saveVisionKey(){
+  const v=document.getElementById('vision-key-input').value.trim();
+  if(!v){ notify('⚠️ Paste a key first'); return; }
+  localStorage.setItem('expiry_vision_key',v); renderVisionKeyStatus(); notify('✅ Cloud OCR enabled');
+}
+function clearVisionKey(){
+  localStorage.removeItem('expiry_vision_key');
+  const i=document.getElementById('vision-key-input'); if(i)i.value='';
+  renderVisionKeyStatus(); notify('Cloud OCR removed — using on-device OCR');
+}
+function renderVisionKeyStatus(){
+  const el=document.getElementById('vision-key-status'); if(!el)return;
+  el.textContent=getVisionKey()?'✓ Cloud OCR active (falls back to on-device when offline)':'Not set — using on-device OCR only';
+}
+/* Recognize via Google Vision. Returns detected text, or throws so runOCR can fall back. */
+async function cloudOCR(canvas){
+  const key=getVisionKey(); if(!key) throw new Error('no-key');
+  const b64=preprocessForOCR(canvas).toDataURL('image/jpeg',.9).split(',')[1];
+  const res=await fetch('https://vision.googleapis.com/v1/images:annotate?key='+encodeURIComponent(key),{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({requests:[{image:{content:b64},features:[{type:'TEXT_DETECTION'}]}]})
+  });
+  if(!res.ok) throw new Error('vision-http-'+res.status);
+  const j=await res.json();
+  const err=j.responses&&j.responses[0]&&j.responses[0].error;
+  if(err) throw new Error('vision-'+(err.message||'error'));
+  return (j.responses&&j.responses[0]&&j.responses[0].fullTextAnnotation&&j.responses[0].fullTextAnnotation.text)||'';
+}
+/* On-device OCR via the reused Tesseract worker. */
+async function localOCR(canvas){
+  const w=await warmOCR();
+  const{data:{text}}=await w.recognize(preprocessForOCR(canvas));
+  return text;
+}
+/* Hybrid: cloud-first when a key is set and we're online, else on-device. */
 async function runOCR(canvas){
   const st=document.getElementById('ocr-status'),ot=document.getElementById('ocr-text');
-  st.classList.add('show'); ot.textContent='Initialising OCR…';
+  st.classList.add('show'); ot.dataset.live='1'; ot.textContent='Reading expiry date…';
+  let text='';
   try{
-    const w=await Tesseract.createWorker('eng',1,{logger:m=>{ if(m.status==='recognizing text') ot.textContent='Reading… '+Math.round(m.progress*100)+'%'; }});
-    const{data:{text}}=await w.recognize(canvas); await w.terminate();
+    if(getVisionKey() && navigator.onLine){
+      ot.textContent='Reading (cloud)…';
+      try{ text=await cloudOCR(canvas); }
+      catch(err){ ot.textContent='Cloud unavailable — using on-device…'; text=await localOCR(canvas); }
+    } else {
+      text=await localOCR(canvas);
+    }
+    ot.dataset.live='0';
     const date=extractDate(text);
     ot.textContent=date?'Date detected: '+fmtDate(date):'No date found — enter manually';
     showConfirm(date);
-  }catch(e){ot.textContent='OCR error — enter date manually';showConfirm(null);}
+  }catch(e){ot.dataset.live='0';ot.textContent='OCR error — enter date manually';showConfirm(null);}
 }
 function extractDate(raw){
   const t=raw.toUpperCase();
@@ -1001,6 +1120,8 @@ function renderSettingsPage(){
   if(sr){sr.value=SOON_DAYS;document.getElementById('soon-val').textContent=SOON_DAYS+'d';}
   if(cr){cr.max=SOON_DAYS;cr.value=CRITICAL_DAYS;document.getElementById('critical-val').textContent=CRITICAL_DAYS+'d';}
   const dev=document.getElementById('device-id-display'); if(dev) dev.textContent=DEVICE_ID;
+  const vk=document.getElementById('vision-key-input'); if(vk) vk.value=getVisionKey();
+  renderVisionKeyStatus();
   renderCatList();
   // Populate products textarea
   const ta=document.getElementById('products-textarea');

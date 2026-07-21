@@ -651,7 +651,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='2.5';
+const APP_VERSION='2.6';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -851,7 +851,7 @@ function warmOCR(){
     // 6 = assume a single uniform block of text; whitelist trims scene noise & symbols.
     await w.setParameters({
       tessedit_pageseg_mode:'6',
-      tessedit_char_whitelist:'0123456789/-.:  ABCDEFGHIJLMNOPRSTUVYabcdefghijlmnoprstuvy'
+      tessedit_char_whitelist:'0123456789/-.: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
     });
     return w;
   })().catch(e=>{ ocrWorkerPromise=null; throw e; });
@@ -909,10 +909,11 @@ function retakePhoto(){
    aim error), upscale small crops so glyphs are tall enough to read, then greyscale
    + contrast-stretch. Far fewer pixels than the full frame and much cleaner input,
    so recognition is both faster and more accurate. */
-function preprocessForOCR(src){
-  const cw=Math.round(src.width*0.74), ch=Math.round(src.height*0.42);
+function preprocessForOCR(src,full){
+  const fw=full?0.98:0.74, fh=full?0.98:0.42;   // full-frame retry vs tight scan-box crop
+  const cw=Math.round(src.width*fw), ch=Math.round(src.height*fh);
   const cx=Math.round((src.width-cw)/2), cy=Math.round((src.height-ch)/2);
-  const scale=Math.max(1,Math.min(3,1100/cw));
+  const scale=Math.max(1,Math.min(3,(full?1600:1100)/cw));
   const out=document.createElement('canvas');
   out.width=Math.round(cw*scale); out.height=Math.round(ch*scale);
   const ctx=out.getContext('2d');
@@ -944,9 +945,9 @@ function renderVisionKeyStatus(){
   el.textContent=getVisionKey()?'✓ Cloud OCR active (falls back to on-device when offline)':'Not set — using on-device OCR only';
 }
 /* Recognize via Google Vision. Returns detected text, or throws so runOCR can fall back. */
-async function cloudOCR(canvas){
+async function cloudOCR(canvas,full){
   const key=getVisionKey(); if(!key) throw new Error('no-key');
-  const b64=preprocessForOCR(canvas).toDataURL('image/jpeg',.9).split(',')[1];
+  const b64=preprocessForOCR(canvas,full).toDataURL('image/jpeg',.9).split(',')[1];
   const res=await fetch('https://vision.googleapis.com/v1/images:annotate?key='+encodeURIComponent(key),{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({requests:[{image:{content:b64},features:[{type:'TEXT_DETECTION'}]}]})
@@ -958,42 +959,73 @@ async function cloudOCR(canvas){
   return (j.responses&&j.responses[0]&&j.responses[0].fullTextAnnotation&&j.responses[0].fullTextAnnotation.text)||'';
 }
 /* On-device OCR via the reused Tesseract worker. */
-async function localOCR(canvas){
+async function localOCR(canvas,full){
   const w=await warmOCR();
-  const{data:{text}}=await w.recognize(preprocessForOCR(canvas));
+  const{data:{text}}=await w.recognize(preprocessForOCR(canvas,full));
   return text;
 }
-/* Hybrid: cloud-first when a key is set and we're online, else on-device. */
+/* One OCR pass through the hybrid path: cloud-first when a key is set and online,
+   else on-device; cloud failures fall back to on-device automatically. */
+async function ocrPass(canvas,full){
+  if(getVisionKey() && navigator.onLine){
+    try{ return await cloudOCR(canvas,full); }
+    catch(err){ return await localOCR(canvas,full); }
+  }
+  return await localOCR(canvas,full);
+}
+/* Two-pass hybrid: read the tight scan-box crop first; if no date is parsed,
+   retry once on the full frame (covers the case where the date sat outside the box). */
+let lastOCRText='';
 async function runOCR(canvas){
   const st=document.getElementById('ocr-status'),ot=document.getElementById('ocr-text');
-  st.classList.add('show'); ot.dataset.live='1'; ot.textContent='Reading expiry date…';
-  let text='';
+  st.classList.add('show'); ot.dataset.live='1';
+  const cloud=getVisionKey()&&navigator.onLine;
+  ot.textContent=cloud?'Reading (cloud)…':'Reading expiry date…';
   try{
-    if(getVisionKey() && navigator.onLine){
-      ot.textContent='Reading (cloud)…';
-      try{ text=await cloudOCR(canvas); }
-      catch(err){ ot.textContent='Cloud unavailable — using on-device…'; text=await localOCR(canvas); }
-    } else {
-      text=await localOCR(canvas);
+    let text=await ocrPass(canvas,false);
+    let date=extractDate(text);
+    if(!date){                       // aim may have been off — try the whole frame
+      ot.textContent='Looking wider…';
+      const wide=await ocrPass(canvas,true);
+      const wideDate=extractDate(wide);
+      if(wideDate){ date=wideDate; text=wide; }
+      else if((wide||'').length>(text||'').length){ text=wide; }
     }
+    lastOCRText=text||'';
+    console.log('[OCR] detected text:',JSON.stringify(lastOCRText));
     ot.dataset.live='0';
-    const date=extractDate(text);
-    ot.textContent=date?'Date detected: '+fmtDate(date):'No date found — enter manually';
+    if(date){ ot.textContent='Date detected: '+fmtDate(date); }
+    else{
+      const snip=lastOCRText.replace(/\s+/g,' ').trim().slice(0,70);
+      ot.textContent=snip?('Read: "'+snip+'" — no date, enter manually'):'No text detected — enter manually';
+    }
     showConfirm(date);
   }catch(e){ot.dataset.live='0';ot.textContent='OCR error — enter date manually';showConfirm(null);}
 }
 function extractDate(raw){
-  const t=raw.toUpperCase();
+  const t=(raw||'').toUpperCase();
   const M={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
-  const mk=(y,m,d)=>{ const yy=+y,mm=+m,dd=+d; if(!yy||mm<1||mm>12||dd<1||dd>31||yy<2020||yy>2040)return null; return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; };
+  const MON='(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)';
+  const S='[\\/\\-. ]';                                  // /  -  .  or space separator
+  const mk=(y,m,d)=>{ let yy=+y,mm=+m,dd=+d; if(yy<100)yy+=2000; if(!yy||mm<1||mm>12||dd<1||dd>31||yy<2020||yy>2041)return null; return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; };
+  // Two ambiguous numbers + a 4-digit year: prefer day-first, but swap if impossible.
+  const two=(a,b,y)=>{ a=+a;b=+b; if(a>12&&b<=12)return mk(y,b,a); if(b>12&&a<=12)return mk(y,a,b); return mk(y,b,a); };
   const P=[
-    {r:/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/,f:m=>mk(m[3],m[2],m[1])},
-    {r:/(\d{4})[\/\-\.](\d{2})[\/\-\.](\d{2})/,f:m=>mk(m[1],m[2],m[3])},
-    {r:/(\d{1,2})\s+(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+(\d{4})/,f:m=>mk(m[3],M[m[2]],m[1])},
-    {r:/(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+(\d{1,2})[,\s]+(\d{4})/,f:m=>mk(m[3],M[m[1]],m[2])},
-    {r:/(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[\/\s](\d{4})/,f:m=>mk(m[2],M[m[1]],1)},
-    {r:/\b(\d{1,2})[\/\-](\d{4})\b/,f:m=>mk(m[2],m[1],1)},
-    {r:/\b(\d{2})[\/\-](\d{2})\b/,f:m=>{ const mm=+m[1],yy=+m[2]; return(mm>=1&&mm<=12&&yy>=25&&yy<=40)?mk(2000+yy,mm,1):null; }},
+    // ── Month-name formats (most reliable) ──
+    {r:new RegExp(`(\\d{1,2})\\s*${MON}[A-Z]*\\s*(\\d{2,4})`),           f:m=>mk(m[3],M[m[2]],m[1])},  // 31 DEC 2026 / 31DEC26
+    {r:new RegExp(`${MON}[A-Z]*\\s*(\\d{1,2})\\s*[, ]\\s*(\\d{2,4})`),   f:m=>mk(m[3],M[m[1]],m[2])},  // DEC 31, 2026
+    {r:new RegExp(`${MON}[A-Z]*${S}*(20\\d{2}|\\d{2})\\b`),             f:m=>mk(m[2],M[m[1]],1)},      // DEC 2026 / DEC26
+    // ── ISO-ish year-first ──
+    {r:new RegExp(`(20\\d{2})${S}(\\d{1,2})${S}(\\d{1,2})`),            f:m=>mk(m[1],m[2],m[3])},      // 2026-07-21
+    {r:/\b(20\d{2})(\d{2})(\d{2})\b/,                                    f:m=>mk(m[1],m[2],m[3])},      // 20260721
+    // ── Day/Month + 4-digit year (ambiguous order resolved) ──
+    {r:new RegExp(`(\\d{1,2})${S}(\\d{1,2})${S}(20\\d{2})`),            f:m=>two(m[1],m[2],m[3])},     // 21/07/2026 or 07/21/2026
+    // ── Day/Month/2-digit year ──
+    {r:new RegExp(`\\b(\\d{1,2})${S}(\\d{1,2})${S}(\\d{2})\\b`),        f:m=>{const a=+m[1],b=+m[2],y=+m[3]; if(y<24||y>41)return null; if(a>12&&b<=12)return mk(y,b,a); if(b>12&&a<=12)return mk(y,a,b); return mk(y,b,a);}}, // 21/07/26
+    // ── Month + year only ──
+    {r:new RegExp(`\\b(\\d{1,2})${S}(20\\d{2})\\b`),                    f:m=>mk(m[2],m[1],1)},         // 07/2026
+    {r:new RegExp(`\\b(\\d{2})${S}(\\d{2})\\b`),                        f:m=>{const mm=+m[1],yy=+m[2]; return(mm>=1&&mm<=12&&yy>=24&&yy<=41)?mk(yy,mm,1):null;}}, // 07/26
+    {r:/\b(\d{2})(20\d{2})\b/,                                          f:m=>mk(m[2],m[1],1)},         // 072026
   ];
   for(const{r,f}of P){const m=t.match(r);if(m){const d=f(m);if(d)return d;}} return null;
 }

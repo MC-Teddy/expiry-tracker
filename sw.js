@@ -1,5 +1,5 @@
 /* Expiry Tracker — Service Worker (cache name tracks APP_VERSION; bump on every edit) */
-const CACHE = 'expiry-tracker-v2.4';
+const CACHE = 'expiry-tracker-v2.5';
 const ASSETS = [
   './',
   './index.html',
@@ -27,23 +27,31 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network-first for CDN resources (Tesseract), cache-first for local files
-  const url = new URL(e.request.url);
+  const req = e.request, url = new URL(req.url);
+
+  // Only ever manage GET. Let POST/PUT/etc (e.g. the Google Vision API call)
+  // pass straight through to the network — intercepting them caused
+  // "FetchEvent.respondWith received an error: Load failed".
+  if (req.method !== 'GET') return;
+
+  // Tesseract CDN: cache-first, fall back to network; never reject respondWith.
   if (url.hostname === 'cdnjs.cloudflare.com') {
     e.respondWith(
       caches.open(CACHE).then(cache =>
-        cache.match(e.request).then(cached => {
-          if (cached) return cached;
-          return fetch(e.request).then(res => {
-            cache.put(e.request, res.clone());
-            return res;
-          });
-        })
-      )
+        cache.match(req).then(cached =>
+          cached || fetch(req).then(res => { cache.put(req, res.clone()); return res; })
+        )
+      ).catch(() => fetch(req).catch(() => new Response('', { status: 504 })))
     );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request))
-    );
+    return;
   }
+
+  // Only handle same-origin assets; other cross-origin GETs go to network untouched.
+  if (url.origin !== self.location.origin) return;
+
+  e.respondWith(
+    caches.match(req).then(cached =>
+      cached || fetch(req).catch(() => cached || new Response('', { status: 504 }))
+    )
+  );
 });

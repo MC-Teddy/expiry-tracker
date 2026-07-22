@@ -21,7 +21,7 @@
       --red:       #D94040; --red-lt:   #FDECEC;
       --shadow:    0 4px 24px rgba(43,36,36,.09);
       --shadow-sm: 0 1px 6px rgba(43,36,36,.07);
-      --pattern-dot: rgba(43,36,36,.05);
+      --pattern-dot: rgba(43,36,36,.08);
       --r: 16px;
       --st: env(safe-area-inset-top,0px);
       --sb: env(safe-area-inset-bottom,0px);
@@ -114,6 +114,9 @@
     /* ══ BASE ══ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; background: radial-gradient(var(--pattern-dot, transparent) 1px, transparent 1.6px) 0 0 / 24px 24px, var(--page-bg); background-attachment: fixed; color: var(--text); min-height: 100dvh; -webkit-font-smoothing: antialiased; transition: background .3s, color .3s; }
+    /* Light theme: slightly bigger, more visible dots */
+    [data-theme="light"] body,
+    [data-theme="light"] .login-wrap { background: radial-gradient(var(--pattern-dot) 1.7px, transparent 2.6px) 0 0 / 26px 26px, var(--page-bg); background-attachment: fixed; }
     button { font-family: inherit; cursor: pointer; }
 
     /* ══ SHELL ══ */
@@ -812,7 +815,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.7';
+const APP_VERSION='3.8';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;

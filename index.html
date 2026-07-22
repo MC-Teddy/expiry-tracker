@@ -62,28 +62,52 @@
     /* Match accent-glow shadows to the magenta accent */
     [data-theme="glass"] .btn-cta,
     [data-theme="glass"] .login-btn { box-shadow: 0 2px 14px rgba(255,77,141,.45); }
-    /* Frost the primary surfaces */
-    [data-theme="glass"] .top-bar,
-    [data-theme="glass"] .bottom-nav,
-    [data-theme="glass"] .bao-card,
-    [data-theme="glass"] .sync-bar,
-    [data-theme="glass"] .login-card,
-    [data-theme="glass"] .ocr-row {
+    /* Frost the primary surfaces — shared by all glass themes ([data-theme^="glass"]) */
+    [data-theme^="glass"] .top-bar,
+    [data-theme^="glass"] .bottom-nav,
+    [data-theme^="glass"] .bao-card,
+    [data-theme^="glass"] .sync-bar,
+    [data-theme^="glass"] .login-card,
+    [data-theme^="glass"] .ocr-row {
       -webkit-backdrop-filter: blur(22px) saturate(150%);
       backdrop-filter: blur(22px) saturate(150%);
       border: 1px solid var(--border);
     }
-    [data-theme="glass"] .top-bar,
-    [data-theme="glass"] .bottom-nav { background: rgba(255,255,255,.07); }
-    [data-theme="glass"] .bao-card,
-    [data-theme="glass"] .login-card { box-shadow: 0 8px 32px rgba(8,4,40,.35), inset 0 1px 0 rgba(255,255,255,.14); }
+    [data-theme^="glass"] .top-bar,
+    [data-theme^="glass"] .bottom-nav { background: rgba(255,255,255,.07); }
+    [data-theme^="glass"] .bao-card,
+    [data-theme^="glass"] .login-card { box-shadow: 0 8px 32px rgba(8,4,40,.35), inset 0 1px 0 rgba(255,255,255,.14); }
     /* Translucent controls */
-    [data-theme="glass"] input:not([type=range]),
-    [data-theme="glass"] textarea,
-    [data-theme="glass"] .bao-input { background: rgba(255,255,255,.08); color: var(--text); border-color: var(--border); }
-    [data-theme="glass"] input::placeholder,
-    [data-theme="glass"] textarea::placeholder { color: rgba(223,234,247,.55); }
-    [data-theme="glass"] .icon-btn { background: rgba(255,255,255,.12); }
+    [data-theme^="glass"] input:not([type=range]),
+    [data-theme^="glass"] textarea,
+    [data-theme^="glass"] .bao-input { background: rgba(255,255,255,.08); color: var(--text); border-color: var(--border); }
+    [data-theme^="glass"] input::placeholder,
+    [data-theme^="glass"] textarea::placeholder { color: rgba(223,234,247,.55); }
+    [data-theme^="glass"] .icon-btn { background: rgba(255,255,255,.12); }
+
+    /* ══ GLASS 2 — warm muted-orange accent over a purple/plum backdrop ══ */
+    [data-theme="glassmorph2"] {
+      --page-bg:  #1B1533; --card-bg:  rgba(255,255,255,.11); --muted-bg: rgba(255,255,255,.09);
+      --accent:   #FF9D4D; --accent-lt: rgba(255,157,77,.24);   /* orange at same brightness as glass pink */
+      --text:     #FBF7FF; --text-2:   rgba(232,224,244,.82);
+      --border:   rgba(255,255,255,.20);
+      --green:    #46DDA6; --green-lt:  rgba(70,221,166,.18);
+      --yellow:   #F2C25A; --yellow-lt: rgba(242,194,90,.18);
+      --red:      #FF8080; --red-lt:    rgba(255,128,128,.18);
+      --shadow:   0 8px 32px rgba(12,4,30,.42);
+      --shadow-sm:0 2px 10px rgba(12,4,30,.26);
+    }
+    /* More-visible dot pattern + two gradients (amber glow over an indigo→plum wash) */
+    [data-theme="glassmorph2"] body,
+    [data-theme="glassmorph2"] .login-wrap {
+      background:
+        radial-gradient(rgba(255,255,255,.09) 1.2px, transparent 1.8px) 0 0 / 22px 22px,          /* pattern (more visible) */
+        radial-gradient(115% 90% at 84% 8%, rgba(230,140,70,.24) 0%, rgba(230,140,70,0) 55%),     /* gradient 2: amber */
+        linear-gradient(150deg, #1B1533 0%, #331B47 52%, #452247 100%);                            /* gradient 1: indigo → plum */
+      background-attachment: fixed;
+    }
+    [data-theme="glassmorph2"] .btn-cta,
+    [data-theme="glassmorph2"] .login-btn { box-shadow: 0 2px 14px rgba(255,157,77,.48); }
 
     /* ══ BASE ══ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -786,7 +810,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.5';
+const APP_VERSION='3.6';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -794,8 +818,8 @@ function renderVersion(){
 document.addEventListener('DOMContentLoaded',renderVersion);
 
 /* ═══ THEME ═══ */
-const THEMES=['light','dark','glass'];
-const THEME_META={ light:{icon:'☀️',color:'#F7F1EB'}, dark:{icon:'🌙',color:'#1C1816'}, glass:{icon:'🔮',color:'#0E2137'} };
+const THEMES=['light','dark','glass','glassmorph2'];
+const THEME_META={ light:{icon:'☀️',color:'#F7F1EB'}, dark:{icon:'🌙',color:'#1C1816'}, glass:{icon:'🔮',color:'#0E2137'}, glassmorph2:{icon:'🔶',color:'#1B1533'} };
 (function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
 function applyTheme(t) {
   if(!THEME_META[t]) t='light';

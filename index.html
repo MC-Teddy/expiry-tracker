@@ -323,7 +323,7 @@
     <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
     <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
     <div class="login-error" id="login-error"></div>
-    <div class="login-toggle"><a id="auth-toggle-link" onclick="toggleAuthMode(event)">First time? Create admin account</a></div>
+    <div class="login-toggle">Accounts are created by the administrator.</div>
   </div>
 </div>
 
@@ -619,8 +619,35 @@
             <span class="settings-lbl">Signed in as</span>
             <span class="acct-email" id="account-email">—</span>
           </div>
+          <div class="settings-row">
+            <span class="settings-lbl">Role</span>
+            <span class="acct-email" id="account-role">—</span>
+          </div>
           <p style="font-size:11.5px;color:var(--text-2);margin:8px 0 0;line-height:1.5;">Your items sync to this account and appear on any device you sign in on.</p>
-          <button class="logout-btn" onclick="doLogout()">Log out</button>
+          <div class="settings-heading" style="margin-top:14px;">Change password</div>
+          <input class="bao-input" type="password" id="new-password" placeholder="New password (6+ chars)…" autocomplete="new-password" style="font-size:13px;" />
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+            <button class="cat-add-btn" onclick="changeMyPassword()">Update password</button>
+            <button class="logout-btn" style="margin-top:0;" onclick="doLogout()">Log out</button>
+          </div>
+          <div style="margin-top:8px;font-size:11px;" id="pw-status"></div>
+        </div>
+      </div>
+
+      <!-- User Management (admin only) -->
+      <div class="bao-card" id="user-mgmt-card" style="display:none;">
+        <div class="bao-card-head">
+          <span class="head-icon">🛡️</span>
+          <span class="head-title">User Management</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Create user (no admin privileges)</div>
+          <input class="bao-input" type="email" id="nu-email" placeholder="Email…" autocomplete="off" style="font-size:13px;margin-bottom:8px;" />
+          <input class="bao-input" type="text" id="nu-pass" placeholder="Temporary password (6+ chars)…" autocomplete="off" style="font-size:13px;" />
+          <div style="margin-top:10px;"><button class="cat-add-btn" onclick="adminCreateUser()">➕ Create User</button></div>
+          <div style="margin-top:8px;font-size:11px;" id="nu-status"></div>
+          <div class="settings-heading" style="margin-top:16px;">All users</div>
+          <div id="user-list"></div>
         </div>
       </div>
 
@@ -698,7 +725,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='2.8';
+const APP_VERSION='2.9';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -887,8 +914,10 @@ function getDeviceId(){ let id=localStorage.getItem('expiry_device_id'); if(!id)
 const DEVICE_ID=getDeviceId();
 
 /* ═══ AUTH ═══ (Supabase email/password — scopes data to the logged-in account
-   so items sync across every device that signs in, replacing per-device silos) */
-let CURRENT_USER=null, AUTH_MODE='signin';
+   so items sync across every device that signs in, replacing per-device silos.
+   Sign-in only: accounts are provisioned by the admin, never self-created.) */
+let CURRENT_USER=null;
+function isAdmin(){ return !!(CURRENT_USER && CURRENT_USER.app_metadata && CURRENT_USER.app_metadata.role==='admin'); }
 async function initAuth(){
   const{data:{session}}=await sb.auth.getSession();
   applySession(session);
@@ -912,29 +941,66 @@ async function doLogin(){
   const errEl=document.getElementById('login-error'), btn=document.getElementById('login-btn');
   errEl.style.color='#dc2626'; errEl.textContent='';
   if(!email||!pass){ errEl.textContent='Enter your email and password.'; return; }
-  btn.disabled=true; btn.textContent=AUTH_MODE==='signup'?'Creating…':'Signing in…';
+  btn.disabled=true; btn.textContent='Signing in…';
   let res;
-  try{
-    res=AUTH_MODE==='signup'
-      ? await sb.auth.signUp({email,password:pass})
-      : await sb.auth.signInWithPassword({email,password:pass});
-  }catch(e){ res={error:{message:'Network error — check your connection.'}}; }
-  btn.disabled=false; updateAuthModeUI();
+  try{ res=await sb.auth.signInWithPassword({email,password:pass}); }
+  catch(e){ res={error:{message:'Network error — check your connection.'}}; }
+  btn.disabled=false; btn.textContent='Log In';
   if(res.error){ errEl.textContent=res.error.message; return; }
-  if(AUTH_MODE==='signup' && !(res.data&&res.data.session)){
-    errEl.style.color='var(--text-2)';
-    errEl.textContent='Account created. If email confirmation is on, confirm via the email, then log in.';
-    AUTH_MODE='signin'; updateAuthModeUI(); return;
-  }
   // onAuthStateChange applies the session and reveals the app.
 }
 async function doLogout(){ await sb.auth.signOut(); notify('👋 Logged out'); }
-function toggleAuthMode(e){ if(e)e.preventDefault(); AUTH_MODE=AUTH_MODE==='signin'?'signup':'signin'; document.getElementById('login-error').textContent=''; updateAuthModeUI(); }
-function updateAuthModeUI(){
-  const su=AUTH_MODE==='signup';
-  document.getElementById('login-btn').textContent=su?'Create Account':'Log In';
-  document.getElementById('login-sub').textContent=su?'Create admin account':'Admin sign in';
-  document.getElementById('auth-toggle-link').textContent=su?'Have an account? Log in':'First time? Create admin account';
+
+/* Change my own password (any user). */
+async function changeMyPassword(){
+  const inp=document.getElementById('new-password'), status=document.getElementById('pw-status');
+  const pw=(inp.value||'').trim();
+  if(pw.length<6){ status.style.color='#dc2626'; status.textContent='Password must be at least 6 characters.'; return; }
+  const{error}=await sb.auth.updateUser({password:pw});
+  if(error){ status.style.color='#dc2626'; status.textContent=error.message; return; }
+  inp.value=''; status.style.color='var(--green,#16a34a)'; status.textContent='✓ Password updated.'; notify('🔒 Password changed');
+}
+
+/* ═══ USER MANAGEMENT ═══ (admin only; runs server-side via the admin-users
+   Edge Function so the service-role key never touches the browser) */
+async function callAdmin(action, payload){
+  const{data,error}=await sb.functions.invoke('admin-users',{body:{action,...(payload||{})}});
+  if(error) throw new Error(error.message||'Request failed');
+  if(data&&data.ok===false) throw new Error(data.error||'Request failed');
+  return data;
+}
+async function adminCreateUser(){
+  const em=document.getElementById('nu-email'), pw=document.getElementById('nu-pass'), st=document.getElementById('nu-status');
+  const email=(em.value||'').trim(), pass=(pw.value||'').trim();
+  st.style.color='var(--text-2)'; st.textContent='';
+  if(!email||pass.length<6){ st.style.color='#dc2626'; st.textContent='Enter an email and a password (6+ chars).'; return; }
+  try{
+    st.textContent='Creating…';
+    await callAdmin('create',{email,password:pass});
+    em.value=''; pw.value=''; st.style.color='var(--green,#16a34a)'; st.textContent='✓ User created.';
+    notify('✅ User "'+email+'" created'); adminLoadUsers();
+  }catch(e){ st.style.color='#dc2626'; st.textContent=e.message; }
+}
+async function adminDeleteUser(id,email){
+  if(!confirm('Delete user '+email+'? This removes their login (their items remain in the database).')) return;
+  try{ await callAdmin('delete',{id}); notify('🗑 User deleted'); adminLoadUsers(); }
+  catch(e){ notify('⚠️ '+e.message); }
+}
+async function adminLoadUsers(){
+  const wrap=document.getElementById('user-list'); if(!wrap) return;
+  wrap.innerHTML='<div style="font-size:12px;color:var(--text-2);padding:6px 0;">Loading…</div>';
+  try{
+    const{users}=await callAdmin('list');
+    if(!users||!users.length){ wrap.innerHTML='<div style="font-size:12px;color:var(--text-2);">No users.</div>'; return; }
+    wrap.innerHTML=users.map(u=>`
+      <div class="settings-row" style="gap:8px;">
+        <span style="flex:1;min-width:0;">
+          <span class="acct-email">${esc(u.email||'')}</span>
+          <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:6px;background:${u.role==='admin'?'var(--accent-lt)':'var(--muted-bg)'};color:${u.role==='admin'?'var(--accent)':'var(--text-2)'};">${u.role==='admin'?'ADMIN':'USER'}</span>
+        </span>
+        ${u.role==='admin'?'':`<button class="cat-chip-del" onclick="adminDeleteUser('${u.id}','${esc(u.email||'')}')">×</button>`}
+      </div>`).join('');
+  }catch(e){ wrap.innerHTML='<div style="font-size:12px;color:#dc2626;">'+esc(e.message)+'</div>'; }
 }
 
 /* ═══ SYNC UI ═══ */
@@ -1296,6 +1362,9 @@ function renderSettingsPage(){
   if(cr){cr.max=SOON_DAYS;cr.value=CRITICAL_DAYS;document.getElementById('critical-val').textContent=CRITICAL_DAYS+'d';}
   const dev=document.getElementById('device-id-display'); if(dev) dev.textContent=DEVICE_ID;
   const em=document.getElementById('account-email'); if(em&&CURRENT_USER) em.textContent=CURRENT_USER.email||'';
+  const rl=document.getElementById('account-role'); if(rl) rl.textContent=isAdmin()?'Administrator':'User';
+  const umc=document.getElementById('user-mgmt-card');
+  if(umc){ umc.style.display=isAdmin()?'':'none'; if(isAdmin()) adminLoadUsers(); }
   const vk=document.getElementById('vision-key-input'); if(vk) vk.value=getVisionKey();
   renderVisionKeyStatus();
   renderCatList();
@@ -1313,7 +1382,6 @@ renderDatalist();
 renderCategoryPicker('scan');
 renderCategoryPicker('manual');
 document.getElementById('manual-date').value=new Date().toISOString().split('T')[0];
-updateAuthModeUI();
 initAuth();          // decides: show login page or the app (+ loads this account's data)
 </script>
 </body>

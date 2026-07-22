@@ -38,25 +38,25 @@
     }
     /* ══ GLASS THEME (glassmorphism) ══ */
     [data-theme="glass"] {
-      --page-bg:  #171038; --card-bg:  rgba(255,255,255,.10); --muted-bg: rgba(255,255,255,.10);
-      --accent:   #FF7A54; --accent-lt: rgba(255,122,84,.22);
-      --text:     #F6F4FF; --text-2:   rgba(246,244,255,.66);
-      --border:   rgba(255,255,255,.20);
-      --green:    #2BE0A6; --green-lt:  rgba(43,224,166,.18);
-      --yellow:   #FFC24B; --yellow-lt: rgba(255,194,75,.18);
-      --red:      #FF6B6B; --red-lt:    rgba(255,107,107,.18);
-      --shadow:   0 8px 32px rgba(8,4,40,.35);
-      --shadow-sm:0 2px 10px rgba(8,4,40,.22);
+      --page-bg:  #0E2137; --card-bg:  rgba(255,255,255,.12); --muted-bg: rgba(255,255,255,.10);
+      --accent:   #FF8A5B; --accent-lt: rgba(255,138,91,.22);
+      --text:     #FBFCFF; --text-2:   rgba(223,234,247,.82);   /* higher-contrast sub-text */
+      --border:   rgba(255,255,255,.22);
+      --green:    #43E0A8; --green-lt:  rgba(67,224,168,.18);
+      --yellow:   #FFCF63; --yellow-lt: rgba(255,207,99,.18);
+      --red:      #FF8585; --red-lt:    rgba(255,133,133,.18);
+      --shadow:   0 8px 32px rgba(4,12,28,.40);
+      --shadow-sm:0 2px 10px rgba(4,12,28,.24);
     }
-    /* Colourful aurora backdrop — what the frosted panels blur over */
+    /* Calm cool-blue aurora — soft, low-saturation, easy on the eyes */
     [data-theme="glass"] body,
     [data-theme="glass"] .login-wrap {
       background:
-        radial-gradient(circle at 12% 18%, rgba(124,92,255,.55), transparent 46%),
-        radial-gradient(circle at 88% 12%, rgba(255,94,148,.48), transparent 44%),
-        radial-gradient(circle at 80% 88%, rgba(56,196,232,.42), transparent 46%),
-        radial-gradient(circle at 16% 92%, rgba(255,150,70,.30), transparent 46%),
-        linear-gradient(160deg, #171038 0%, #1e1443 100%);
+        radial-gradient(circle at 14% 16%, rgba(64,140,220,.36), transparent 48%),
+        radial-gradient(circle at 86% 14%, rgba(56,178,196,.28), transparent 46%),
+        radial-gradient(circle at 82% 86%, rgba(80,120,208,.28), transparent 48%),
+        radial-gradient(circle at 14% 90%, rgba(46,196,206,.20), transparent 48%),
+        linear-gradient(165deg, #0E2137 0%, #122A44 100%);
       background-attachment: fixed;
     }
     /* Frost the primary surfaces */
@@ -79,7 +79,7 @@
     [data-theme="glass"] textarea,
     [data-theme="glass"] .bao-input { background: rgba(255,255,255,.08); color: var(--text); border-color: var(--border); }
     [data-theme="glass"] input::placeholder,
-    [data-theme="glass"] textarea::placeholder { color: rgba(246,244,255,.45); }
+    [data-theme="glass"] textarea::placeholder { color: rgba(223,234,247,.55); }
     [data-theme="glass"] .icon-btn { background: rgba(255,255,255,.12); }
 
     /* ══ BASE ══ */
@@ -770,7 +770,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.1';
+const APP_VERSION='3.2';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -779,7 +779,7 @@ document.addEventListener('DOMContentLoaded',renderVersion);
 
 /* ═══ THEME ═══ */
 const THEMES=['light','dark','glass'];
-const THEME_META={ light:{icon:'☀️',color:'#F7F1EB'}, dark:{icon:'🌙',color:'#1C1816'}, glass:{icon:'🔮',color:'#171038'} };
+const THEME_META={ light:{icon:'☀️',color:'#F7F1EB'}, dark:{icon:'🌙',color:'#1C1816'}, glass:{icon:'🔮',color:'#0E2137'} };
 (function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
 function applyTheme(t) {
   if(!THEME_META[t]) t='light';

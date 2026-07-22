@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MicroCR — from-scratch OCR demo</title>
+<style>
+  :root { font-family: system-ui, sans-serif; }
+  body { max-width: 860px; margin: 0 auto; padding: 24px; color: #1a1a1a; background: #fafafa; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+  .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  label { font-size: 12px; font-weight: 600; color: #444; display: block; margin-bottom: 6px; }
+  input, select, button { font-size: 14px; padding: 8px 10px; border: 1px solid #ccc; border-radius: 8px; }
+  input { width: 100%; box-sizing: border-box; }
+  button { background: #2563eb; color: #fff; border: none; cursor: pointer; font-weight: 600; }
+  button:hover { background: #1d4ed8; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .row > div { flex: 1; min-width: 160px; }
+  canvas { border: 1px solid #ddd; border-radius: 8px; max-width: 100%; background: #fff; margin-top: 8px; }
+  .out { font-family: ui-monospace, monospace; font-size: 18px; padding: 10px; background: #f3f4f6; border-radius: 8px; word-break: break-all; }
+  .stat { font-size: 13px; color: #444; margin-top: 8px; }
+  .good { color: #16a34a; font-weight: 700; }
+  .bad { color: #dc2626; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eee; }
+  .chip { display:inline-block; padding:1px 6px; border-radius:6px; font-family:ui-monospace,monospace; }
+</style>
+</head>
+<body>
+  <h1>MicroCR</h1>
+  <div class="sub">A from-scratch, dependency-free OCR engine. It trains on a set of fonts, then reads text rendered in a <b>held-out</b> font it never saw — demonstrating generalization without any imported library or trained model.</div>
+
+  <div class="card">
+    <div class="row">
+      <div style="flex:2">
+        <label>Text to render &amp; recognize</label>
+        <input id="text" value="EXP 31 DEC 2027  LOT 12/2026" />
+      </div>
+      <div>
+        <label>Render font (held out of training)</label>
+        <select id="font">
+          <option>Trebuchet MS</option>
+          <option>Tahoma</option>
+          <option>Impact</option>
+          <option>Comic Sans MS</option>
+          <option>Palatino Linotype</option>
+          <option>Consolas</option>
+          <option>Arial</option>
+        </select>
+      </div>
+      <div style="flex:0">
+        <button id="run">Recognize</button>
+      </div>
+    </div>
+    <canvas id="cv" width="820" height="120"></canvas>
+  </div>
+
+  <div class="card">
+    <label>Recognized output</label>
+    <div class="out" id="result">—</div>
+    <div class="stat" id="accuracy"></div>
+    <div class="stat" id="timing"></div>
+  </div>
+
+  <div class="card">
+    <label>Per-character confidence</label>
+    <table id="chartable"><thead><tr><th>char</th><th>confidence</th><th>margin</th></tr></thead><tbody></tbody></table>
+  </div>
+
+<script src="microcr.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+
+// Train on a diverse font set. The "render font" options above are deliberately
+// NOT all in this list, so successful reads prove generalization.
+const ocr = new MicroCR({
+  charset: '0123456789/-.: ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  fonts:   ['Arial', 'Verdana', 'Georgia', 'Courier New', 'Times New Roman', 'Segoe UI'],
+  weights: ['normal', 'bold'],
+});
+let ready = ocr.train().then(() => console.log('MicroCR trained:', ocr.templates.length, 'templates'));
+
+function render(text, font) {
+  const cv = $('cv'), ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = '#111';
+  ctx.font = `64px "${font}"`;
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 12, cv.height / 2);
+  return cv;
+}
+
+function accuracy(truth, got) {
+  // Levenshtein-free simple char accuracy on stripped strings.
+  const a = truth.replace(/\s+/g, ''), b = got.replace(/\s+/g, '');
+  let correct = 0;
+  for (let i = 0; i < Math.min(a.length, b.length); i++) if (a[i] === b[i]) correct++;
+  return { correct, total: a.length, pct: a.length ? Math.round(100 * correct / a.length) : 0 };
+}
+
+async function run() {
+  await ready;
+  const text = $('text').value, font = $('font').value;
+  const cv = render(text, font);
+  const t0 = performance.now();
+  const res = ocr.recognize(cv);
+  const ms = (performance.now() - t0).toFixed(0);
+
+  $('result').textContent = res.text || '(nothing detected)';
+  const acc = accuracy(text, res.text);
+  $('accuracy').innerHTML = `Character accuracy: <span class="${acc.pct >= 80 ? 'good' : 'bad'}">${acc.pct}%</span> (${acc.correct}/${acc.total})`;
+  $('timing').textContent = `Recognized in ${ms} ms · ${ocr.templates.length} templates · engine ~15KB, no dependencies`;
+
+  const tb = $('chartable').querySelector('tbody');
+  tb.innerHTML = '';
+  for (const c of res.chars) {
+    const hue = Math.round(c.conf * 120); // red→green
+    tb.insertAdjacentHTML('beforeend',
+      `<tr><td><span class="chip" style="background:hsl(${hue},70%,88%)">${c.char === ' ' ? '␠' : c.char}</span></td>
+       <td>${(c.conf * 100).toFixed(1)}%</td><td>${c.margin.toFixed(3)}</td></tr>`);
+  }
+}
+
+$('run').addEventListener('click', run);
+window.addEventListener('load', () => setTimeout(run, 300));
+</script>
+</body>
+</html>

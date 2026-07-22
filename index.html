@@ -36,6 +36,51 @@
       --shadow:    0 4px 24px rgba(0,0,0,.3);
       --shadow-sm: 0 1px 6px rgba(0,0,0,.2);
     }
+    /* ══ GLASS THEME (glassmorphism) ══ */
+    [data-theme="glass"] {
+      --page-bg:  #171038; --card-bg:  rgba(255,255,255,.10); --muted-bg: rgba(255,255,255,.10);
+      --accent:   #FF7A54; --accent-lt: rgba(255,122,84,.22);
+      --text:     #F6F4FF; --text-2:   rgba(246,244,255,.66);
+      --border:   rgba(255,255,255,.20);
+      --green:    #2BE0A6; --green-lt:  rgba(43,224,166,.18);
+      --yellow:   #FFC24B; --yellow-lt: rgba(255,194,75,.18);
+      --red:      #FF6B6B; --red-lt:    rgba(255,107,107,.18);
+      --shadow:   0 8px 32px rgba(8,4,40,.35);
+      --shadow-sm:0 2px 10px rgba(8,4,40,.22);
+    }
+    /* Colourful aurora backdrop — what the frosted panels blur over */
+    [data-theme="glass"] body,
+    [data-theme="glass"] .login-wrap {
+      background:
+        radial-gradient(circle at 12% 18%, rgba(124,92,255,.55), transparent 46%),
+        radial-gradient(circle at 88% 12%, rgba(255,94,148,.48), transparent 44%),
+        radial-gradient(circle at 80% 88%, rgba(56,196,232,.42), transparent 46%),
+        radial-gradient(circle at 16% 92%, rgba(255,150,70,.30), transparent 46%),
+        linear-gradient(160deg, #171038 0%, #1e1443 100%);
+      background-attachment: fixed;
+    }
+    /* Frost the primary surfaces */
+    [data-theme="glass"] .top-bar,
+    [data-theme="glass"] .bottom-nav,
+    [data-theme="glass"] .bao-card,
+    [data-theme="glass"] .sync-bar,
+    [data-theme="glass"] .login-card,
+    [data-theme="glass"] .ocr-row {
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid var(--border);
+    }
+    [data-theme="glass"] .top-bar,
+    [data-theme="glass"] .bottom-nav { background: rgba(255,255,255,.07); }
+    [data-theme="glass"] .bao-card,
+    [data-theme="glass"] .login-card { box-shadow: 0 8px 32px rgba(8,4,40,.35), inset 0 1px 0 rgba(255,255,255,.14); }
+    /* Translucent controls */
+    [data-theme="glass"] input:not([type=range]),
+    [data-theme="glass"] textarea,
+    [data-theme="glass"] .bao-input { background: rgba(255,255,255,.08); color: var(--text); border-color: var(--border); }
+    [data-theme="glass"] input::placeholder,
+    [data-theme="glass"] textarea::placeholder { color: rgba(246,244,255,.45); }
+    [data-theme="glass"] .icon-btn { background: rgba(255,255,255,.12); }
 
     /* ══ BASE ══ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -725,7 +770,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.0';
+const APP_VERSION='3.1';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -733,15 +778,20 @@ function renderVersion(){
 document.addEventListener('DOMContentLoaded',renderVersion);
 
 /* ═══ THEME ═══ */
+const THEMES=['light','dark','glass'];
+const THEME_META={ light:{icon:'☀️',color:'#F7F1EB'}, dark:{icon:'🌙',color:'#1C1816'}, glass:{icon:'🔮',color:'#171038'} };
 (function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
 function applyTheme(t) {
+  if(!THEME_META[t]) t='light';
   document.documentElement.setAttribute('data-theme', t);
   const btn=document.getElementById('theme-btn'), meta=document.getElementById('meta-theme-color');
-  if(t==='dark'){ if(btn)btn.textContent='🌙'; if(meta)meta.content='#1C1816'; }
-  else          { if(btn)btn.textContent='☀️'; if(meta)meta.content='#F7F1EB'; }
+  if(btn)btn.textContent=THEME_META[t].icon; if(meta)meta.content=THEME_META[t].color;
   localStorage.setItem('expiry_theme', t);
 }
-function toggleTheme(){ applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); }
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme')||'light';
+  applyTheme(THEMES[(THEMES.indexOf(cur)+1)%THEMES.length]);  // light → dark → glass → …
+}
 
 /* ═══ SETTINGS ═══ */
 let SOON_DAYS     = parseInt(localStorage.getItem('expiry_soon_days')     || '14');

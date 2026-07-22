@@ -698,7 +698,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='2.7';
+const APP_VERSION='2.8';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -833,9 +833,50 @@ function getThumbnail(canvas) {
   t.getContext('2d').drawImage(canvas,0,0,190,130);
   return t.toDataURL('image/jpeg',.55);
 }
+/* Local cache (instant display + offline). Keyed by item id. */
 function saveImageLocally(id,dataUrl){ try{ const imgs=JSON.parse(localStorage.getItem('expiry_images')||'{}'); imgs[id]=dataUrl; localStorage.setItem('expiry_images',JSON.stringify(imgs)); }catch(e){} }
 function getImageLocally(id){ return (JSON.parse(localStorage.getItem('expiry_images')||'{}'))[id]||null; }
-function deleteImageLocally(id){ const imgs=JSON.parse(localStorage.getItem('expiry_images')||'{}'); delete imgs[id]; localStorage.setItem('expiry_images',JSON.stringify(imgs)); }
+function deleteImageLocally(id){ try{ const imgs=JSON.parse(localStorage.getItem('expiry_images')||'{}'); delete imgs[id]; localStorage.setItem('expiry_images',JSON.stringify(imgs)); }catch(e){} }
+
+/* ── Supabase Storage image sync ──
+   Thumbnails live at  <user_id>/<item_id>.jpg  in the 'item-images' bucket, so
+   any device signed into the same account can pull them. Local cache is kept as
+   an instant/offline copy. */
+const IMG_BUCKET='item-images';
+function imagePath(id){ return CURRENT_USER ? `${CURRENT_USER.id}/${id}.jpg` : null; }
+function dataURLtoBlob(u){ const [h,b]=u.split(','); const mime=(h.match(/:(.*?);/)||[])[1]||'image/jpeg'; const bin=atob(b); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i); return new Blob([a],{type:mime}); }
+function blobToDataURL(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob); }); }
+/* Save locally then push to Storage (upsert). Local copy stands in if upload fails. */
+async function uploadImage(id,dataUrl){
+  saveImageLocally(id,dataUrl);
+  const path=imagePath(id); if(!path) return;
+  try{ await sb.storage.from(IMG_BUCKET).upload(path,dataURLtoBlob(dataUrl),{upsert:true,contentType:'image/jpeg'}); }
+  catch(e){ /* keep local copy; nothing user-facing to do */ }
+}
+/* Return a displayable data URL: local cache first, else download from Storage
+   (and cache it so it's instant/offline next time). null if there is no image. */
+async function fetchImage(id){
+  const local=getImageLocally(id); if(local) return local;
+  const path=imagePath(id); if(!path) return null;
+  try{
+    const{data,error}=await sb.storage.from(IMG_BUCKET).download(path);
+    if(error||!data) return null;
+    const url=await blobToDataURL(data);
+    saveImageLocally(id,url);
+    return url;
+  }catch(e){ return null; }
+}
+async function removeImage(id){
+  deleteImageLocally(id);
+  const path=imagePath(id); if(!path) return;
+  try{ await sb.storage.from(IMG_BUCKET).remove([path]); }catch(e){}
+}
+/* Fill an <img> once its thumbnail is available (used for cross-device pulls). */
+async function hydrateImage(imgEl,id){
+  if(!imgEl) return;
+  const url=await fetchImage(id);
+  if(url && imgEl.isConnected){ imgEl.src=url; imgEl.style.display=''; }
+}
 function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('🗑 Cached photos cleared'); }
 
 /* ═══ SUPABASE ═══ */
@@ -1144,7 +1185,7 @@ async function saveScannedItem(){
   if(!name){notify('⚠️ Enter a product name');return;}
   if(!date){notify('⚠️ Enter the expiry date');return;}
   const item=await dbAdd({name,expiry:date,icon:emojiScan,added:new Date().toISOString()});
-  if(item){ if(capturedThumb)saveImageLocally(item.id,capturedThumb); notify('✅ "'+name+'" saved!'); document.getElementById('add-form').classList.remove('show'); document.getElementById('ocr-status').classList.remove('show'); capturedThumb=null; retakePhoto(); }
+  if(item){ if(capturedThumb)await uploadImage(item.id,capturedThumb); notify('✅ "'+name+'" saved!'); document.getElementById('add-form').classList.remove('show'); document.getElementById('ocr-status').classList.remove('show'); capturedThumb=null; retakePhoto(); }
 }
 async function saveManualItem(){
   const name=document.getElementById('manual-name').value.trim();
@@ -1158,19 +1199,20 @@ async function saveManualItem(){
 /* ═══ RENDER ═══ */
 function buildItem(item,idx){
   const days=daysUntil(item.expiry);
-  const img=getImageLocally(item.id);
+  const local=getImageLocally(item.id);
   const div=document.createElement('div');
   div.className='bao-item '+getStatus(days);
   div.innerHTML=`
     <span class="item-num">${idx+1}.</span>
     <span class="item-emoji">${item.icon||'📦'}</span>
-    ${img?`<img class="item-thumb" src="${img}" alt="photo" />`:''}
+    <img class="item-thumb" data-img="${item.id}" alt="photo" ${local?`src="${local}"`:'style="display:none"'} />
     <div class="item-body">
       <div class="item-name-text">${esc(item.name)}</div>
       <div class="item-sub">${fmtDate(item.expiry)}</div>
     </div>
     <span class="item-tag ${getTag(days)}">${daysLabel(days)}</span>
     <button class="item-del-btn" onclick="deleteItem('${item.id}')">🗑</button>`;
+  if(!local) hydrateImage(div.querySelector('.item-thumb'), item.id);  // pull from Storage
   return div;
 }
 
@@ -1245,7 +1287,7 @@ async function renderAll(){
   else{ items.forEach((item,i)=>list.appendChild(buildItem(item,i))); }
 }
 
-async function deleteItem(id){ deleteImageLocally(id); await dbDelete(id); notify('🗑 Deleted'); renderDashboard(); renderAll(); }
+async function deleteItem(id){ await removeImage(id); await dbDelete(id); notify('🗑 Deleted'); renderDashboard(); renderAll(); }
 
 /* ═══ SETTINGS PAGE ═══ */
 function renderSettingsPage(){

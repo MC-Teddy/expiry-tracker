@@ -1,5 +1,5 @@
 /* Expiry Tracker — Service Worker (cache name tracks APP_VERSION; bump on every edit) */
-const CACHE = 'expiry-tracker-v3.3';
+const CACHE = 'expiry-tracker-v3.4';
 const ASSETS = [
   './',
   './index.html',

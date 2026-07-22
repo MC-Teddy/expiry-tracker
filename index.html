@@ -696,6 +696,19 @@
         </div>
       </div>
 
+      <!-- Export -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">📊</span>
+          <span class="head-title">Export Data</span>
+        </div>
+        <div class="settings-section">
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">Download all your tracked items as an Excel spreadsheet (.xlsx) — name, expiry date, days left, status and date added.</p>
+          <button class="cat-add-btn" onclick="exportToExcel()">⬇️ Export to Excel</button>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="export-status"></div>
+        </div>
+      </div>
+
       <!-- About -->
       <div class="bao-card">
         <div class="bao-card-head">
@@ -770,7 +783,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.2';
+const APP_VERSION='3.3';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1424,6 +1437,81 @@ function renderSettingsPage(){
     ta.value=PRODUCTS.join('\n');
     document.getElementById('product-count-label').textContent=PRODUCTS.length+' products in list';
   }
+}
+
+/* ═══ EXPORT (native .xlsx — no dependency, works offline) ═══ */
+function crc32(bytes){
+  let table=crc32.table;
+  if(!table){ table=crc32.table=[]; for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; table[n]=c>>>0; } }
+  let crc=0xFFFFFFFF;
+  for(let i=0;i<bytes.length;i++) crc=(crc>>>8)^table[(crc^bytes[i])&0xFF];
+  return (crc^0xFFFFFFFF)>>>0;
+}
+function zipStore(files){                       // uncompressed (stored) ZIP
+  const enc=new TextEncoder(), chunks=[], central=[]; let offset=0;
+  const u16=n=>[n&0xFF,(n>>>8)&0xFF];
+  const u32=n=>[n&0xFF,(n>>>8)&0xFF,(n>>>16)&0xFF,(n>>>24)&0xFF];
+  for(const f of files){
+    const name=enc.encode(f.name), data=f.data, crc=crc32(data);
+    const lfh=[].concat(u32(0x04034b50),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0));
+    chunks.push(new Uint8Array(lfh),name,data);
+    const local=offset; offset+=lfh.length+name.length+data.length;
+    const cdh=[].concat(u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(local));
+    central.push({header:new Uint8Array(cdh),name});
+  }
+  const cdStart=offset; let cdSize=0;
+  for(const c of central){ chunks.push(c.header,c.name); cdSize+=c.header.length+c.name.length; }
+  chunks.push(new Uint8Array([].concat(u32(0x06054b50),u16(0),u16(0),u16(central.length),u16(central.length),u32(cdSize),u32(cdStart),u16(0))));
+  let total=0; for(const c of chunks) total+=c.length;
+  const out=new Uint8Array(total); let p=0; for(const c of chunks){ out.set(c,p); p+=c.length; }
+  return out;
+}
+function buildXlsx(rows, sheetName){
+  const enc=new TextEncoder();
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const col=n=>{ let s=''; n++; while(n>0){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=(n-m-1)/26; } return s; };
+  let body='';
+  rows.forEach((row,ri)=>{
+    let cells='';
+    row.forEach((val,ci)=>{
+      const ref=col(ci)+(ri+1);
+      if(typeof val==='number' && isFinite(val)) cells+=`<c r="${ref}"><v>${val}</v></c>`;
+      else cells+=`<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${esc(val==null?'':val)}</t></is></c>`;
+    });
+    body+=`<row r="${ri+1}">${cells}</row>`;
+  });
+  const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${body}</sheetData></worksheet>`;
+  const safe=esc((sheetName||'Sheet1').replace(/[\\\/\?\*\[\]:]/g,' ').slice(0,31));
+  const files=[
+    {name:'[Content_Types].xml', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`)},
+    {name:'_rels/.rels', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`)},
+    {name:'xl/workbook.xml', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${safe}" sheetId="1" r:id="rId1"/></sheets></workbook>`)},
+    {name:'xl/_rels/workbook.xml.rels', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`)},
+    {name:'xl/worksheets/sheet1.xml', data:enc.encode(sheet)},
+  ];
+  return zipStore(files);
+}
+function downloadBlob(blob, filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+async function exportToExcel(){
+  const st=document.getElementById('export-status');
+  if(st){ st.style.color='var(--text-2)'; st.textContent='Preparing…'; }
+  const items=await dbGetAll();
+  if(!items.length){ if(st){st.style.color='#dc2626';st.textContent='No items to export.';} notify('Nothing to export'); return; }
+  const rows=[['#','Product','Expiry Date','Days Left','Status','Added On']];
+  items.forEach((it,i)=>{
+    const d=daysUntil(it.expiry);
+    const status=d<0?'Expired':(d<=SOON_DAYS?'Expiring Soon':'Good');
+    rows.push([ i+1, it.name||'', it.expiry||'', d, status, (it.added||'').split('T')[0] ]);
+  });
+  const blob=new Blob([buildXlsx(rows,'Expiry Items')],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  downloadBlob(blob, 'expiry-tracker-'+new Date().toISOString().split('T')[0]+'.xlsx');
+  if(st){ st.style.color='var(--green)'; st.textContent='✓ Exported '+items.length+' items.'; }
+  notify('📥 Exported '+items.length+' items');
 }
 
 /* ═══ INIT ═══ */

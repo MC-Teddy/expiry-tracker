@@ -293,9 +293,40 @@
       /* Notification offset */
       #notify-bar { left: 220px; border-radius: 0 0 14px 14px; }
     }
+    /* ── Login gate ── */
+    .login-wrap { display:none; position:fixed; inset:0; z-index:1000; align-items:center; justify-content:center; padding:24px; background:var(--page-bg); }
+    .login-card { width:100%; max-width:360px; background:var(--card-bg); border:1.5px solid var(--border); border-radius:22px; padding:34px 26px 28px; box-shadow:var(--shadow); text-align:center; }
+    .login-logo { font-size:46px; line-height:1; }
+    .login-title { font-size:22px; font-weight:800; margin:10px 0 2px; color:var(--text); letter-spacing:-.3px; }
+    .login-sub { font-size:13px; color:var(--text-2); margin-bottom:24px; }
+    .login-card input { width:100%; box-sizing:border-box; padding:13px 14px; margin-bottom:11px; border:1.5px solid var(--border); border-radius:12px; font-size:15px; background:var(--muted-bg); color:var(--text); }
+    .login-card input:focus { outline:none; border-color:var(--accent); }
+    .login-btn { width:100%; padding:13px; border:none; border-radius:12px; background:var(--accent); color:#fff; font-size:15px; font-weight:700; cursor:pointer; margin-top:5px; box-shadow:0 2px 12px rgba(232,97,58,.35); }
+    .login-btn:disabled { opacity:.6; cursor:default; }
+    .login-error { font-size:12.5px; color:#dc2626; margin-top:13px; min-height:16px; line-height:1.45; }
+    .login-toggle { margin-top:18px; font-size:12.5px; color:var(--text-2); }
+    .login-toggle a { color:var(--accent); text-decoration:none; font-weight:600; cursor:pointer; }
+    #app { display:none; }
+    .acct-email { font-size:12px; color:var(--text-2); word-break:break-all; }
+    .logout-btn { margin-top:10px; background:var(--muted-bg); color:var(--text); border:1.5px solid var(--border); border-radius:10px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; }
   </style>
 </head>
 <body>
+
+<!-- ════ LOGIN GATE ════ -->
+<div class="login-wrap" id="login-page">
+  <div class="login-card">
+    <div class="login-logo">📦</div>
+    <div class="login-title">Expiry Tracker</div>
+    <div class="login-sub" id="login-sub">Admin sign in</div>
+    <input id="login-email" type="email" placeholder="Email" autocomplete="username" />
+    <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-toggle"><a id="auth-toggle-link" onclick="toggleAuthMode(event)">First time? Create admin account</a></div>
+  </div>
+</div>
+
 <div id="notify-bar"></div>
 
 <div id="app">
@@ -577,6 +608,22 @@
         </div>
       </div>
 
+      <!-- Account -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">👤</span>
+          <span class="head-title">Account</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-row">
+            <span class="settings-lbl">Signed in as</span>
+            <span class="acct-email" id="account-email">—</span>
+          </div>
+          <p style="font-size:11.5px;color:var(--text-2);margin:8px 0 0;line-height:1.5;">Your items sync to this account and appear on any device you sign in on.</p>
+          <button class="logout-btn" onclick="doLogout()">Log out</button>
+        </div>
+      </div>
+
       <!-- About -->
       <div class="bao-card">
         <div class="bao-card-head">
@@ -651,7 +698,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='2.6';
+const APP_VERSION='2.7';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -798,6 +845,57 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 function getDeviceId(){ let id=localStorage.getItem('expiry_device_id'); if(!id){id=crypto.randomUUID();localStorage.setItem('expiry_device_id',id);} return id; }
 const DEVICE_ID=getDeviceId();
 
+/* ═══ AUTH ═══ (Supabase email/password — scopes data to the logged-in account
+   so items sync across every device that signs in, replacing per-device silos) */
+let CURRENT_USER=null, AUTH_MODE='signin';
+async function initAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  applySession(session);
+  sb.auth.onAuthStateChange((_e,s)=>applySession(s));
+}
+function applySession(session){
+  const prev=CURRENT_USER;
+  CURRENT_USER=(session&&session.user)||null;
+  const login=document.getElementById('login-page'), app=document.getElementById('app');
+  if(CURRENT_USER){
+    login.style.display='none'; app.style.display='';
+    const em=document.getElementById('account-email'); if(em)em.textContent=CURRENT_USER.email||'';
+    if(!prev) refresh();          // just logged in → pull this account's data
+  }else{
+    app.style.display='none'; login.style.display='flex';
+  }
+}
+async function doLogin(){
+  const email=(document.getElementById('login-email').value||'').trim();
+  const pass=document.getElementById('login-pass').value||'';
+  const errEl=document.getElementById('login-error'), btn=document.getElementById('login-btn');
+  errEl.style.color='#dc2626'; errEl.textContent='';
+  if(!email||!pass){ errEl.textContent='Enter your email and password.'; return; }
+  btn.disabled=true; btn.textContent=AUTH_MODE==='signup'?'Creating…':'Signing in…';
+  let res;
+  try{
+    res=AUTH_MODE==='signup'
+      ? await sb.auth.signUp({email,password:pass})
+      : await sb.auth.signInWithPassword({email,password:pass});
+  }catch(e){ res={error:{message:'Network error — check your connection.'}}; }
+  btn.disabled=false; updateAuthModeUI();
+  if(res.error){ errEl.textContent=res.error.message; return; }
+  if(AUTH_MODE==='signup' && !(res.data&&res.data.session)){
+    errEl.style.color='var(--text-2)';
+    errEl.textContent='Account created. If email confirmation is on, confirm via the email, then log in.';
+    AUTH_MODE='signin'; updateAuthModeUI(); return;
+  }
+  // onAuthStateChange applies the session and reveals the app.
+}
+async function doLogout(){ await sb.auth.signOut(); notify('👋 Logged out'); }
+function toggleAuthMode(e){ if(e)e.preventDefault(); AUTH_MODE=AUTH_MODE==='signin'?'signup':'signin'; document.getElementById('login-error').textContent=''; updateAuthModeUI(); }
+function updateAuthModeUI(){
+  const su=AUTH_MODE==='signup';
+  document.getElementById('login-btn').textContent=su?'Create Account':'Log In';
+  document.getElementById('login-sub').textContent=su?'Create admin account':'Admin sign in';
+  document.getElementById('auth-toggle-link').textContent=su?'Have an account? Log in':'First time? Create admin account';
+}
+
 /* ═══ SYNC UI ═══ */
 function setSyncing(on){
   const dot=document.getElementById('sync-dot'), lbl=document.getElementById('sync-label');
@@ -808,18 +906,21 @@ async function refresh(){ await renderDashboard(); await renderAll(); }
 
 /* ═══ DB ═══ */
 async function dbGetAll(){
+  if(!CURRENT_USER) return [];
   setSyncing(true);
-  const{data,error}=await sb.from('items').select('*').eq('device_id',DEVICE_ID).order('expiry',{ascending:true});
+  const{data,error}=await sb.from('items').select('*').eq('user_id',CURRENT_USER.id).order('expiry',{ascending:true});
   setSyncing(false); if(error){notify('⚠️ '+error.message);return[];} return data||[];
 }
 async function dbAdd(item){
+  if(!CURRENT_USER){ notify('⚠️ Please log in first'); return null; }
   setSyncing(true);
-  const{data,error}=await sb.from('items').insert([{...item,device_id:DEVICE_ID}]).select().single();
+  const{data,error}=await sb.from('items').insert([{...item,user_id:CURRENT_USER.id,device_id:DEVICE_ID}]).select().single();
   setSyncing(false); if(error){notify('⚠️ '+error.message);return null;} return data;
 }
 async function dbDelete(id){
+  if(!CURRENT_USER) return;
   setSyncing(true);
-  const{error}=await sb.from('items').delete().eq('id',id).eq('device_id',DEVICE_ID);
+  const{error}=await sb.from('items').delete().eq('id',id).eq('user_id',CURRENT_USER.id);
   setSyncing(false); if(error)notify('⚠️ '+error.message);
 }
 
@@ -1152,6 +1253,7 @@ function renderSettingsPage(){
   if(sr){sr.value=SOON_DAYS;document.getElementById('soon-val').textContent=SOON_DAYS+'d';}
   if(cr){cr.max=SOON_DAYS;cr.value=CRITICAL_DAYS;document.getElementById('critical-val').textContent=CRITICAL_DAYS+'d';}
   const dev=document.getElementById('device-id-display'); if(dev) dev.textContent=DEVICE_ID;
+  const em=document.getElementById('account-email'); if(em&&CURRENT_USER) em.textContent=CURRENT_USER.email||'';
   const vk=document.getElementById('vision-key-input'); if(vk) vk.value=getVisionKey();
   renderVisionKeyStatus();
   renderCatList();
@@ -1169,7 +1271,8 @@ renderDatalist();
 renderCategoryPicker('scan');
 renderCategoryPicker('manual');
 document.getElementById('manual-date').value=new Date().toISOString().split('T')[0];
-renderDashboard();
+updateAuthModeUI();
+initAuth();          // decides: show login page or the app (+ loads this account's data)
 </script>
 </body>
 </html>

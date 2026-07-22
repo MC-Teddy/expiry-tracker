@@ -725,7 +725,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='2.9';
+const APP_VERSION='3.0';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -928,7 +928,7 @@ function applySession(session){
   CURRENT_USER=(session&&session.user)||null;
   const login=document.getElementById('login-page'), app=document.getElementById('app');
   if(CURRENT_USER){
-    login.style.display='none'; app.style.display='';
+    login.style.display='none'; app.style.display='block';  // explicit — '' would revert to CSS #app{display:none}
     const em=document.getElementById('account-email'); if(em)em.textContent=CURRENT_USER.email||'';
     if(!prev) refresh();          // just logged in → pull this account's data
   }else{

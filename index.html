@@ -242,6 +242,10 @@
     .spin { width: 18px; height: 18px; border: 2.5px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
     #ocr-text { font-size: 13px; color: var(--text-2); font-weight: 500; }
+    #date-choices { display: none; padding: 2px 16px 12px; }
+    .dc-hint { font-size: 11px; color: var(--text-2); font-weight: 600; margin-bottom: 7px; }
+    .dc-chip { display: inline-block; margin: 0 7px 7px 0; padding: 7px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--muted-bg); color: var(--text); font-size: 12.5px; font-weight: 700; }
+    .dc-chip.on { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
     #add-form { display: none; }
     #add-form.show { display: block; }
 
@@ -521,6 +525,7 @@
             <span class="field-label">Expiry Date</span>
             <div class="field-value"><input class="bao-input" type="date" id="scan-date" /></div>
           </div>
+          <div id="date-choices"></div>
           <div class="field-row">
             <span class="field-label">Category</span>
             <div class="field-value"><div class="emoji-row" id="emoji-picker-scan"></div></div>
@@ -815,7 +820,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.8';
+const APP_VERSION='3.9';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1286,58 +1291,105 @@ async function runOCR(canvas){
   ot.textContent=cloud?'Reading (cloud)…':'Reading expiry date…';
   try{
     let text=await ocrPass(canvas,false);
-    let date=extractDate(text);
-    if(!date){                       // aim may have been off — try the whole frame
+    let cands=extractDates(text);
+    if(!cands.length){               // aim may have been off — try the whole frame
       ot.textContent='Looking wider…';
       const wide=await ocrPass(canvas,true);
-      const wideDate=extractDate(wide);
-      if(wideDate){ date=wideDate; text=wide; }
+      const wc=extractDates(wide);
+      if(wc.length){ cands=wc; text=wide; }
       else if((wide||'').length>(text||'').length){ text=wide; }
     }
     lastOCRText=text||'';
-    console.log('[OCR] detected text:',JSON.stringify(lastOCRText));
+    const {primary,list}=pickExpiry(cands);
+    console.log('[OCR] text:',JSON.stringify(lastOCRText),'candidates:',cands.map(c=>c.date+'/'+(c.label||'?')));
     ot.dataset.live='0';
-    if(date){ ot.textContent='Date detected: '+fmtDate(date); }
-    else{
+    if(primary){
+      const n=new Set(list.map(c=>c.date)).size;
+      ot.textContent = n>1 ? (n+' dates found — expiry looks like '+fmtDate(primary.date)) : ('Date detected: '+fmtDate(primary.date));
+    }else{
       const snip=lastOCRText.replace(/\s+/g,' ').trim().slice(0,70);
       ot.textContent=snip?('Read: "'+snip+'" — no date, enter manually'):'No text detected — enter manually';
     }
-    showConfirm(date);
+    showConfirm(primary?primary.date:null, list);
   }catch(e){ot.dataset.live='0';ot.textContent='OCR error — enter date manually';showConfirm(null);}
 }
-function extractDate(raw){
+/* Find EVERY date in the text, each tagged exp/prod by nearby label keywords,
+   so we can prefer the expiry rather than blindly taking the first date. */
+function extractDates(raw){
   const t=(raw||'').toUpperCase();
   const M={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
   const MON='(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)';
   const S='[\\/\\-. ]';                                  // /  -  .  or space separator
   const mk=(y,m,d)=>{ let yy=+y,mm=+m,dd=+d; if(yy<100)yy+=2000; if(!yy||mm<1||mm>12||dd<1||dd>31||yy<2020||yy>2041)return null; return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; };
-  // Two ambiguous numbers + a 4-digit year: prefer day-first, but swap if impossible.
   const two=(a,b,y)=>{ a=+a;b=+b; if(a>12&&b<=12)return mk(y,b,a); if(b>12&&a<=12)return mk(y,a,b); return mk(y,b,a); };
   const P=[
-    // ── Month-name formats (most reliable) ──
     {r:new RegExp(`(\\d{1,2})\\s*${MON}[A-Z]*\\s*(\\d{2,4})`),           f:m=>mk(m[3],M[m[2]],m[1])},  // 31 DEC 2026 / 31DEC26
     {r:new RegExp(`${MON}[A-Z]*\\s*(\\d{1,2})\\s*[, ]\\s*(\\d{2,4})`),   f:m=>mk(m[3],M[m[1]],m[2])},  // DEC 31, 2026
     {r:new RegExp(`${MON}[A-Z]*${S}*(20\\d{2}|\\d{2})\\b`),             f:m=>mk(m[2],M[m[1]],1)},      // DEC 2026 / DEC26
-    // ── ISO-ish year-first ──
-    {r:new RegExp(`(20\\d{2})${S}(\\d{1,2})${S}(\\d{1,2})`),            f:m=>mk(m[1],m[2],m[3])},      // 2026-07-21
+    {r:/(20\d{2})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/,                     f:m=>mk(m[1],m[2],m[3])},      // 2026-07-21 (no space sep: avoids bridging two dates)
     {r:/\b(20\d{2})(\d{2})(\d{2})\b/,                                    f:m=>mk(m[1],m[2],m[3])},      // 20260721
-    // ── Day/Month + 4-digit year (ambiguous order resolved) ──
     {r:new RegExp(`(\\d{1,2})${S}(\\d{1,2})${S}(20\\d{2})`),            f:m=>two(m[1],m[2],m[3])},     // 21/07/2026 or 07/21/2026
-    // ── Day/Month/2-digit year ──
     {r:new RegExp(`\\b(\\d{1,2})${S}(\\d{1,2})${S}(\\d{2})\\b`),        f:m=>{const a=+m[1],b=+m[2],y=+m[3]; if(y<24||y>41)return null; if(a>12&&b<=12)return mk(y,b,a); if(b>12&&a<=12)return mk(y,a,b); return mk(y,b,a);}}, // 21/07/26
-    // ── Month + year only ──
     {r:new RegExp(`\\b(\\d{1,2})${S}(20\\d{2})\\b`),                    f:m=>mk(m[2],m[1],1)},         // 07/2026
     {r:new RegExp(`\\b(\\d{2})${S}(\\d{2})\\b`),                        f:m=>{const mm=+m[1],yy=+m[2]; return(mm>=1&&mm<=12&&yy>=24&&yy<=41)?mk(yy,mm,1):null;}}, // 07/26
     {r:/\b(\d{2})(20\d{2})\b/,                                          f:m=>mk(m[2],m[1],1)},         // 072026
   ];
-  for(const{r,f}of P){const m=t.match(r);if(m){const d=f(m);if(d)return d;}} return null;
+  const consumed=[], cands=[];
+  for(const {r,f} of P){                    // patterns run most-specific first; consumed spans block weaker overlaps
+    const g=new RegExp(r.source,'g'); let m;
+    while((m=g.exec(t))){
+      if(!m[0]){ g.lastIndex++; continue; }
+      const s=m.index, e=s+m[0].length;
+      if(consumed.some(c=> s<c.e && c.s<e)) continue;
+      const d=f(m); if(!d) continue;
+      consumed.push({s,e}); cands.push({date:d, pos:s});
+    }
+  }
+  const EXP=/EXP|EXPIR|BEST\s?BEF|BEST\s?BY|\bBBE?\b|USE\s?BY|USE\s?BEF|SELL\s?BY|\bEND\b/;
+  const PROD=/MFG|MFD|MANUF|PROD|PACK|PKD|\bMADE\b/;
+  for(const c of cands){
+    const before=t.slice(Math.max(0,c.pos-24), c.pos);   // label usually sits just before the date
+    c.label = EXP.test(before) ? 'exp' : PROD.test(before) ? 'prod' : '';
+  }
+  return cands;
 }
-function showConfirm(date){
+/* Choose the most likely expiry from the candidates + return the full list. */
+function pickExpiry(cands){
+  if(!cands||!cands.length) return {primary:null,list:[]};
+  const rank=l=> l==='exp'?2 : l==='prod'?0 : 1;
+  const byDate={};
+  for(const c of cands){ const x=byDate[c.date]; if(!x||rank(c.label)>rank(x.label)) byDate[c.date]=c; }
+  const uniq=Object.values(byDate);
+  let primary=uniq.find(c=>c.label==='exp');
+  if(!primary){                              // no explicit EXP label → latest non-prod date (expiry comes after production)
+    const pool=uniq.filter(c=>c.label!=='prod'); const p=pool.length?pool:uniq;
+    primary=p.reduce((a,b)=> a.date>=b.date?a:b);
+  }
+  const others=uniq.filter(c=>c.date!==primary.date).sort((a,b)=>b.date.localeCompare(a.date));
+  return {primary, list:[primary,...others]};
+}
+function extractDate(raw){ const p=pickExpiry(extractDates(raw)).primary; return p?p.date:null; }  // back-compat
+let dateCands=[];
+function showConfirm(date, list){
   document.getElementById('add-form').classList.add('show');
   document.getElementById('scan-date').value=date||'';
   document.getElementById('scan-name').value='';
-  notify(date?'📅 Detected: '+fmtDate(date):'No date detected — enter manually');
+  dateCands=list||[];
+  renderDateChoices(date);
+  const multi=new Set(dateCands.map(c=>c.date)).size>1;
+  notify(date?(multi?'📅 Multiple dates — confirm the expiry below':'📅 Detected: '+fmtDate(date)):'No date detected — enter manually');
 }
+/* When several dates are found (e.g. PROD + EXP), let the user pick the expiry. */
+function renderDateChoices(selected){
+  const el=document.getElementById('date-choices'); if(!el) return;
+  const seen={}, uniq=[];
+  for(const c of dateCands){ if(!seen[c.date]){ seen[c.date]=1; uniq.push(c); } }
+  if(uniq.length<2){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';   // explicit — '' would revert to CSS display:none
+  el.innerHTML='<div class="dc-hint">Multiple dates found — tap the expiry date:</div>'+
+    uniq.map(c=>`<button type="button" class="dc-chip${c.date===selected?' on':''}" onclick="selectScanDate('${c.date}')">${fmtDate(c.date)}${c.label==='exp'?' · EXP':c.label==='prod'?' · PROD':''}</button>`).join('');
+}
+function selectScanDate(d){ document.getElementById('scan-date').value=d; renderDateChoices(d); }
 
 /* ═══ SAVE ═══ */
 async function saveScannedItem(){

@@ -193,13 +193,32 @@
     /* Image lightbox */
     #lightbox { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.86); align-items: center; justify-content: center; padding: 24px; }
     #lightbox.show { display: flex; }
-    .lb-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 96vw; }
-    #lightbox-img { max-width: 96vw; max-height: 78vh; border-radius: 12px; box-shadow: 0 12px 48px rgba(0,0,0,.6); object-fit: contain; background: #111; }
+    .lb-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 96vw; }
+    .lb-stage { position: relative; display: flex; align-items: center; justify-content: center; visibility: hidden; }
+    #lightbox-img { max-width: 96vw; max-height: 74vh; border-radius: 12px; box-shadow: 0 12px 48px rgba(0,0,0,.6); object-fit: contain; background: #111; }
+    .lb-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45); border: 1.5px solid rgba(255,255,255,.35); color: #fff; font-size: 26px; line-height: 1; display: none; align-items: center; justify-content: center; cursor: pointer; }
+    .lb-prev { left: 10px; } .lb-next { right: 10px; }
+    .lb-arrow.disabled { opacity: .3; pointer-events: none; }
+    .lb-caption { color: #fff; font-size: 13px; font-weight: 600; opacity: .9; }
+    .lb-dots { display: flex; gap: 7px; }
+    .lb-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.35); }
+    .lb-dot.on { background: #fff; }
     .lb-empty { color: #fff; font-size: 14px; opacity: .85; padding: 40px 20px; }
-    .lb-add { background: var(--accent); color: #fff; border: none; border-radius: 11px; padding: 11px 18px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,.3); }
     .lb-close { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; border: none; font-size: 17px; z-index: 2001; }
     .lb-spin { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,.25); border-top-color: #fff; border-radius: 50%; animation: lbspin .8s linear infinite; }
     @keyframes lbspin { to { transform: rotate(360deg); } }
+    /* Edit item button on rows */
+    .item-edit-btn { background: none; border: none; font-size: 15px; padding: 4px; opacity: .6; flex-shrink: 0; cursor: pointer; }
+    .item-edit-btn:active { opacity: 1; }
+    /* Edit modal */
+    #edit-modal { display: none; position: fixed; inset: 0; z-index: 1500; background: rgba(0,0,0,.5); align-items: center; justify-content: center; padding: 20px; }
+    #edit-modal.show { display: flex; }
+    .edit-card { width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 16px; }
+    .edit-head { display: flex; align-items: center; margin-bottom: 12px; }
+    .edit-title { font-size: 15px; font-weight: 800; color: var(--text); flex: 1; }
+    .edit-close { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; width: 30px; height: 30px; color: var(--text-2); font-size: 15px; cursor: pointer; }
+    .edit-photo-btn { display: block; width: 100%; margin-top: 10px; padding: 11px; border: 1.5px dashed var(--border); border-radius: 12px; background: var(--muted-bg); color: var(--text-2); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .edit-save { display: block; width: 100%; margin-top: 14px; padding: 13px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.15); }
     .item-body { flex: 1; min-width: 0; }
     .item-name-text { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
@@ -433,16 +452,35 @@
 
 <div id="notify-bar"></div>
 
-<!-- ════ IMAGE LIGHTBOX ════ -->
+<!-- ════ IMAGE LIGHTBOX (gallery) ════ -->
 <div id="lightbox" onclick="if(event.target===this)closeLightbox()">
   <button class="lb-close" onclick="closeLightbox()">✕</button>
   <div class="lb-inner">
     <div id="lightbox-loading" class="lb-spin"></div>
-    <img id="lightbox-img" alt="reference photo" />
+    <div class="lb-stage">
+      <button class="lb-arrow lb-prev" onclick="lbGo(-1)" aria-label="Previous photo">‹</button>
+      <img id="lightbox-img" alt="photo" />
+      <button class="lb-arrow lb-next" onclick="lbGo(1)" aria-label="Next photo">›</button>
+    </div>
     <div id="lightbox-empty" class="lb-empty">No photo saved for this item yet.</div>
-    <button id="lightbox-add-btn" class="lb-add" onclick="pickFullPhoto(lightboxOpenId)">📷 Add package photo</button>
+    <div class="lb-caption" id="lb-caption"></div>
+    <div class="lb-dots" id="lb-dots"></div>
   </div>
 </div>
+
+<!-- ════ EDIT ITEM ════ -->
+<div id="edit-modal" onclick="if(event.target===this)closeEdit()">
+  <div class="edit-card">
+    <div class="edit-head"><span class="edit-title">✏️ Edit Item</span><button class="edit-close" onclick="closeEdit()">✕</button></div>
+    <input class="bao-name-input" id="edit-name" type="text" placeholder="Product name…" list="products-list" autocomplete="off" />
+    <div class="field-row"><span class="field-label">Expiry Date</span><div class="field-value"><input class="bao-input" type="date" id="edit-date" /></div></div>
+    <div class="field-row"><span class="field-label">Category</span><div class="field-value"><div class="emoji-row" id="emoji-picker-edit"></div></div></div>
+    <button type="button" class="edit-photo-btn" id="edit-datephoto-btn" onclick="editPickPhoto(false)">🗓 Replace expiry date photo</button>
+    <button type="button" class="edit-photo-btn" id="edit-pkgphoto-btn" onclick="editPickPhoto(true)">📦 Add / replace package photo</button>
+    <button class="edit-save" onclick="saveEdit()">Save changes</button>
+  </div>
+</div>
+
 <input type="file" id="full-photo-input" accept="image/*" capture="environment" style="display:none" onchange="onFullPhotoSelected(this)" />
 
 <div id="app">
@@ -857,7 +895,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.1';
+const APP_VERSION='4.2';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -982,20 +1020,34 @@ function renderCategoryPicker(ctx) {
   ).join('');
   if(ctx==='scan')   emojiScan  =CATEGORIES[0]?.emoji||'📦';
   if(ctx==='manual') emojiManual=CATEGORIES[0]?.emoji||'📦';
+  if(ctx==='edit')   emojiEdit  =CATEGORIES[0]?.emoji||'📦';
 }
 function selectEmoji(btn, ctx) {
   document.getElementById('emoji-picker-'+ctx).querySelectorAll('.emoji-opt').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   if(ctx==='scan')   emojiScan  =btn.dataset.emoji;
   if(ctx==='manual') emojiManual=btn.dataset.emoji;
+  if(ctx==='edit')   emojiEdit  =btn.dataset.emoji;
+}
+/* Highlight the option matching a given emoji (used when opening the edit form). */
+function preselectEmoji(ctx,emoji){
+  const el=document.getElementById('emoji-picker-'+ctx); if(!el) return;
+  const opts=[...el.querySelectorAll('.emoji-opt')];
+  opts.forEach(b=>b.classList.remove('on'));
+  const target=opts.find(b=>b.dataset.emoji===emoji) || opts[0];
+  if(target){ target.classList.add('on'); if(ctx==='edit') emojiEdit=target.dataset.emoji; }
 }
 
 /* ═══ LOCAL IMAGE STORE ═══ */
 let capturedThumb = null;
 function getThumbnail(canvas) {
-  const t=document.createElement('canvas'); t.width=190; t.height=130;
-  t.getContext('2d').drawImage(canvas,0,0,190,130);
-  return t.toDataURL('image/jpeg',.55);
+  // Store the date photo at a readable size (serves both the tiny list thumbnail
+  // and the enlarged lightbox view), preserving aspect ratio.
+  const maxDim=800, scale=Math.min(1, maxDim/Math.max(canvas.width,canvas.height));
+  const w=Math.round(canvas.width*scale), h=Math.round(canvas.height*scale);
+  const t=document.createElement('canvas'); t.width=w; t.height=h;
+  t.getContext('2d').drawImage(canvas,0,0,w,h);
+  return t.toDataURL('image/jpeg',.68);
 }
 /* Local cache (instant display + offline). Keyed by item id. */
 function saveImageLocally(id,dataUrl){ try{ const imgs=JSON.parse(localStorage.getItem('expiry_images')||'{}'); imgs[id]=dataUrl; localStorage.setItem('expiry_images',JSON.stringify(imgs)); }catch(e){} }
@@ -1046,21 +1098,20 @@ async function hydrateImage(imgEl,id){
 function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('🗑 Cached photos cleared'); }
 
 /* ═══ PACKAGE (2nd) PHOTO + IMAGE LIGHTBOX ═══ */
-let pendingFullPhoto=null;   // full package photo attached to the item being scanned
-let lightboxOpenId=null;
+function setBtn(id,txt){ const b=document.getElementById(id); if(b) b.textContent=txt; }
+let pendingFullPhoto=null;   // package photo attached to the item being scanned
 function resetFullPhoto(){
   pendingFullPhoto=null;
   const b=document.getElementById('full-photo-btn');
   if(b){ b.classList.remove('added'); b.textContent='📷 Add package photo (optional)'; }
 }
-/* Trigger the file picker / camera. forId='' → attach to the item being scanned;
-   a real id → add/replace the package photo of an existing item immediately. */
+/* Trigger the camera / file picker for the scan flow's package photo. */
 function pickFullPhoto(forId){
   const inp=document.getElementById('full-photo-input');
-  inp.dataset.forId = forId==null?'':String(forId);
+  inp.dataset.mode=''; inp.dataset.full='1'; inp.dataset.forId = forId==null?'':String(forId);
   inp.value=''; inp.click();
 }
-/* Load the chosen photo, downscale for storage, and route it to the right place. */
+/* Load a chosen photo and downscale it for storage. */
 function loadDownscaled(file,maxDim,q){
   return new Promise((res,rej)=>{
     const img=new Image();
@@ -1078,36 +1129,94 @@ function loadDownscaled(file,maxDim,q){
 }
 async function onFullPhotoSelected(inp){
   const file=inp.files&&inp.files[0]; if(!file) return;
+  const full = inp.dataset.full==='1';
   let dataUrl;
-  try{ dataUrl=await loadDownscaled(file,1100,.82); }
+  try{ dataUrl=await loadDownscaled(file, full?1100:900, .82); }
   catch(e){ notify('⚠️ Could not read that image'); return; }
+  if(inp.dataset.mode==='edit'){       // editing an item → stage, upload on Save
+    if(full){ editPendingFull=dataUrl;  setBtn('edit-pkgphoto-btn','✓ Package photo set — tap to change'); }
+    else    { editPendingThumb=dataUrl; setBtn('edit-datephoto-btn','✓ Date photo set — tap to change'); }
+    return;
+  }
   const forId=inp.dataset.forId;
-  if(forId){                          // existing item → upload now
-    await uploadImage(forId,dataUrl,true);
-    notify('📷 Package photo saved');
-    if(lightboxOpenId===forId){ showLightboxImage(dataUrl); setLightboxAddLabel(true); }
-  }else{                              // scan flow → attach on save
+  if(forId){ await uploadImage(forId,dataUrl,true); notify('📷 Package photo saved'); }
+  else{                                // scan flow → attach on save
     pendingFullPhoto=dataUrl;
     const b=document.getElementById('full-photo-btn');
     if(b){ b.classList.add('added'); b.textContent='✓ Package photo added — tap to change'; }
   }
 }
+
+/* ═══ IMAGE LIGHTBOX (gallery: expiry-date photo → package photo) ═══ */
+let lbPhotos=[], lbIndex=0, lbId=null;
 async function openLightbox(id){
-  lightboxOpenId=id;
-  const ov=document.getElementById('lightbox'); ov.classList.add('show');
-  const img=document.getElementById('lightbox-img'), empty=document.getElementById('lightbox-empty'), spin=document.getElementById('lightbox-loading');
-  img.style.display='none'; empty.style.display='none'; spin.style.display='block';
-  let url=await fetchImage(id,true);          // prefer the full package photo
-  const hasFull=!!url;
-  if(!url) url=await fetchImage(id,false);     // fall back to the thumbnail
+  lbId=id; lbIndex=0; lbPhotos=[];
+  document.getElementById('lightbox').classList.add('show');
+  const spin=document.getElementById('lightbox-loading'), stage=document.querySelector('.lb-stage'), empty=document.getElementById('lightbox-empty');
+  spin.style.display='block'; stage.style.visibility='hidden'; empty.style.display='none';
+  document.getElementById('lb-dots').innerHTML=''; document.getElementById('lb-caption').textContent='';
+  const dateUrl=await fetchImage(id,false);   // expiry date photo first
+  const pkgUrl =await fetchImage(id,true);     // package photo second
+  if(lbId!==id) return;                        // user closed/opened another meanwhile
   spin.style.display='none';
-  if(url){ img.src=url; img.style.display='block'; }
-  else{ empty.style.display='block'; }
-  setLightboxAddLabel(hasFull);
+  if(dateUrl) lbPhotos.push({url:dateUrl, cap:'Expiry date photo'});
+  if(pkgUrl)  lbPhotos.push({url:pkgUrl,  cap:'Package photo'});
+  if(!lbPhotos.length){ empty.style.display='block'; return; }
+  renderLb();
 }
-function showLightboxImage(url){ const img=document.getElementById('lightbox-img'); img.src=url; img.style.display='block'; document.getElementById('lightbox-empty').style.display='none'; }
-function setLightboxAddLabel(hasFull){ const b=document.getElementById('lightbox-add-btn'); if(b) b.textContent = hasFull ? '📷 Replace package photo' : '📷 Add package photo'; }
-function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); lightboxOpenId=null; }
+function renderLb(){
+  const stage=document.querySelector('.lb-stage'); stage.style.visibility='visible';
+  document.getElementById('lightbox-img').src=lbPhotos[lbIndex].url;
+  const multi=lbPhotos.length>1;
+  document.getElementById('lb-caption').textContent=lbPhotos[lbIndex].cap+(multi?`  ·  ${lbIndex+1}/${lbPhotos.length}`:'');
+  const prev=document.querySelector('.lb-prev'), next=document.querySelector('.lb-next');
+  prev.style.display=next.style.display=multi?'flex':'none';
+  prev.classList.toggle('disabled', lbIndex===0);
+  next.classList.toggle('disabled', lbIndex===lbPhotos.length-1);
+  document.getElementById('lb-dots').innerHTML = multi ? lbPhotos.map((_,i)=>`<span class="lb-dot${i===lbIndex?' on':''}"></span>`).join('') : '';
+}
+function lbGo(d){ const n=lbIndex+d; if(n>=0 && n<lbPhotos.length){ lbIndex=n; renderLb(); } }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); lbId=null; lbPhotos=[]; }
+(function(){                                    // swipe + keyboard navigation
+  const lb=document.getElementById('lightbox'); if(!lb) return;
+  let x0=null;
+  lb.addEventListener('touchstart',e=>{ x0=e.touches[0].clientX; },{passive:true});
+  lb.addEventListener('touchend',e=>{ if(x0==null)return; const dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>40) lbGo(dx<0?1:-1); x0=null; },{passive:true});
+  document.addEventListener('keydown',e=>{ if(!lb.classList.contains('show'))return; if(e.key==='ArrowRight')lbGo(1); else if(e.key==='ArrowLeft')lbGo(-1); else if(e.key==='Escape')closeLightbox(); });
+})();
+
+/* ═══ EDIT ITEM ═══ */
+let editingId=null, editPendingThumb=null, editPendingFull=null, emojiEdit='📦';
+function openEdit(id){
+  const item=itemMap[id]; if(!item){ notify('⚠️ Item not found'); return; }
+  editingId=id; editPendingThumb=null; editPendingFull=null;
+  document.getElementById('edit-name').value=item.name||'';
+  document.getElementById('edit-date').value=item.expiry||'';
+  renderCategoryPicker('edit'); preselectEmoji('edit', item.icon||'📦');
+  setBtn('edit-datephoto-btn','🗓 Replace expiry date photo');
+  setBtn('edit-pkgphoto-btn','📦 Add / replace package photo');
+  document.getElementById('edit-modal').classList.add('show');
+}
+function editPickPhoto(full){
+  const inp=document.getElementById('full-photo-input');
+  inp.dataset.mode='edit'; inp.dataset.full=full?'1':''; inp.dataset.forId='';
+  inp.value=''; inp.click();
+}
+async function saveEdit(){
+  if(!editingId) return;
+  const name=document.getElementById('edit-name').value.trim();
+  const date=document.getElementById('edit-date').value;
+  if(!name){ notify('⚠️ Enter a product name'); return; }
+  if(!date){ notify('⚠️ Enter the expiry date'); return; }
+  const updated=await dbUpdate(editingId,{name,expiry:date,icon:emojiEdit});
+  if(!updated) return;
+  if(editPendingThumb) await uploadImage(editingId, editPendingThumb, false);
+  if(editPendingFull)  await uploadImage(editingId, editPendingFull, true);
+  editPendingThumb=null; editPendingFull=null;
+  closeEdit(); notify('✅ Changes saved');
+  renderDashboard(); renderAll();
+}
+function closeEdit(){ document.getElementById('edit-modal').classList.remove('show'); editingId=null; }
 
 /* ═══ SUPABASE ═══ */
 const SUPABASE_URL='https://viupqrjyszvvcpnxrmsq.supabase.co';
@@ -1232,6 +1341,12 @@ async function dbDelete(id){
   setSyncing(true);
   const{error}=await sb.from('items').delete().eq('id',id).eq('user_id',CURRENT_USER.id);
   setSyncing(false); if(error)notify('⚠️ '+error.message);
+}
+async function dbUpdate(id,fields){
+  if(!CURRENT_USER) return null;
+  setSyncing(true);
+  const{data,error}=await sb.from('items').update(fields).eq('id',id).eq('user_id',CURRENT_USER.id).select().single();
+  setSyncing(false); if(error){notify('⚠️ '+error.message);return null;} return data;
 }
 
 /* ═══ HELPERS ═══ */
@@ -1520,7 +1635,9 @@ async function saveManualItem(){
 }
 
 /* ═══ RENDER ═══ */
+const itemMap={};
 function buildItem(item,idx){
+  itemMap[item.id]=item;
   const days=daysUntil(item.expiry);
   const local=getImageLocally(item.id);
   const div=document.createElement('div');
@@ -1529,12 +1646,13 @@ function buildItem(item,idx){
     <span class="item-num">${idx+1}.</span>
     <span class="item-emoji">${item.icon||'📦'}</span>
     <img class="item-thumb" data-img="${item.id}" alt="photo" onclick="openLightbox('${item.id}')" ${local?`src="${local}"`:'style="display:none"'} />
-    <div class="item-body">
+    <div class="item-body" onclick="openLightbox('${item.id}')" style="cursor:pointer">
       <div class="item-name-text">${esc(item.name)}</div>
       <div class="item-sub">${fmtDate(item.expiry)}</div>
     </div>
     <span class="item-tag ${getTag(days)}">${daysLabel(days)}</span>
-    <button class="item-del-btn" onclick="deleteItem('${item.id}')">🗑</button>`;
+    <button class="item-edit-btn" onclick="openEdit('${item.id}')" title="Edit">✏️</button>
+    <button class="item-del-btn" onclick="deleteItem('${item.id}')" title="Delete">🗑</button>`;
   if(!local) hydrateImage(div.querySelector('.item-thumb'), item.id);  // pull from Storage
   return div;
 }

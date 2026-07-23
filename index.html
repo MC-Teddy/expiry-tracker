@@ -152,8 +152,14 @@
 
     /* ══ STATS ══ */
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .stat-cell { padding: 20px 12px 16px; text-align: center; border-right: 1.5px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .stat-cell { padding: 20px 12px 16px; text-align: center; border-right: 1.5px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 0; cursor: pointer; transition: background .15s; }
     .stat-cell:last-child { border-right: none; }
+    .stat-cell:active { opacity: .75; }
+    .stat-cell.s-red.active    { background: var(--red-lt);    box-shadow: inset 0 -3px 0 var(--red); }
+    .stat-cell.s-yellow.active { background: var(--yellow-lt); box-shadow: inset 0 -3px 0 var(--yellow); }
+    .stat-cell.s-green.active  { background: var(--green-lt);  box-shadow: inset 0 -3px 0 var(--green); }
+    /* Dashboard list scrolls internally when it gets long (mobile); desktop tuned below */
+    #dashboard-list { max-height: 58vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .stat-icon-wrap { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 8px; }
     .stat-num { font-size: 30px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
     .stat-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; margin-top: 5px; }
@@ -350,6 +356,7 @@
 
       /* Item lists: scrollable */
       .bao-item-list { max-height: 260px; overflow-y: auto; }
+      #dashboard-list { max-height: 320px; }   /* desktop: keep it compact in the two-column layout */
 
       /* Dashboard layout */
       #dashboard-page.active { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
@@ -439,19 +446,19 @@
           <span style="font-size:11px;color:var(--text-2);font-weight:500;" id="overview-date"></span>
         </div>
         <div class="stats-grid">
-          <div class="stat-cell s-red">
+          <div class="stat-cell s-red" id="stat-expired" onclick="setDashFilter('expired')" title="Show expired">
             <div class="stat-icon-wrap">🚨</div>
             <div class="stat-num" id="count-expired">0</div>
             <div class="stat-lbl">Expired</div>
             <div class="stat-sub" id="sub-expired">Loading…</div>
           </div>
-          <div class="stat-cell s-yellow">
+          <div class="stat-cell s-yellow" id="stat-soon" onclick="setDashFilter('soon')" title="Show expiring soon">
             <div class="stat-icon-wrap">⏳</div>
             <div class="stat-num" id="count-soon">0</div>
             <div class="stat-lbl">Expiring Soon</div>
             <div class="stat-sub" id="sub-soon">Loading…</div>
           </div>
-          <div class="stat-cell s-green">
+          <div class="stat-cell s-green" id="stat-good" onclick="setDashFilter('good')" title="Show good">
             <div class="stat-icon-wrap">✅</div>
             <div class="stat-num" id="count-ok">0</div>
             <div class="stat-lbl">Good</div>
@@ -464,7 +471,7 @@
       <div class="bao-card">
         <div class="bao-card-head">
           <span class="head-icon">⚠️</span>
-          <span class="head-title">Needs Attention</span>
+          <span class="head-title" id="dash-list-title">Needs Attention</span>
           <span class="head-badge" id="attention-badge" style="display:none;">0</span>
         </div>
         <div class="bao-item-list" id="dashboard-list">
@@ -820,7 +827,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='3.9';
+const APP_VERSION='4.0';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1429,6 +1436,27 @@ function buildItem(item,idx){
   return div;
 }
 
+/* Tapping an Overview stat filters the list below; tapping the active one clears it. */
+let dashFilter='all', dashItems={expired:[],soon:[],ok:[]};
+function setDashFilter(f){ dashFilter = (dashFilter===f)?'all':f; renderDashList(); }
+function renderDashList(){
+  const list=document.getElementById('dashboard-list');
+  const titleEl=document.getElementById('dash-list-title'); if(!list) return;
+  const cfg={
+    expired:{arr:dashItems.expired, title:'Expired',       icon:'✅', empty:'Nothing expired 🎉'},
+    soon:   {arr:dashItems.soon,    title:'Expiring Soon', icon:'✅', empty:'None due soon'},
+    good:   {arr:dashItems.ok,      title:'Good',          icon:'📦', empty:'No good items yet'},
+    all:    {arr:[...dashItems.expired,...dashItems.soon], title:'Needs Attention', icon:'✅', empty:'All clear!<br/>Nothing expiring soon.'}
+  }[dashFilter] || {arr:[],title:'Needs Attention',icon:'✅',empty:'—'};
+  ['expired','soon','good'].forEach(k=>{ const el=document.getElementById('stat-'+k); if(el) el.classList.toggle('active', dashFilter===k); });
+  if(titleEl) titleEl.textContent=cfg.title;
+  const arr=cfg.arr.slice().sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
+  const badge=document.getElementById('attention-badge');
+  if(badge){ badge.textContent=arr.length; badge.style.display=arr.length>0?'inline':'none'; }
+  list.innerHTML='';
+  if(!arr.length){ list.innerHTML='<div class="empty"><div class="e-icon">'+cfg.icon+'</div><p>'+cfg.empty+'</p></div>'; }
+  else arr.forEach((item,i)=>list.appendChild(buildItem(item,i)));
+}
 async function renderDashboard(){
   const dashList=document.getElementById('dashboard-list');
   const goodList=document.getElementById('good-list');
@@ -1469,14 +1497,9 @@ async function renderDashboard(){
   const goodBadge=document.getElementById('good-badge');
   if(goodBadge){ goodBadge.style.display=ok.length>0?'inline':'none'; goodBadge.textContent=ok.length; }
 
-  // Needs Attention list
-  dashList.innerHTML='';
-  const urgent=[...expired,...soon].sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
-  if(!urgent.length){
-    dashList.innerHTML='<div class="empty"><div class="e-icon">✅</div><p>All clear!<br/>Nothing expiring soon.</p></div>';
-  }else{
-    urgent.forEach((item,i)=>dashList.appendChild(buildItem(item,i)));
-  }
+  // Needs Attention list (respects the tapped Overview filter)
+  dashItems={expired,soon,ok};
+  renderDashList();
 
   // All Good list
   if(goodList){

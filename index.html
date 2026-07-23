@@ -230,6 +230,22 @@
     .confirm-cancel { background: var(--muted-bg); color: var(--text); border: 1.5px solid var(--border); }
     .confirm-ok { border: none; background: var(--muted-bg); color: var(--text); }
     .confirm-ok.danger { background: var(--red); color: #fff; }
+    /* Undo snackbar */
+    #undo-bar { display: none; position: fixed; left: 50%; bottom: calc(70px + var(--sb)); transform: translateX(-50%); z-index: 2200; background: #2B2424; color: #fff; border-radius: 12px; padding: 11px 8px 11px 15px; box-shadow: 0 6px 24px rgba(0,0,0,.35); align-items: center; gap: 12px; font-size: 13px; font-weight: 600; max-width: calc(100vw - 28px); }
+    #undo-bar.show { display: flex; }
+    #undo-bar button { background: none; border: none; color: #FF9D6B; font-weight: 800; font-size: 13px; cursor: pointer; padding: 4px 10px; }
+    .item-thumb, .item-body { touch-action: pan-y; }
+    /* Barcode scanner */
+    .barcode-btn { display: inline-flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 7px 11px; font-size: 12px; font-weight: 700; color: var(--text-2); cursor: pointer; margin: 8px 16px 0; }
+    #barcode-modal { display: none; position: fixed; inset: 0; z-index: 1600; background: rgba(0,0,0,.6); align-items: center; justify-content: center; padding: 20px; }
+    #barcode-modal.show { display: flex; }
+    .bc-card { width: 100%; max-width: 400px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 16px; }
+    .bc-video-wrap { position: relative; border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 4/3; margin-bottom: 10px; }
+    #bc-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bc-frame { position: absolute; inset: 24% 12%; border: 2px solid rgba(255,255,255,.85); border-radius: 10px; box-shadow: 0 0 0 9999px rgba(0,0,0,.22); }
+    .bc-status { font-size: 12.5px; color: var(--text-2); text-align: center; margin-bottom: 10px; min-height: 16px; line-height: 1.4; }
+    .bc-manual { display: flex; gap: 8px; }
+    .bc-manual input { flex: 1; }
     .item-body { flex: 1; min-width: 0; }
     .item-name-text { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
@@ -484,6 +500,7 @@
   <div class="edit-card">
     <div class="edit-head"><span class="edit-title">✏️ Edit Item</span><button class="edit-close" onclick="closeEdit()">✕</button></div>
     <input class="bao-name-input" id="edit-name" type="text" placeholder="Product name…" list="products-list" autocomplete="off" />
+    <button type="button" class="barcode-btn" onclick="openBarcodeScanner('edit-name')">🏷️ Scan barcode</button>
     <div class="field-row"><span class="field-label">Expiry Date</span><div class="field-value"><input class="bao-input" type="date" id="edit-date" /></div></div>
     <div class="field-row"><span class="field-label">Category</span><div class="field-value"><div class="emoji-row" id="emoji-picker-edit"></div></div></div>
     <button type="button" class="edit-photo-btn" id="edit-datephoto-btn" onclick="editPickPhoto(false)">🗓 Replace expiry date photo</button>
@@ -493,6 +510,28 @@
 </div>
 
 <input type="file" id="full-photo-input" accept="image/*" capture="environment" style="display:none" onchange="onFullPhotoSelected(this)" />
+
+<!-- ════ BARCODE SCANNER ════ -->
+<div id="barcode-modal" onclick="if(event.target===this)closeBarcode()">
+  <div class="bc-card">
+    <div class="edit-head"><span class="edit-title">🏷️ Scan Barcode</span><button class="edit-close" onclick="closeBarcode()">✕</button></div>
+    <div class="bc-video-wrap" id="bc-video-wrap">
+      <video id="bc-video" playsinline muted></video>
+      <div class="bc-frame"></div>
+    </div>
+    <div class="bc-status" id="bc-status">Point the camera at a barcode…</div>
+    <div class="bc-manual">
+      <input class="bao-input" id="bc-input" type="text" inputmode="numeric" placeholder="…or type the barcode number" onkeydown="if(event.key==='Enter')lookupBarcode(this.value)" />
+      <button class="cat-add-btn" onclick="lookupBarcode(document.getElementById('bc-input').value)">Look up</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ UNDO SNACKBAR ════ -->
+<div id="undo-bar">
+  <span id="undo-text"></span>
+  <button onclick="undoDelete()">Undo</button>
+</div>
 
 <!-- ════ CONFIRM DIALOG ════ -->
 <div id="confirm-modal" onclick="if(event.target===this)confirmNo()">
@@ -617,6 +656,7 @@
             <button class="head-action" onclick="retakePhoto()">↺</button>
           </div>
           <input class="bao-name-input" type="text" id="scan-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
+          <button type="button" class="barcode-btn" onclick="openBarcodeScanner('scan-name')">🏷️ Scan barcode</button>
           <div class="field-row">
             <span class="field-label">Expiry Date</span>
             <div class="field-value"><input class="bao-input" type="date" id="scan-date" /></div>
@@ -643,6 +683,7 @@
           <span class="head-title">New Item</span>
         </div>
         <input class="bao-name-input" type="text" id="manual-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
+        <button type="button" class="barcode-btn" onclick="openBarcodeScanner('manual-name')">🏷️ Scan barcode</button>
         <div class="field-row">
           <span class="field-label">Expiry Date</span>
           <div class="field-value"><input class="bao-input" type="date" id="manual-date" /></div>
@@ -688,12 +729,15 @@
         <div class="bao-card-head">
           <span class="head-icon">📋</span>
           <span class="head-title">All Items</span>
-          <select id="sort-select" onchange="renderAll()" style="background:var(--muted-bg);border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-2);outline:none;-webkit-appearance:none;cursor:pointer;">
+          <select id="sort-select" onchange="filterAll()" style="background:var(--muted-bg);border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-2);outline:none;-webkit-appearance:none;cursor:pointer;">
             <option value="expiry">Soonest First</option>
             <option value="name">By Name</option>
             <option value="added">Recently Added</option>
           </select>
           <button class="list-export-btn" onclick="exportToExcel()" title="Export all items to Excel">⬇️ Excel</button>
+        </div>
+        <div style="padding:10px 14px 2px;">
+          <input class="bao-input" id="search-input" type="search" placeholder="🔍 Search products…" oninput="filterAll()" autocomplete="off" style="font-size:13px;" />
         </div>
         <div class="bao-item-list" id="all-list">
           <div class="empty"><div class="e-icon">📦</div><p>No items yet.</p></div>
@@ -743,13 +787,9 @@
         <div class="settings-section">
           <div class="settings-heading">Cloud OCR (Google Vision)</div>
           <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">
-            For sharper date reading, paste a Google Cloud Vision API key. Scans use the cloud when online and fall back to on-device OCR automatically. The key is stored only on this device.
+            Sharper date reading runs <b>server-side</b> — the Google Vision key is stored securely as a Supabase secret, never in the app. On-device OCR is the automatic fallback when the cloud is unavailable.
           </p>
-          <input class="bao-input" type="password" id="vision-key-input" placeholder="Google Vision API key…" autocomplete="off" style="font-size:12px;" />
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-            <button class="cat-add-btn" onclick="saveVisionKey()">💾 Save Key</button>
-            <button class="ghost-btn" onclick="clearVisionKey()">Remove</button>
-          </div>
+          <button class="cat-add-btn" onclick="testCloudOCR()">🔌 Test cloud OCR</button>
           <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="vision-key-status"></div>
         </div>
       </div>
@@ -921,7 +961,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.4';
+const APP_VERSION='4.5';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1261,6 +1301,61 @@ async function saveEdit(){
 }
 function closeEdit(){ document.getElementById('edit-modal').classList.remove('show'); editingId=null; }
 
+/* ═══ BARCODE SCANNER → OpenFoodFacts name lookup ═══
+   Uses the native BarcodeDetector when available (Chrome/Android); everywhere
+   else, the user types the number. Either way we look the product up and
+   auto-fill the target name field. */
+let bcTarget=null, bcStream=null, bcDetector=null, bcTimer=null;
+function setBcStatus(t){ const el=document.getElementById('bc-status'); if(el) el.textContent=t; }
+async function openBarcodeScanner(targetInputId){
+  bcTarget=targetInputId||'manual-name';
+  const inp=document.getElementById('bc-input'); if(inp) inp.value='';
+  setBcStatus('Point the camera at a barcode…');
+  document.getElementById('barcode-modal').classList.add('show');
+  const wrap=document.getElementById('bc-video-wrap');
+  if(!('BarcodeDetector' in window)){ wrap.style.display='none'; setBcStatus('Live scanning isn’t supported on this browser — type the barcode number below.'); return; }
+  wrap.style.display='block';
+  try{ bcDetector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','codabar','itf']}); }
+  catch(e){ try{ bcDetector=new BarcodeDetector(); }catch(_){ bcDetector=null; } }
+  try{
+    bcStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    const v=document.getElementById('bc-video'); v.srcObject=bcStream; await v.play();
+    scanBarcodeLoop();
+  }catch(e){ wrap.style.display='none'; setBcStatus('Camera unavailable — type the barcode number below.'); }
+}
+async function scanBarcodeLoop(){
+  const modal=document.getElementById('barcode-modal');
+  if(!bcDetector || !bcStream || !modal.classList.contains('show')) return;
+  try{
+    const codes=await bcDetector.detect(document.getElementById('bc-video'));
+    if(codes && codes.length && codes[0].rawValue){ lookupBarcode(codes[0].rawValue); return; }
+  }catch(e){}
+  bcTimer=setTimeout(scanBarcodeLoop,350);
+}
+function stopBcCamera(){ if(bcStream){ bcStream.getTracks().forEach(t=>t.stop()); bcStream=null; } clearTimeout(bcTimer); const v=document.getElementById('bc-video'); if(v) v.srcObject=null; }
+function closeBarcode(){ stopBcCamera(); document.getElementById('barcode-modal').classList.remove('show'); }
+async function lookupBarcode(code){
+  code=(code||'').replace(/\D/g,'');
+  if(code.length<6){ setBcStatus('Enter a valid barcode number.'); return; }
+  stopBcCamera();
+  setBcStatus('Looking up '+code+'…');
+  try{
+    const res=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,product_name_en,brands');
+    const j=await res.json();
+    if(j.status===1 && j.product){
+      const p=j.product;
+      const name=(p.product_name||p.product_name_en||'').trim() || (p.brands||'').split(',')[0].trim();
+      if(name){
+        const inp=document.getElementById(bcTarget);
+        if(inp){ inp.value=name; inp.dispatchEvent(new Event('input',{bubbles:true})); }
+        setBcStatus('✓ '+name); notify('🏷️ '+name);
+        setTimeout(closeBarcode,700); return;
+      }
+    }
+    setBcStatus('No product found for '+code+' — type the name manually.');
+  }catch(e){ setBcStatus('Lookup failed (offline?) — type the name manually.'); }
+}
+
 /* ═══ SUPABASE ═══ */
 const SUPABASE_URL='https://viupqrjyszvvcpnxrmsq.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdXBxcmp5c3p2dmNwbnhybXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTY2ODgsImV4cCI6MjA5NDg3MjY4OH0.-j_X1M4_FBDuax4Gpd3tOHYdgs-fdWN2sPTbhYlG7qk';
@@ -1498,45 +1593,41 @@ function preprocessForOCR(src,full){
   return out;
 }
 /* ── Cloud OCR (Google Vision) ── stored per-device in localStorage ── */
-function getVisionKey(){ return (localStorage.getItem('expiry_vision_key')||'').trim(); }
-function saveVisionKey(){
-  const v=document.getElementById('vision-key-input').value.trim();
-  if(!v){ notify('⚠️ Paste a key first'); return; }
-  localStorage.setItem('expiry_vision_key',v); renderVisionKeyStatus(); notify('✅ Cloud OCR enabled');
-}
-function clearVisionKey(){
-  localStorage.removeItem('expiry_vision_key');
-  const i=document.getElementById('vision-key-input'); if(i)i.value='';
-  renderVisionKeyStatus(); notify('Cloud OCR removed — using on-device OCR');
-}
-function renderVisionKeyStatus(){
-  const el=document.getElementById('vision-key-status'); if(!el)return;
-  el.textContent=getVisionKey()?'✓ Cloud OCR active (falls back to on-device when offline)':'Not set — using on-device OCR only';
-}
-/* Recognize via Google Vision. Returns detected text, or throws so runOCR can fall back. */
+/* Cloud OCR now runs through the `vision-ocr` Edge Function (the Google Vision
+   key lives server-side as a Supabase secret, never in the browser). We remember
+   if it's unavailable so we don't keep retrying a missing/unconfigured function. */
+let cloudOcrDown=false;
+function cloudOcrEnabled(){ return navigator.onLine && !cloudOcrDown; }
 async function cloudOCR(canvas,full){
-  const key=getVisionKey(); if(!key) throw new Error('no-key');
   const b64=preprocessForOCR(canvas,full).toDataURL('image/jpeg',.9).split(',')[1];
-  const res=await fetch('https://vision.googleapis.com/v1/images:annotate?key='+encodeURIComponent(key),{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({requests:[{image:{content:b64},features:[{type:'TEXT_DETECTION'}]}]})
-  });
-  if(!res.ok) throw new Error('vision-http-'+res.status);
-  const j=await res.json();
-  const err=j.responses&&j.responses[0]&&j.responses[0].error;
-  if(err) throw new Error('vision-'+(err.message||'error'));
-  return (j.responses&&j.responses[0]&&j.responses[0].fullTextAnnotation&&j.responses[0].fullTextAnnotation.text)||'';
+  const{data,error}=await sb.functions.invoke('vision-ocr',{body:{image:b64}});
+  if(error){ if(/not found|404|Failed to send/i.test(error.message||'')) cloudOcrDown=true; throw new Error('cloud-fn'); }
+  if(data&&data.ok===false){ if(/not configured|Not authenticated/i.test(data.error||'')) cloudOcrDown=true; throw new Error(data.error); }
+  return (data&&data.text)||'';
 }
+/* Settings → "Test cloud OCR": pings the function with a tiny image. */
+async function testCloudOCR(){
+  const el=document.getElementById('vision-key-status'); if(el){ el.style.color='var(--text-2)'; el.textContent='Testing…'; }
+  cloudOcrDown=false;
+  const cv=document.createElement('canvas'); cv.width=cv.height=40; cv.getContext('2d').fillRect(0,0,40,40);
+  const b64=cv.toDataURL('image/jpeg').split(',')[1];
+  try{
+    const{data,error}=await sb.functions.invoke('vision-ocr',{body:{image:b64}});
+    if(error) throw new Error(error.message||'request failed');
+    if(data&&data.ok===false) throw new Error(data.error);
+    if(el){ el.style.color='var(--green)'; el.textContent='✓ Cloud OCR is working (server-side).'; }
+  }catch(e){ if(el){ el.style.color='#dc2626'; el.textContent='✗ Not available: '+e.message+' — using on-device OCR.'; } }
+}
+function renderVisionKeyStatus(){ const el=document.getElementById('vision-key-status'); if(el&&!el.textContent) el.textContent='Cloud OCR runs server-side. On-device OCR is the fallback.'; }
 /* On-device OCR via the reused Tesseract worker. */
 async function localOCR(canvas,full){
   const w=await warmOCR();
   const{data:{text}}=await w.recognize(preprocessForOCR(canvas,full));
   return text;
 }
-/* One OCR pass through the hybrid path: cloud-first when a key is set and online,
-   else on-device; cloud failures fall back to on-device automatically. */
+/* One OCR pass: cloud-first when available, else on-device; cloud failures fall back. */
 async function ocrPass(canvas,full){
-  if(getVisionKey() && navigator.onLine){
+  if(cloudOcrEnabled()){
     try{ return await cloudOCR(canvas,full); }
     catch(err){ return await localOCR(canvas,full); }
   }
@@ -1548,8 +1639,7 @@ let lastOCRText='';
 async function runOCR(canvas){
   const st=document.getElementById('ocr-status'),ot=document.getElementById('ocr-text');
   st.classList.add('show'); ot.dataset.live='1';
-  const cloud=getVisionKey()&&navigator.onLine;
-  ot.textContent=cloud?'Reading (cloud)…':'Reading expiry date…';
+  ot.textContent=cloudOcrEnabled()?'Reading (cloud)…':'Reading expiry date…';
   try{
     let text=await ocrPass(canvas,false);
     let cands=extractDates(text);
@@ -1694,8 +1784,8 @@ function buildItem(item,idx){
   div.innerHTML=`
     <span class="item-num">${idx+1}.</span>
     <span class="item-emoji">${item.icon||'📦'}</span>
-    <img class="item-thumb" data-img="${item.id}" alt="photo" onclick="openLightbox('${item.id}')" ${local?`src="${local}"`:'style="display:none"'} />
-    <div class="item-body" onclick="openLightbox('${item.id}')" style="cursor:pointer">
+    <img class="item-thumb" data-img="${item.id}" alt="photo" onclick="itemTap('${item.id}')" ${local?`src="${local}"`:'style="display:none"'} />
+    <div class="item-body" onclick="itemTap('${item.id}')" style="cursor:pointer">
       <div class="item-name-text">${esc(item.name)}</div>
       <div class="item-sub">${fmtDate(item.expiry)}</div>
     </div>
@@ -1703,7 +1793,26 @@ function buildItem(item,idx){
     <button class="item-edit-btn" onclick="openEdit('${item.id}')" title="Edit">✏️</button>
     <button class="item-del-btn" onclick="deleteItem('${item.id}')" title="Delete">🗑</button>`;
   if(!local) hydrateImage(div.querySelector('.item-thumb'), item.id);  // pull from Storage
+  attachSwipe(div, item.id);
   return div;
+}
+/* Swipe a row left to delete it (mobile); vertical drags fall through to scroll. */
+function attachSwipe(el,id){
+  let x0=0,y0=0,active=false,moved=0;
+  el.addEventListener('touchstart',e=>{ x0=e.touches[0].clientX; y0=e.touches[0].clientY; active=true; moved=0; el.style.transition='none'; },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    if(!active) return;
+    const dx=e.touches[0].clientX-x0, dy=e.touches[0].clientY-y0;
+    if(Math.abs(dy)>Math.abs(dx)+6){ active=false; el.style.transform=''; el.style.opacity=''; return; } // vertical → let it scroll
+    moved=dx;
+    if(dx<0){ el.style.transform='translateX('+Math.max(dx,-150)+'px)'; el.style.opacity=String(1+Math.max(dx,-150)/300); }
+  },{passive:true});
+  el.addEventListener('touchend',()=>{
+    if(!active) return; active=false; el.style.transition='transform .2s, opacity .2s';
+    if(Math.abs(moved)>8){ justSwiped=true; setTimeout(()=>justSwiped=false,400); }
+    if(moved<-95){ el.style.transform='translateX(-110%)'; el.style.opacity='0'; setTimeout(()=>softDelete(id),160); }
+    else { el.style.transform=''; el.style.opacity=''; }
+  },{passive:true});
 }
 
 /* Tapping an Overview stat filters the list below; tapping the active one clears it. */
@@ -1737,7 +1846,7 @@ async function renderDashboard(){
   const dateEl=document.getElementById('overview-date');
   if(dateEl) dateEl.textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 
-  const items=await dbGetAll();
+  const items=(await dbGetAll()).filter(i=>!pendingDeletes.has(i.id));
   const expired=items.filter(i=>daysUntil(i.expiry)<0);
   const soon   =items.filter(i=>{ const d=daysUntil(i.expiry); return d>=0&&d<=SOON_DAYS; });
   const ok     =items.filter(i=>daysUntil(i.expiry)>SOON_DAYS);
@@ -1782,15 +1891,26 @@ async function renderDashboard(){
   }
 }
 
+let allItemsCache=[];
 async function renderAll(){
   const list=document.getElementById('all-list');
   list.innerHTML='<div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>';
-  const items=await dbGetAll();
+  allItemsCache=await dbGetAll();
+  filterAll();
+}
+/* Render the All-Items list from cache, applying the search box + sort (no refetch). */
+function filterAll(){
+  const list=document.getElementById('all-list'); if(!list) return;
+  let items=allItemsCache.filter(i=>!pendingDeletes.has(i.id));
+  const q=(document.getElementById('search-input')?.value||'').trim().toLowerCase();
+  if(q) items=items.filter(i=>(i.name||'').toLowerCase().includes(q));
   const sort=document.getElementById('sort-select').value;
   items.sort((a,b)=>sort==='expiry'?new Date(a.expiry)-new Date(b.expiry):sort==='name'?a.name.localeCompare(b.name):new Date(b.added)-new Date(a.added));
   list.innerHTML='';
-  if(!items.length){ list.innerHTML='<div class="empty"><div class="e-icon">📦</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>'; }
-  else{ items.forEach((item,i)=>list.appendChild(buildItem(item,i))); }
+  if(!items.length){ list.innerHTML = q
+    ? '<div class="empty"><div class="e-icon">🔍</div><p>No matches for “'+esc(q)+'”.</p></div>'
+    : '<div class="empty"><div class="e-icon">📦</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>'; }
+  else items.forEach((item,i)=>list.appendChild(buildItem(item,i)));
 }
 
 /* Reusable styled confirmation dialog. */
@@ -1812,6 +1932,35 @@ function deleteItem(id){
   confirmDialog(`Delete "${name}"? This also removes its photos and can't be undone.`, async ()=>{
     await removeImage(id); await dbDelete(id); notify('🗑 Deleted'); renderDashboard(); renderAll();
   }, {title:'Delete item', confirmText:'Delete', danger:true});
+}
+
+/* ═══ SWIPE-TO-DELETE + UNDO ═══ (swipe = quick delete with a 5s undo window;
+   the actual delete is deferred until the window closes, so Undo is instant) */
+const pendingDeletes=new Set();
+let undoItem=null, undoTimer=null, justSwiped=false;
+function itemTap(id){ if(justSwiped) return; openLightbox(id); }
+function refreshLists(){ renderDashboard(); if(typeof filterAll==='function') filterAll(); }
+function softDelete(id){
+  const item=itemMap[id]; if(!item) return;
+  if(undoItem && undoItem.id!==id) commitDelete(undoItem.id);   // flush any previous pending delete
+  clearTimeout(undoTimer);
+  pendingDeletes.add(id); undoItem=item;
+  refreshLists();
+  document.getElementById('undo-text').textContent='Deleted "'+item.name+'"';
+  document.getElementById('undo-bar').classList.add('show');
+  undoTimer=setTimeout(()=>commitDelete(id),5000);
+}
+function undoDelete(){
+  clearTimeout(undoTimer);
+  document.getElementById('undo-bar').classList.remove('show');
+  if(undoItem){ const id=undoItem.id; undoItem=null; pendingDeletes.delete(id); refreshLists(); }
+}
+async function commitDelete(id){
+  clearTimeout(undoTimer);
+  if(undoItem && undoItem.id===id){ undoItem=null; document.getElementById('undo-bar').classList.remove('show'); }
+  if(!pendingDeletes.has(id)) return;
+  await removeImage(id); await dbDelete(id);
+  pendingDeletes.delete(id);
 }
 /* Wipe every product (and its photos) for the current account. */
 async function clearAllItems(){
@@ -1843,7 +1992,6 @@ function renderSettingsPage(){
   const rl=document.getElementById('account-role'); if(rl) rl.textContent=isAdmin()?'Administrator':'User';
   const umc=document.getElementById('user-mgmt-card');
   if(umc){ umc.style.display=isAdmin()?'':'none'; if(isAdmin()) adminLoadUsers(); }
-  const vk=document.getElementById('vision-key-input'); if(vk) vk.value=getVisionKey();
   renderVisionKeyStatus();
   renderCatList();
   // Populate products textarea

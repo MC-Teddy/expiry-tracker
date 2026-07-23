@@ -649,6 +649,8 @@
           <span class="field-label">Category</span>
           <div class="field-value"><div class="emoji-row" id="emoji-picker-manual"></div></div>
         </div>
+        <button type="button" class="full-photo-btn" id="manual-photo-btn" onclick="manualPickPhoto(false)">📷 Add photo (optional)</button>
+        <button type="button" class="full-photo-btn" id="manual-pkg-btn" onclick="manualPickPhoto(true)">📦 Add package photo (optional)</button>
         <!-- Add bar visible on both mobile AND desktop for this page -->
         <div class="add-bar">
           <span class="add-bar-label">Save Item</span>
@@ -895,7 +897,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.2';
+const APP_VERSION='4.3';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1111,6 +1113,18 @@ function pickFullPhoto(forId){
   inp.dataset.mode=''; inp.dataset.full='1'; inp.dataset.forId = forId==null?'':String(forId);
   inp.value=''; inp.click();
 }
+/* Optional photos on the manual "New Item" form (attached on save). */
+let pendingManualThumb=null, pendingManualFull=null;
+function manualPickPhoto(full){
+  const inp=document.getElementById('full-photo-input');
+  inp.dataset.mode='manual'; inp.dataset.full=full?'1':''; inp.dataset.forId='';
+  inp.value=''; inp.click();
+}
+function resetManualPhotos(){
+  pendingManualThumb=null; pendingManualFull=null;
+  setBtn('manual-photo-btn','📷 Add photo (optional)');
+  setBtn('manual-pkg-btn','📦 Add package photo (optional)');
+}
 /* Load a chosen photo and downscale it for storage. */
 function loadDownscaled(file,maxDim,q){
   return new Promise((res,rej)=>{
@@ -1136,6 +1150,11 @@ async function onFullPhotoSelected(inp){
   if(inp.dataset.mode==='edit'){       // editing an item → stage, upload on Save
     if(full){ editPendingFull=dataUrl;  setBtn('edit-pkgphoto-btn','✓ Package photo set — tap to change'); }
     else    { editPendingThumb=dataUrl; setBtn('edit-datephoto-btn','✓ Date photo set — tap to change'); }
+    return;
+  }
+  if(inp.dataset.mode==='manual'){     // manual New Item form → attach on save
+    if(full){ pendingManualFull=dataUrl;  setBtn('manual-pkg-btn','✓ Package photo added — tap to change'); }
+    else    { pendingManualThumb=dataUrl; setBtn('manual-photo-btn','✓ Photo added — tap to change'); }
     return;
   }
   const forId=inp.dataset.forId;
@@ -1631,7 +1650,13 @@ async function saveManualItem(){
   if(!name){notify('⚠️ Enter a product name');return;}
   if(!date){notify('⚠️ Enter the expiry date');return;}
   const item=await dbAdd({name,expiry:date,icon:emojiManual,added:new Date().toISOString()});
-  if(item){ notify('✅ "'+name+'" saved!'); document.getElementById('manual-name').value=''; document.getElementById('manual-date').value=new Date().toISOString().split('T')[0]; renderDashboard(); }
+  if(item){
+    if(pendingManualThumb) await uploadImage(item.id, pendingManualThumb, false);
+    if(pendingManualFull)  await uploadImage(item.id, pendingManualFull, true);
+    notify('✅ "'+name+'" saved!');
+    document.getElementById('manual-name').value=''; document.getElementById('manual-date').value=new Date().toISOString().split('T')[0];
+    resetManualPhotos(); renderDashboard(); renderAll();
+  }
 }
 
 /* ═══ RENDER ═══ */

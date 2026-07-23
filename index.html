@@ -219,6 +219,17 @@
     .edit-close { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; width: 30px; height: 30px; color: var(--text-2); font-size: 15px; cursor: pointer; }
     .edit-photo-btn { display: block; width: 100%; margin-top: 10px; padding: 11px; border: 1.5px dashed var(--border); border-radius: 12px; background: var(--muted-bg); color: var(--text-2); font-size: 13px; font-weight: 600; cursor: pointer; }
     .edit-save { display: block; width: 100%; margin-top: 14px; padding: 13px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.15); }
+    /* Confirm dialog */
+    #confirm-modal { display: none; position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,.55); align-items: center; justify-content: center; padding: 24px; }
+    #confirm-modal.show { display: flex; }
+    .confirm-card { width: 100%; max-width: 340px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 22px 20px; text-align: center; }
+    .confirm-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .confirm-msg { font-size: 13px; color: var(--text-2); line-height: 1.55; margin-bottom: 20px; }
+    .confirm-actions { display: flex; gap: 10px; }
+    .confirm-actions button { flex: 1; padding: 12px; border-radius: 11px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .confirm-cancel { background: var(--muted-bg); color: var(--text); border: 1.5px solid var(--border); }
+    .confirm-ok { border: none; background: var(--muted-bg); color: var(--text); }
+    .confirm-ok.danger { background: var(--red); color: #fff; }
     .item-body { flex: 1; min-width: 0; }
     .item-name-text { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
@@ -482,6 +493,18 @@
 </div>
 
 <input type="file" id="full-photo-input" accept="image/*" capture="environment" style="display:none" onchange="onFullPhotoSelected(this)" />
+
+<!-- ════ CONFIRM DIALOG ════ -->
+<div id="confirm-modal" onclick="if(event.target===this)confirmNo()">
+  <div class="confirm-card">
+    <div class="confirm-title" id="confirm-title">Are you sure?</div>
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="confirmNo()">Cancel</button>
+      <button class="confirm-ok danger" id="confirm-ok" onclick="confirmYes()">Delete</button>
+    </div>
+  </div>
+</div>
 
 <div id="app">
 
@@ -840,6 +863,7 @@
           </div>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
             <button class="danger-btn" onclick="clearLocalImages()">🗑 Clear Cached Photos</button>
+            <button class="danger-btn" onclick="clearAllItems()">⚠️ Clear All Products</button>
           </div>
         </div>
       </div>
@@ -897,7 +921,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.3';
+const APP_VERSION='4.4';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1769,7 +1793,45 @@ async function renderAll(){
   else{ items.forEach((item,i)=>list.appendChild(buildItem(item,i))); }
 }
 
-async function deleteItem(id){ await removeImage(id); await dbDelete(id); notify('🗑 Deleted'); renderDashboard(); renderAll(); }
+/* Reusable styled confirmation dialog. */
+let _confirmCb=null;
+function confirmDialog(message, onConfirm, opts){
+  opts=opts||{}; _confirmCb=onConfirm;
+  document.getElementById('confirm-title').textContent=opts.title||'Are you sure?';
+  document.getElementById('confirm-msg').textContent=message;
+  const ok=document.getElementById('confirm-ok');
+  ok.textContent=opts.confirmText||'Delete';
+  ok.classList.toggle('danger', opts.danger!==false);
+  document.getElementById('confirm-modal').classList.add('show');
+}
+function confirmYes(){ document.getElementById('confirm-modal').classList.remove('show'); const cb=_confirmCb; _confirmCb=null; if(cb)cb(); }
+function confirmNo(){ document.getElementById('confirm-modal').classList.remove('show'); _confirmCb=null; }
+
+function deleteItem(id){
+  const item=itemMap[id]; const name=item?item.name:'this item';
+  confirmDialog(`Delete "${name}"? This also removes its photos and can't be undone.`, async ()=>{
+    await removeImage(id); await dbDelete(id); notify('🗑 Deleted'); renderDashboard(); renderAll();
+  }, {title:'Delete item', confirmText:'Delete', danger:true});
+}
+/* Wipe every product (and its photos) for the current account. */
+async function clearAllItems(){
+  const items=await dbGetAll();
+  if(!items.length){ notify('Nothing to clear'); return; }
+  confirmDialog(`Delete all ${items.length} product${items.length>1?'s':''}? This permanently removes every item and its photos, and can't be undone.`, async ()=>{
+    if(!CURRENT_USER) return;
+    setSyncing(true);
+    const{error}=await sb.from('items').delete().eq('user_id',CURRENT_USER.id);
+    setSyncing(false);
+    if(error){ notify('⚠️ '+error.message); return; }
+    for(const it of items){ deleteImageLocally(it.id); deleteImageLocally(it.id+'_full'); }
+    try{
+      const{data:files}=await sb.storage.from(IMG_BUCKET).list(CURRENT_USER.id);
+      if(files&&files.length) await sb.storage.from(IMG_BUCKET).remove(files.map(f=>CURRENT_USER.id+'/'+f.name));
+    }catch(e){}
+    notify('🗑 All products cleared');
+    renderDashboard(); renderAll();
+  }, {title:'Clear all products', confirmText:'Delete all', danger:true});
+}
 
 /* ═══ SETTINGS PAGE ═══ */
 function renderSettingsPage(){

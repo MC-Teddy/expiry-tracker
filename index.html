@@ -183,7 +183,23 @@
     .bao-item:active { background: var(--muted-bg); }
     .item-num { font-size: 12px; font-weight: 700; color: var(--text-2); width: 18px; flex-shrink: 0; }
     .item-emoji { font-size: 20px; flex-shrink: 0; }
-    .item-thumb { width: 50px; height: 38px; border-radius: 7px; object-fit: cover; flex-shrink: 0; border: 1.5px solid var(--border); }
+    .item-thumb { width: 50px; height: 38px; border-radius: 7px; object-fit: cover; flex-shrink: 0; border: 1.5px solid var(--border); cursor: pointer; }
+    .item-thumb:active { opacity: .7; }
+    /* Package-photo button (scan form) */
+    .full-photo-btn { display: block; width: calc(100% - 32px); margin: 0 16px 12px; padding: 11px; border: 1.5px dashed var(--border); border-radius: 12px; background: var(--muted-bg); color: var(--text-2); font-size: 13px; font-weight: 600; }
+    .full-photo-btn.added { border-style: solid; border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+    /* Export button on All Items page */
+    .list-export-btn { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 4px 9px; font-size: 12px; font-weight: 700; color: var(--text-2); margin-left: 6px; white-space: nowrap; flex-shrink: 0; }
+    /* Image lightbox */
+    #lightbox { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.86); align-items: center; justify-content: center; padding: 24px; }
+    #lightbox.show { display: flex; }
+    .lb-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 96vw; }
+    #lightbox-img { max-width: 96vw; max-height: 78vh; border-radius: 12px; box-shadow: 0 12px 48px rgba(0,0,0,.6); object-fit: contain; background: #111; }
+    .lb-empty { color: #fff; font-size: 14px; opacity: .85; padding: 40px 20px; }
+    .lb-add { background: var(--accent); color: #fff; border: none; border-radius: 11px; padding: 11px 18px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,.3); }
+    .lb-close { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; border: none; font-size: 17px; z-index: 2001; }
+    .lb-spin { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,.25); border-top-color: #fff; border-radius: 50%; animation: lbspin .8s linear infinite; }
+    @keyframes lbspin { to { transform: rotate(360deg); } }
     .item-body { flex: 1; min-width: 0; }
     .item-name-text { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
@@ -417,6 +433,18 @@
 
 <div id="notify-bar"></div>
 
+<!-- ════ IMAGE LIGHTBOX ════ -->
+<div id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div class="lb-inner">
+    <div id="lightbox-loading" class="lb-spin"></div>
+    <img id="lightbox-img" alt="reference photo" />
+    <div id="lightbox-empty" class="lb-empty">No photo saved for this item yet.</div>
+    <button id="lightbox-add-btn" class="lb-add" onclick="pickFullPhoto(lightboxOpenId)">📷 Add package photo</button>
+  </div>
+</div>
+<input type="file" id="full-photo-input" accept="image/*" capture="environment" style="display:none" onchange="onFullPhotoSelected(this)" />
+
 <div id="app">
 
   <!-- ════ TOP BAR ════ -->
@@ -537,6 +565,7 @@
             <span class="field-label">Category</span>
             <div class="field-value"><div class="emoji-row" id="emoji-picker-scan"></div></div>
           </div>
+          <button type="button" class="full-photo-btn" id="full-photo-btn" onclick="pickFullPhoto('')">📷 Add package photo (optional)</button>
           <div class="add-bar">
             <span class="add-bar-label">Save to cloud</span>
             <button class="add-bar-btn" onclick="saveScannedItem()">Save ✅</button>
@@ -601,6 +630,7 @@
             <option value="name">By Name</option>
             <option value="added">Recently Added</option>
           </select>
+          <button class="list-export-btn" onclick="exportToExcel()" title="Export all items to Excel">⬇️ Excel</button>
         </div>
         <div class="bao-item-list" id="all-list">
           <div class="empty"><div class="e-icon">📦</div><p>No items yet.</p></div>
@@ -827,7 +857,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.0';
+const APP_VERSION='4.1';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -977,33 +1007,35 @@ function deleteImageLocally(id){ try{ const imgs=JSON.parse(localStorage.getItem
    any device signed into the same account can pull them. Local cache is kept as
    an instant/offline copy. */
 const IMG_BUCKET='item-images';
-function imagePath(id){ return CURRENT_USER ? `${CURRENT_USER.id}/${id}.jpg` : null; }
+/* Each item has a thumbnail (id.jpg) and an optional full "package" photo (id_full.jpg). */
+function imagePath(id,full){ return CURRENT_USER ? `${CURRENT_USER.id}/${id}${full?'_full':''}.jpg` : null; }
+function imgKey(id,full){ return full ? id+'_full' : String(id); }
 function dataURLtoBlob(u){ const [h,b]=u.split(','); const mime=(h.match(/:(.*?);/)||[])[1]||'image/jpeg'; const bin=atob(b); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i); return new Blob([a],{type:mime}); }
 function blobToDataURL(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob); }); }
 /* Save locally then push to Storage (upsert). Local copy stands in if upload fails. */
-async function uploadImage(id,dataUrl){
-  saveImageLocally(id,dataUrl);
-  const path=imagePath(id); if(!path) return;
+async function uploadImage(id,dataUrl,full){
+  saveImageLocally(imgKey(id,full),dataUrl);
+  const path=imagePath(id,full); if(!path) return;
   try{ await sb.storage.from(IMG_BUCKET).upload(path,dataURLtoBlob(dataUrl),{upsert:true,contentType:'image/jpeg'}); }
   catch(e){ /* keep local copy; nothing user-facing to do */ }
 }
 /* Return a displayable data URL: local cache first, else download from Storage
    (and cache it so it's instant/offline next time). null if there is no image. */
-async function fetchImage(id){
-  const local=getImageLocally(id); if(local) return local;
-  const path=imagePath(id); if(!path) return null;
+async function fetchImage(id,full){
+  const local=getImageLocally(imgKey(id,full)); if(local) return local;
+  const path=imagePath(id,full); if(!path) return null;
   try{
     const{data,error}=await sb.storage.from(IMG_BUCKET).download(path);
     if(error||!data) return null;
     const url=await blobToDataURL(data);
-    saveImageLocally(id,url);
+    saveImageLocally(imgKey(id,full),url);
     return url;
   }catch(e){ return null; }
 }
 async function removeImage(id){
-  deleteImageLocally(id);
-  const path=imagePath(id); if(!path) return;
-  try{ await sb.storage.from(IMG_BUCKET).remove([path]); }catch(e){}
+  deleteImageLocally(imgKey(id,false)); deleteImageLocally(imgKey(id,true));
+  if(!CURRENT_USER) return;
+  try{ await sb.storage.from(IMG_BUCKET).remove([imagePath(id,false),imagePath(id,true)]); }catch(e){}
 }
 /* Fill an <img> once its thumbnail is available (used for cross-device pulls). */
 async function hydrateImage(imgEl,id){
@@ -1012,6 +1044,70 @@ async function hydrateImage(imgEl,id){
   if(url && imgEl.isConnected){ imgEl.src=url; imgEl.style.display=''; }
 }
 function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('🗑 Cached photos cleared'); }
+
+/* ═══ PACKAGE (2nd) PHOTO + IMAGE LIGHTBOX ═══ */
+let pendingFullPhoto=null;   // full package photo attached to the item being scanned
+let lightboxOpenId=null;
+function resetFullPhoto(){
+  pendingFullPhoto=null;
+  const b=document.getElementById('full-photo-btn');
+  if(b){ b.classList.remove('added'); b.textContent='📷 Add package photo (optional)'; }
+}
+/* Trigger the file picker / camera. forId='' → attach to the item being scanned;
+   a real id → add/replace the package photo of an existing item immediately. */
+function pickFullPhoto(forId){
+  const inp=document.getElementById('full-photo-input');
+  inp.dataset.forId = forId==null?'':String(forId);
+  inp.value=''; inp.click();
+}
+/* Load the chosen photo, downscale for storage, and route it to the right place. */
+function loadDownscaled(file,maxDim,q){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1, maxDim/Math.max(img.width,img.height));
+      const cw=Math.round(img.width*scale), ch=Math.round(img.height*scale);
+      const cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+      cv.getContext('2d').drawImage(img,0,0,cw,ch);
+      URL.revokeObjectURL(img.src);
+      res(cv.toDataURL('image/jpeg', q||.82));
+    };
+    img.onerror=e=>{ URL.revokeObjectURL(img.src); rej(e); };
+    img.src=URL.createObjectURL(file);
+  });
+}
+async function onFullPhotoSelected(inp){
+  const file=inp.files&&inp.files[0]; if(!file) return;
+  let dataUrl;
+  try{ dataUrl=await loadDownscaled(file,1100,.82); }
+  catch(e){ notify('⚠️ Could not read that image'); return; }
+  const forId=inp.dataset.forId;
+  if(forId){                          // existing item → upload now
+    await uploadImage(forId,dataUrl,true);
+    notify('📷 Package photo saved');
+    if(lightboxOpenId===forId){ showLightboxImage(dataUrl); setLightboxAddLabel(true); }
+  }else{                              // scan flow → attach on save
+    pendingFullPhoto=dataUrl;
+    const b=document.getElementById('full-photo-btn');
+    if(b){ b.classList.add('added'); b.textContent='✓ Package photo added — tap to change'; }
+  }
+}
+async function openLightbox(id){
+  lightboxOpenId=id;
+  const ov=document.getElementById('lightbox'); ov.classList.add('show');
+  const img=document.getElementById('lightbox-img'), empty=document.getElementById('lightbox-empty'), spin=document.getElementById('lightbox-loading');
+  img.style.display='none'; empty.style.display='none'; spin.style.display='block';
+  let url=await fetchImage(id,true);          // prefer the full package photo
+  const hasFull=!!url;
+  if(!url) url=await fetchImage(id,false);     // fall back to the thumbnail
+  spin.style.display='none';
+  if(url){ img.src=url; img.style.display='block'; }
+  else{ empty.style.display='block'; }
+  setLightboxAddLabel(hasFull);
+}
+function showLightboxImage(url){ const img=document.getElementById('lightbox-img'); img.src=url; img.style.display='block'; document.getElementById('lightbox-empty').style.display='none'; }
+function setLightboxAddLabel(hasFull){ const b=document.getElementById('lightbox-add-btn'); if(b) b.textContent = hasFull ? '📷 Replace package photo' : '📷 Add package photo'; }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); lightboxOpenId=null; }
 
 /* ═══ SUPABASE ═══ */
 const SUPABASE_URL='https://viupqrjyszvvcpnxrmsq.supabase.co';
@@ -1381,6 +1477,7 @@ function showConfirm(date, list){
   document.getElementById('add-form').classList.add('show');
   document.getElementById('scan-date').value=date||'';
   document.getElementById('scan-name').value='';
+  resetFullPhoto();
   dateCands=list||[];
   renderDateChoices(date);
   const multi=new Set(dateCands.map(c=>c.date)).size>1;
@@ -1405,7 +1502,13 @@ async function saveScannedItem(){
   if(!name){notify('⚠️ Enter a product name');return;}
   if(!date){notify('⚠️ Enter the expiry date');return;}
   const item=await dbAdd({name,expiry:date,icon:emojiScan,added:new Date().toISOString()});
-  if(item){ if(capturedThumb)await uploadImage(item.id,capturedThumb); notify('✅ "'+name+'" saved!'); document.getElementById('add-form').classList.remove('show'); document.getElementById('ocr-status').classList.remove('show'); capturedThumb=null; retakePhoto(); }
+  if(item){
+    if(capturedThumb)await uploadImage(item.id,capturedThumb);
+    if(pendingFullPhoto)await uploadImage(item.id,pendingFullPhoto,true);
+    notify('✅ "'+name+'" saved!');
+    document.getElementById('add-form').classList.remove('show'); document.getElementById('ocr-status').classList.remove('show');
+    capturedThumb=null; resetFullPhoto(); retakePhoto();
+  }
 }
 async function saveManualItem(){
   const name=document.getElementById('manual-name').value.trim();
@@ -1425,7 +1528,7 @@ function buildItem(item,idx){
   div.innerHTML=`
     <span class="item-num">${idx+1}.</span>
     <span class="item-emoji">${item.icon||'📦'}</span>
-    <img class="item-thumb" data-img="${item.id}" alt="photo" ${local?`src="${local}"`:'style="display:none"'} />
+    <img class="item-thumb" data-img="${item.id}" alt="photo" onclick="openLightbox('${item.id}')" ${local?`src="${local}"`:'style="display:none"'} />
     <div class="item-body">
       <div class="item-name-text">${esc(item.name)}</div>
       <div class="item-sub">${fmtDate(item.expiry)}</div>

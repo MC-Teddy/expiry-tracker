@@ -120,7 +120,8 @@
     button { font-family: inherit; cursor: pointer; }
 
     /* ══ SHELL ══ */
-    #app { display: flex; flex-direction: column; min-height: 100dvh; }
+    #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }  /* fixed viewport height: only .main-scroll scrolls, top bar + bottom nav stay pinned (100vh fallback for old browsers) */
+    .top-bar, .sync-bar, .bottom-nav { flex-shrink: 0; }
 
     /* ══ TOP BAR ══ */
     .top-bar { background: var(--card-bg); border-bottom: 1.5px solid var(--border); padding: calc(var(--st) + 12px) 16px 12px; display: flex; align-items: center; position: sticky; top: 0; z-index: 80; box-shadow: var(--shadow-sm); }
@@ -961,7 +962,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.6';
+const APP_VERSION='4.7';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1385,7 +1386,7 @@ function applySession(session){
   CURRENT_USER=(session&&session.user)||null;
   const login=document.getElementById('login-page'), app=document.getElementById('app');
   if(CURRENT_USER){
-    login.style.display='none'; app.style.display='block';  // explicit — '' would revert to CSS #app{display:none}
+    login.style.display='none'; app.style.display='flex';  // 'flex' (not 'block') so the fixed top/bottom-bar column layout applies; '' would revert to CSS #app{display:none}
     const em=document.getElementById('account-email'); if(em)em.textContent=CURRENT_USER.email||'';
     if(!prev) refresh();          // just logged in → pull this account's data
   }else{

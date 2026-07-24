@@ -961,7 +961,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.5';
+const APP_VERSION='4.6';
 function renderVersion(){
   const h=document.getElementById('app-version-home');   if(h) h.textContent='Expiry Tracker · v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1131,11 +1131,18 @@ function imgKey(id,full){ return full ? id+'_full' : String(id); }
 function dataURLtoBlob(u){ const [h,b]=u.split(','); const mime=(h.match(/:(.*?);/)||[])[1]||'image/jpeg'; const bin=atob(b); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i); return new Blob([a],{type:mime}); }
 function blobToDataURL(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob); }); }
 /* Save locally then push to Storage (upsert). Local copy stands in if upload fails. */
+let _uploadWarned=false;
 async function uploadImage(id,dataUrl,full){
   saveImageLocally(imgKey(id,full),dataUrl);
   const path=imagePath(id,full); if(!path) return;
-  try{ await sb.storage.from(IMG_BUCKET).upload(path,dataURLtoBlob(dataUrl),{upsert:true,contentType:'image/jpeg'}); }
-  catch(e){ /* keep local copy; nothing user-facing to do */ }
+  try{
+    // NOTE: sb.storage.upload returns {error}, it does NOT throw — must check it.
+    const{error}=await sb.storage.from(IMG_BUCKET).upload(path,dataURLtoBlob(dataUrl),{upsert:true,contentType:'image/jpeg'});
+    if(error) throw error;
+  }catch(e){
+    console.warn('[image] cloud upload failed:', (e&&e.message)||e);
+    if(!_uploadWarned){ notify('⚠️ Photo saved on this device only — cloud sync failed. Check Storage setup.'); _uploadWarned=true; }
+  }
 }
 /* Return a displayable data URL: local cache first, else download from Storage
    (and cache it so it's instant/offline next time). null if there is no image. */

@@ -130,7 +130,6 @@
     .bc-titlewrap { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
     .bc-section { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bc-version { font-size: 10px; font-weight: 600; color: var(--text-2); letter-spacing: .4px; }
-    .help-btn { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); background: none; color: var(--text-2); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 6px; }
     .top-actions { display: flex; align-items: center; gap: 8px; margin-left: 10px; flex-shrink: 0; }
     .badge-pill { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: none; cursor: pointer; box-shadow: 0 2px 8px rgba(232,97,58,.35); }
     .badge-pill:active { opacity: .8; }
@@ -373,9 +372,6 @@
     .danger-btn { background: var(--red-lt); color: var(--red); border: 1.5px solid var(--red); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; }
     .ghost-btn { background: var(--muted-bg); color: var(--text-2); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 600; }
 
-    /* ══ SIDEBAR BRAND (hidden mobile) ══ */
-    .sidebar-brand { display: none; }
-
     /* ══ DASHBOARD: hide add-bar + All Good on mobile ══ */
     #dashboard-page .add-bar { display: none; }
     #good-card { display: none; }
@@ -389,12 +385,6 @@
 
       /* App shell */
       #app { padding-left: 220px; padding-top: 62px; }
-
-      /* Sidebar brand */
-      .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 16px 16px 14px; border-bottom: 1.5px solid var(--border); flex-shrink: 0; }
-      .sidebar-brand-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(232,97,58,.28); }
-      .sidebar-brand-name { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -.3px; line-height: 1.2; }
-      .sidebar-brand-sub { font-size: 10px; color: var(--text-2); font-weight: 500; letter-spacing: .3px; text-transform: uppercase; }
 
       /* Left sidebar */
       .bottom-nav { position: fixed; left: 0; top: 62px; bottom: 54px; width: 220px; flex-direction: column; align-items: stretch; justify-content: flex-start; border-top: none; border-right: 1.5px solid var(--border); padding: 8px 0 0; gap: 0; overflow-y: auto; z-index: 80; background: var(--card-bg); box-shadow: 2px 0 16px rgba(43,36,36,.07); }
@@ -464,6 +454,70 @@
     #app { display:none; }
     .acct-email { font-size:12px; color:var(--text-2); word-break:break-all; }
     .logout-btn { margin-top:10px; background:var(--muted-bg); color:var(--text); border:1.5px solid var(--border); border-radius:10px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; }
+    /* Segmented toggle (settings) */
+    .seg { display: inline-flex; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 3px; gap: 3px; }
+    .seg-btn { border: none; background: none; color: var(--text-2); font-size: 13px; font-weight: 700; padding: 8px 15px; border-radius: 9px; cursor: pointer; }
+    .seg-btn.on { background: var(--card-bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+
+    /* ══════════════════════════════════════════════════════════════
+       PRO DESKTOP CARD DESIGN — opt-in (data-cards="pro"), desktop only
+       Elevated, hover-lift cards; gradient stat tiles; roomier rows.
+    ══════════════════════════════════════════════════════════════ */
+    @media (min-width: 768px) {
+      /* Balanced, centered composition (no more stretched-to-1920 whitespace) */
+      [data-cards="pro"] .main-scroll { padding: 32px 40px 44px; }
+      [data-cards="pro"] #dashboard-page.active,
+      [data-cards="pro"] #list-page,
+      [data-cards="pro"] #manual-page,
+      [data-cards="pro"] #settings-page,
+      [data-cards="pro"] #camera-page { max-width: 1180px; margin: 0 auto; }
+      [data-cards="pro"] #dashboard-page.active { gap: 22px; }
+
+      /* Elevated cards with hover lift */
+      [data-cards="pro"] .bao-card {
+        max-width: none; border: none; border-radius: 22px; overflow: hidden;
+        box-shadow: 0 1px 2px rgba(20,14,10,.04), 0 18px 44px -14px rgba(20,14,10,.15);
+        transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s cubic-bezier(.2,.8,.2,1);
+      }
+      [data-cards="pro"] .bao-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 1px 2px rgba(20,14,10,.05), 0 30px 66px -16px rgba(20,14,10,.24);
+      }
+      [data-cards="pro"] .bao-card-head { padding: 18px 22px; }
+      [data-cards="pro"] .head-title { font-size: 15px; letter-spacing: -.3px; }
+      [data-cards="pro"] .head-icon { font-size: 18px; }
+
+      /* Overview → three gradient stat tiles */
+      [data-cards="pro"] #dashboard-page.active > .bao-card:first-child { width: 100%; }
+      [data-cards="pro"] .stats-grid { gap: 16px; padding: 18px; }
+      [data-cards="pro"] .stat-cell {
+        border-right: none; border-radius: 18px; padding: 24px 22px 22px;
+        align-items: flex-start; text-align: left; gap: 3px; position: relative;
+        transition: transform .2s cubic-bezier(.2,.8,.2,1);
+      }
+      [data-cards="pro"] .stat-cell:hover { transform: translateY(-2px); }
+      [data-cards="pro"] .stat-cell.s-red    { background: linear-gradient(155deg, var(--red-lt), transparent 150%); }
+      [data-cards="pro"] .stat-cell.s-yellow { background: linear-gradient(155deg, var(--yellow-lt), transparent 150%); }
+      [data-cards="pro"] .stat-cell.s-green  { background: linear-gradient(155deg, var(--green-lt), transparent 150%); }
+      [data-cards="pro"] .stat-icon-wrap { position: absolute; top: 20px; right: 20px; width: 42px; height: 42px; font-size: 20px; margin: 0; }
+      [data-cards="pro"] .stat-num { font-size: 46px; font-weight: 800; letter-spacing: -1.6px; line-height: 1; margin: 4px 0 2px; }
+      [data-cards="pro"] .stat-lbl { font-size: 11.5px; text-transform: uppercase; letter-spacing: .7px; font-weight: 800; }
+      [data-cards="pro"] .stat-sub { font-size: 12px; opacity: .85; }
+
+      /* List cards grow to fill the row */
+      [data-cards="pro"] #dashboard-page.active > .bao-card:not(:first-child) { flex: 1 1 380px; }
+
+      /* Roomier, hover-highlighted rows (no hard separators) */
+      [data-cards="pro"] .bao-item-list { padding: 6px 10px; max-height: 440px; }
+      [data-cards="pro"] .bao-item {
+        border-bottom: none; border-radius: 14px; padding: 12px 12px; margin-bottom: 2px;
+        transition: background .15s;
+      }
+      [data-cards="pro"] .bao-item:hover { background: var(--muted-bg); }
+
+      /* A touch more depth on primary buttons */
+      [data-cards="pro"] .btn-cta { box-shadow: 0 4px 16px rgba(232,97,58,.4); }
+    }
   </style>
 </head>
 <body>
@@ -784,6 +838,22 @@
         </div>
       </div>
 
+      <!-- Appearance -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon">🎨</span>
+          <span class="head-title">Appearance</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Desktop card design</div>
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">Try the new elevated card visuals on desktop. Mobile is unaffected. Switch back anytime.</p>
+          <div class="seg">
+            <button class="seg-btn" id="cards-classic" onclick="applyCardStyle('classic')">Classic</button>
+            <button class="seg-btn" id="cards-pro" onclick="applyCardStyle('pro')">✨ Pro (beta)</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Scanning / OCR -->
       <div class="bao-card">
         <div class="bao-card-head">
@@ -960,7 +1030,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='4.9';
+const APP_VERSION='5.0';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -971,6 +1041,18 @@ document.addEventListener('DOMContentLoaded',renderVersion);
 const THEMES=['light','dark','glass','glassmorph2'];
 const THEME_META={ light:{icon:'☀️',color:'#F7F1EB'}, dark:{icon:'🌙',color:'#1C1816'}, glass:{icon:'🔮',color:'#0E2137'}, glassmorph2:{icon:'🔶',color:'#1B1533'} };
 (function(){ applyTheme(localStorage.getItem('expiry_theme') || 'light'); })();
+/* Optional "Pro" desktop card design (opt-in, desktop-only visuals). */
+(function(){ document.documentElement.setAttribute('data-cards', localStorage.getItem('expiry_cards') || 'classic'); })();
+function applyCardStyle(v){
+  document.documentElement.setAttribute('data-cards', v);
+  localStorage.setItem('expiry_cards', v);
+  renderCardStyleToggle();
+  notify(v==='pro' ? '✨ Pro card design enabled (desktop)' : 'Classic card design');
+}
+function renderCardStyleToggle(){
+  const cur=document.documentElement.getAttribute('data-cards')||'classic';
+  ['classic','pro'].forEach(k=>{ const b=document.getElementById('cards-'+k); if(b) b.classList.toggle('on', cur===k); });
+}
 function applyTheme(t) {
   if(!THEME_META[t]) t='light';
   document.documentElement.setAttribute('data-theme', t);
@@ -1992,6 +2074,7 @@ async function clearAllItems(){
 
 /* ═══ SETTINGS PAGE ═══ */
 function renderSettingsPage(){
+  renderCardStyleToggle();
   const sr=document.getElementById('soon-range'), cr=document.getElementById('critical-range');
   if(sr){sr.value=SOON_DAYS;document.getElementById('soon-val').textContent=SOON_DAYS+'d';}
   if(cr){cr.max=SOON_DAYS;cr.value=CRITICAL_DAYS;document.getElementById('critical-val').textContent=CRITICAL_DAYS+'d';}

@@ -186,8 +186,9 @@
     .bao-item:last-child { border-bottom: none; }
     .bao-item:active { background: var(--muted-bg); }
     .item-num { font-size: 12px; font-weight: 700; color: var(--text-2); width: 18px; flex-shrink: 0; }
-    .item-emoji { font-size: 20px; flex-shrink: 0; }
-    .item-thumb { width: 50px; height: 38px; border-radius: 7px; object-fit: cover; flex-shrink: 0; border: 1.5px solid var(--border); cursor: pointer; }
+    .item-thumb { width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0; cursor: pointer; background: var(--muted-bg); background-size: cover; background-position: center; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .item-thumb::after { content: '📷'; font-size: 14px; opacity: .28; }   /* placeholder when no photo */
+    .item-thumb.has-photo::after { content: none; }
     .item-thumb:active { opacity: .7; }
     /* Package-photo button (scan form) */
     .full-photo-btn { display: block; width: calc(100% - 32px); margin: 0 16px 12px; padding: 11px; border: 1.5px dashed var(--border); border-radius: 12px; background: var(--muted-bg); color: var(--text-2); font-size: 13px; font-weight: 600; }
@@ -293,8 +294,8 @@
     .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
     [data-theme="dark"] .toggle-track { background: #4A4040; }
     .emoji-row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .emoji-opt { width: 40px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--muted-bg); font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .12s, background .12s; }
-    .emoji-opt.on { border-color: var(--accent); background: var(--accent-lt); }
+    .cat-opt { padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--muted-bg); font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; transition: border-color .12s, background .12s, color .12s; }
+    .cat-opt.on { border-color: var(--accent); background: var(--accent-lt); color: var(--accent); }
 
     /* ══ CAMERA ══ */
     .camera-wrap { border-radius: var(--r); overflow: hidden; background: #1A1210; aspect-ratio: 4/3; position: relative; margin-bottom: 12px; box-shadow: var(--shadow); }
@@ -359,15 +360,13 @@
     .range-input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; }
     .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-2); margin-top: 4px; }
     .cat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .cat-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 8px 5px 10px; }
-    .cat-chip-emoji { font-size: 15px; }
+    .cat-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 8px 5px 12px; }
     .cat-chip-name { font-size: 12px; font-weight: 500; color: var(--text); }
     .cat-chip-del { background: none; border: none; color: var(--text-2); font-size: 15px; cursor: pointer; padding: 0 0 0 3px; line-height: 1; }
     .cat-chip-del:hover { color: var(--red); }
     .cat-add-row { display: flex; gap: 8px; }
-    .cat-emoji-in { width: 46px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 4px; font-size: 18px; text-align: center; outline: none; font-family: inherit; }
     .cat-name-in { flex: 1; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--text); outline: none; font-family: inherit; }
-    .cat-emoji-in:focus, .cat-name-in:focus { border-color: var(--accent); }
+    .cat-name-in:focus { border-color: var(--accent); }
     .cat-add-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; }
     .danger-btn { background: var(--red-lt); color: var(--red); border: 1.5px solid var(--red); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; }
     .ghost-btn { background: var(--muted-bg); color: var(--text-2); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 600; }
@@ -881,8 +880,7 @@
           <div class="cat-list" id="cat-list"></div>
           <div class="settings-heading">Add Category</div>
           <div class="cat-add-row">
-            <input class="cat-emoji-in" type="text" id="new-cat-emoji" placeholder="🆕" maxlength="2" />
-            <input class="cat-name-in" type="text" id="new-cat-name" placeholder="Category name…" />
+            <input class="cat-name-in" type="text" id="new-cat-name" placeholder="New category name…" onkeydown="if(event.key==='Enter')addCategory()" />
             <button class="cat-add-btn" onclick="addCategory()">Add</button>
           </div>
         </div>
@@ -1030,7 +1028,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='5.0';
+const APP_VERSION='5.2';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1133,56 +1131,56 @@ const DEFAULT_CATS = [
   {emoji:'❄️',name:'Frozen'},{emoji:'🧹',name:'Cleaning'},
 ];
 let CATEGORIES = JSON.parse(localStorage.getItem('expiry_cats') || JSON.stringify(DEFAULT_CATS));
-let emojiScan = CATEGORIES[0]?.emoji||'📦', emojiManual = CATEGORIES[0]?.emoji||'📦';
+function catName(c){ return typeof c==='string' ? c : ((c&&c.name)||''); }   // supports old {emoji,name} + new {name}
+let catScan = catName(CATEGORIES[0])||'Other', catManual = catName(CATEGORIES[0])||'Other';
 
 function saveCategories() { localStorage.setItem('expiry_cats', JSON.stringify(CATEGORIES)); }
 function renderCatList() {
   const el=document.getElementById('cat-list'); if(!el) return;
   el.innerHTML=CATEGORIES.map((c,i)=>
-    `<span class="cat-chip">
-      <span class="cat-chip-emoji">${c.emoji}</span>
-      <span class="cat-chip-name">${esc(c.name)}</span>
-      <button class="cat-chip-del" onclick="removeCategory(${i})">×</button>
-    </span>`
+    `<span class="cat-chip"><span class="cat-chip-name">${esc(catName(c))}</span><button class="cat-chip-del" onclick="removeCategory(${i})">×</button></span>`
   ).join('');
 }
 function addCategory() {
-  const eEl=document.getElementById('new-cat-emoji'), nEl=document.getElementById('new-cat-name');
-  const emoji=eEl.value.trim(), name=nEl.value.trim();
-  if(!emoji||!name){ notify('⚠️ Enter both emoji and name'); return; }
-  CATEGORIES.push({emoji,name}); saveCategories();
+  const nEl=document.getElementById('new-cat-name');
+  const name=nEl.value.trim();
+  if(!name){ notify('⚠️ Enter a category name'); return; }
+  if(CATEGORIES.some(c=>catName(c).toLowerCase()===name.toLowerCase())){ notify('⚠️ That category already exists'); return; }
+  CATEGORIES.push({name}); saveCategories();
   renderCatList(); renderCategoryPicker('scan'); renderCategoryPicker('manual');
-  eEl.value=''; nEl.value=''; notify('✅ Category "'+name+'" added');
+  nEl.value=''; notify('✅ Category "'+name+'" added');
 }
 function removeCategory(idx) {
   if(CATEGORIES.length<=1){ notify('⚠️ Keep at least one category'); return; }
   const removed=CATEGORIES.splice(idx,1)[0]; saveCategories();
   renderCatList(); renderCategoryPicker('scan'); renderCategoryPicker('manual');
-  notify('Removed "'+removed.name+'"');
+  notify('Removed "'+catName(removed)+'"');
 }
+/* Category picker shows NAMES (no icons). Selected value stored on the item. */
 function renderCategoryPicker(ctx) {
   const el=document.getElementById('emoji-picker-'+ctx); if(!el) return;
   el.innerHTML=CATEGORIES.map((c,i)=>
-    `<button class="emoji-opt${i===0?' on':''}" data-emoji="${c.emoji}" onclick="selectEmoji(this,'${ctx}')" title="${esc(c.name)}">${c.emoji}</button>`
+    `<button class="cat-opt${i===0?' on':''}" data-cat="${esc(catName(c))}" onclick="selectCat(this,'${ctx}')">${esc(catName(c))}</button>`
   ).join('');
-  if(ctx==='scan')   emojiScan  =CATEGORIES[0]?.emoji||'📦';
-  if(ctx==='manual') emojiManual=CATEGORIES[0]?.emoji||'📦';
-  if(ctx==='edit')   emojiEdit  =CATEGORIES[0]?.emoji||'📦';
+  const first=catName(CATEGORIES[0])||'Other';
+  if(ctx==='scan')   catScan  =first;
+  if(ctx==='manual') catManual=first;
+  if(ctx==='edit')   catEdit  =first;
 }
-function selectEmoji(btn, ctx) {
-  document.getElementById('emoji-picker-'+ctx).querySelectorAll('.emoji-opt').forEach(b=>b.classList.remove('on'));
+function selectCat(btn, ctx) {
+  document.getElementById('emoji-picker-'+ctx).querySelectorAll('.cat-opt').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
-  if(ctx==='scan')   emojiScan  =btn.dataset.emoji;
-  if(ctx==='manual') emojiManual=btn.dataset.emoji;
-  if(ctx==='edit')   emojiEdit  =btn.dataset.emoji;
+  if(ctx==='scan')   catScan  =btn.dataset.cat;
+  if(ctx==='manual') catManual=btn.dataset.cat;
+  if(ctx==='edit')   catEdit  =btn.dataset.cat;
 }
-/* Highlight the option matching a given emoji (used when opening the edit form). */
-function preselectEmoji(ctx,emoji){
+/* Highlight the option matching a category name (used when opening the edit form). */
+function preselectCat(ctx,name){
   const el=document.getElementById('emoji-picker-'+ctx); if(!el) return;
-  const opts=[...el.querySelectorAll('.emoji-opt')];
+  const opts=[...el.querySelectorAll('.cat-opt')];
   opts.forEach(b=>b.classList.remove('on'));
-  const target=opts.find(b=>b.dataset.emoji===emoji) || opts[0];
-  if(target){ target.classList.add('on'); if(ctx==='edit') emojiEdit=target.dataset.emoji; }
+  const target=opts.find(b=>b.dataset.cat===name) || opts[0];
+  if(target){ target.classList.add('on'); if(ctx==='edit') catEdit=target.dataset.cat; }
 }
 
 /* ═══ LOCAL IMAGE STORE ═══ */
@@ -1244,10 +1242,10 @@ async function removeImage(id){
   try{ await sb.storage.from(IMG_BUCKET).remove([imagePath(id,false),imagePath(id,true)]); }catch(e){}
 }
 /* Fill an <img> once its thumbnail is available (used for cross-device pulls). */
-async function hydrateImage(imgEl,id){
-  if(!imgEl) return;
+async function hydrateImage(el,id){
+  if(!el) return;
   const url=await fetchImage(id);
-  if(url && imgEl.isConnected){ imgEl.src=url; imgEl.style.display=''; }
+  if(url && el.isConnected){ el.style.backgroundImage=`url('${url}')`; el.classList.add('has-photo'); }
 }
 function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('🗑 Cached photos cleared'); }
 
@@ -1357,13 +1355,13 @@ function closeLightbox(){ document.getElementById('lightbox').classList.remove('
 })();
 
 /* ═══ EDIT ITEM ═══ */
-let editingId=null, editPendingThumb=null, editPendingFull=null, emojiEdit='📦';
+let editingId=null, editPendingThumb=null, editPendingFull=null, catEdit='Other';
 function openEdit(id){
   const item=itemMap[id]; if(!item){ notify('⚠️ Item not found'); return; }
   editingId=id; editPendingThumb=null; editPendingFull=null;
   document.getElementById('edit-name').value=item.name||'';
   document.getElementById('edit-date').value=item.expiry||'';
-  renderCategoryPicker('edit'); preselectEmoji('edit', item.icon||'📦');
+  renderCategoryPicker('edit'); preselectCat('edit', item.icon||'');
   setBtn('edit-datephoto-btn','🗓 Replace expiry date photo');
   setBtn('edit-pkgphoto-btn','📦 Add / replace package photo');
   document.getElementById('edit-modal').classList.add('show');
@@ -1379,7 +1377,7 @@ async function saveEdit(){
   const date=document.getElementById('edit-date').value;
   if(!name){ notify('⚠️ Enter a product name'); return; }
   if(!date){ notify('⚠️ Enter the expiry date'); return; }
-  const updated=await dbUpdate(editingId,{name,expiry:date,icon:emojiEdit});
+  const updated=await dbUpdate(editingId,{name,expiry:date,icon:catEdit});
   if(!updated) return;
   if(editPendingThumb) await uploadImage(editingId, editPendingThumb, false);
   if(editPendingFull)  await uploadImage(editingId, editPendingFull, true);
@@ -1393,23 +1391,60 @@ function closeEdit(){ document.getElementById('edit-modal').classList.remove('sh
    Uses the native BarcodeDetector when available (Chrome/Android); everywhere
    else, the user types the number. Either way we look the product up and
    auto-fill the target name field. */
-let bcTarget=null, bcStream=null, bcDetector=null, bcTimer=null;
+let bcTarget=null, bcStream=null, bcDetector=null, bcTimer=null, bcReader=null;
 function setBcStatus(t){ const el=document.getElementById('bc-status'); if(el) el.textContent=t; }
+/* Lazily load ZXing only when the native BarcodeDetector isn't available. */
+let _zxingP=null;
+function loadZXing(){
+  if(window.ZXing && window.ZXing.BrowserMultiFormatReader) return Promise.resolve();
+  if(_zxingP) return _zxingP;
+  _zxingP=new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@zxing/library@0.18.6/umd/index.min.js';
+    s.onload=res; s.onerror=()=>{ _zxingP=null; rej(new Error('scanner load failed')); };
+    document.head.appendChild(s);
+  });
+  return _zxingP;
+}
 async function openBarcodeScanner(targetInputId){
   bcTarget=targetInputId||'manual-name';
   const inp=document.getElementById('bc-input'); if(inp) inp.value='';
   setBcStatus('Point the camera at a barcode…');
   document.getElementById('barcode-modal').classList.add('show');
-  const wrap=document.getElementById('bc-video-wrap');
-  if(!('BarcodeDetector' in window)){ wrap.style.display='none'; setBcStatus('Live scanning isn’t supported on this browser — type the barcode number below.'); return; }
-  wrap.style.display='block';
-  try{ bcDetector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','codabar','itf']}); }
-  catch(e){ try{ bcDetector=new BarcodeDetector(); }catch(_){ bcDetector=null; } }
+  const wrap=document.getElementById('bc-video-wrap'); wrap.style.display='block';
+  // 1) Native BarcodeDetector (Android Chrome / Edge) — fastest
+  if('BarcodeDetector' in window){
+    try{ bcDetector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','codabar','itf']}); }
+    catch(e){ try{ bcDetector=new BarcodeDetector(); }catch(_){ bcDetector=null; } }
+    if(bcDetector){
+      try{
+        bcStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+        const v=document.getElementById('bc-video'); v.srcObject=bcStream; await v.play();
+        scanBarcodeLoop(); return;
+      }catch(e){ wrap.style.display='none'; setBcStatus('Camera blocked — allow camera access, or type the barcode below.'); return; }
+    }
+  }
+  // 2) ZXing fallback — camera scanning on iOS Safari and other browsers
+  setBcStatus('Starting camera…');
   try{
-    bcStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-    const v=document.getElementById('bc-video'); v.srcObject=bcStream; await v.play();
-    scanBarcodeLoop();
-  }catch(e){ wrap.style.display='none'; setBcStatus('Camera unavailable — type the barcode number below.'); }
+    await loadZXing();
+    bcReader=new ZXing.BrowserMultiFormatReader();
+    let deviceId=null;
+    try{ // grant permission first so we can read labels and pick the back camera
+      await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>s.getTracks().forEach(t=>t.stop()));
+      const devs=await bcReader.listVideoInputDevices();
+      const back=devs.find(d=>/back|rear|environment|world/i.test(d.label));
+      deviceId=(back||devs[devs.length-1]||{}).deviceId||null;
+    }catch(e){}
+    setBcStatus('Point the camera at a barcode…');
+    const p=bcReader.decodeFromVideoDevice(deviceId, 'bc-video', (result)=>{
+      if(result){ lookupBarcode(result.getText ? result.getText() : result.text); }
+    });
+    if(p && p.catch) p.catch(()=>{ const w=document.getElementById('bc-video-wrap'); if(w)w.style.display='none'; setBcStatus('Camera unavailable — allow access, or type the barcode number below.'); });
+  }catch(e){
+    wrap.style.display='none';
+    setBcStatus('Live scanning unavailable here — type the barcode number below.');
+  }
 }
 async function scanBarcodeLoop(){
   const modal=document.getElementById('barcode-modal');
@@ -1420,7 +1455,12 @@ async function scanBarcodeLoop(){
   }catch(e){}
   bcTimer=setTimeout(scanBarcodeLoop,350);
 }
-function stopBcCamera(){ if(bcStream){ bcStream.getTracks().forEach(t=>t.stop()); bcStream=null; } clearTimeout(bcTimer); const v=document.getElementById('bc-video'); if(v) v.srcObject=null; }
+function stopBcCamera(){
+  if(bcStream){ bcStream.getTracks().forEach(t=>t.stop()); bcStream=null; }
+  if(bcReader){ try{ bcReader.reset(); }catch(e){} bcReader=null; }
+  clearTimeout(bcTimer);
+  const v=document.getElementById('bc-video'); if(v) v.srcObject=null;
+}
 function closeBarcode(){ stopBcCamera(); document.getElementById('barcode-modal').classList.remove('show'); }
 async function lookupBarcode(code){
   code=(code||'').replace(/\D/g,'');
@@ -1837,7 +1877,7 @@ async function saveScannedItem(){
   const date=document.getElementById('scan-date').value;
   if(!name){notify('⚠️ Enter a product name');return;}
   if(!date){notify('⚠️ Enter the expiry date');return;}
-  const item=await dbAdd({name,expiry:date,icon:emojiScan,added:new Date().toISOString()});
+  const item=await dbAdd({name,expiry:date,icon:catScan,added:new Date().toISOString()});
   if(item){
     if(capturedThumb)await uploadImage(item.id,capturedThumb);
     if(pendingFullPhoto)await uploadImage(item.id,pendingFullPhoto,true);
@@ -1851,7 +1891,7 @@ async function saveManualItem(){
   const date=document.getElementById('manual-date').value;
   if(!name){notify('⚠️ Enter a product name');return;}
   if(!date){notify('⚠️ Enter the expiry date');return;}
-  const item=await dbAdd({name,expiry:date,icon:emojiManual,added:new Date().toISOString()});
+  const item=await dbAdd({name,expiry:date,icon:catManual,added:new Date().toISOString()});
   if(item){
     if(pendingManualThumb) await uploadImage(item.id, pendingManualThumb, false);
     if(pendingManualFull)  await uploadImage(item.id, pendingManualFull, true);
@@ -1871,8 +1911,7 @@ function buildItem(item,idx){
   div.className='bao-item '+getStatus(days);
   div.innerHTML=`
     <span class="item-num">${idx+1}.</span>
-    <span class="item-emoji">${item.icon||'📦'}</span>
-    <img class="item-thumb" data-img="${item.id}" alt="photo" onclick="itemTap('${item.id}')" ${local?`src="${local}"`:'style="display:none"'} />
+    <div class="item-thumb${local?' has-photo':''}" data-img="${item.id}" onclick="itemTap('${item.id}')" ${local?`style="background-image:url('${local}')"`:''}></div>
     <div class="item-body" onclick="itemTap('${item.id}')" style="cursor:pointer">
       <div class="item-name-text">${esc(item.name)}</div>
       <div class="item-sub">${fmtDate(item.expiry)}</div>

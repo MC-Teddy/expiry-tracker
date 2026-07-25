@@ -1028,7 +1028,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='5.2';
+const APP_VERSION='5.3';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1244,7 +1244,8 @@ async function removeImage(id){
 /* Fill an <img> once its thumbnail is available (used for cross-device pulls). */
 async function hydrateImage(el,id){
   if(!el) return;
-  const url=await fetchImage(id);
+  let url=await fetchImage(id,false);          // date/scan photo first
+  if(!url) url=await fetchImage(id,true);       // else fall back to the package photo
   if(url && el.isConnected){ el.style.backgroundImage=`url('${url}')`; el.classList.add('has-photo'); }
 }
 function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('🗑 Cached photos cleared'); }
@@ -1906,7 +1907,7 @@ const itemMap={};
 function buildItem(item,idx){
   itemMap[item.id]=item;
   const days=daysUntil(item.expiry);
-  const local=getImageLocally(item.id);
+  const local=getImageLocally(item.id) || getImageLocally(item.id+'_full');   // date photo, else package photo
   const div=document.createElement('div');
   div.className='bao-item '+getStatus(days);
   div.innerHTML=`

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<![CDATA[
+<helmet>
+  <link rel="stylesheet" href="_ds/modernist-b6d13fc4-7747-4dcf-b04b-6125695b2623/styles.css">
+  <script src="_ds/modernist-b6d13fc4-7747-4dcf-b04b-6125695b2623/_ds_bundle.js"></script>
+  <script src="./image-slot.js"></script>
+  <style>
+    body { margin: 0; }
+    .es-scroll::-webkit-scrollbar { display: none; }
+  </style>
+</helmet>
+
+<div style="background: var(--color-bg); min-height: 100vh; padding-bottom: 80px;">
+
+  <div style="background: var(--color-accent); padding: 56px 48px 44px; border-bottom: 2px solid var(--color-text);">
+    <div style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-bg); opacity: 0.85; margin-bottom: 10px;">Redesign — 01/01</div>
+    <h1 style="color: var(--color-bg); font-size: 46px; margin: 0 0 8px; max-width: 720px;">Expiry Tracker</h1>
+    <p style="color: var(--color-bg); opacity: 0.9; font-size: 16px; max-width: 560px; margin: 0;">A dark, warm-toned overhaul of the food-expiry app — flat surfaces, one accent, hard edges, grayscale photography.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 402px); gap: 0; overflow-x: auto; padding: 48px; box-sizing: border-box; max-width: 100%;">
+
+    <!-- SCREEN 1: HOME / OVERVIEW -->
+    <div style="border-right: 2px solid var(--color-divider); padding-right: 40px; margin-right: 40px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">01 — Overview</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402,874">
+        <div class="es-scroll" style="background: #201e1d; min-height: 100%; overflow-y: auto; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="height: 54px;"></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 20px 18px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.29 7 12 12l8.71-5"></path><path d="M12 22V12"></path></svg>
+              <div style="font-weight: 800; font-size: 17px; letter-spacing: -0.01em;">Expiry Tracker</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 2px solid rgba(245,242,240,0.14); border-bottom: 2px solid rgba(245,242,240,0.14);">
+            <div style="padding: 16px 12px 14px; border-right: 1px solid rgba(245,242,240,0.14); border-top: 3px solid #ff3b30;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ff5b4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86l-8.4 14.55A2 2 0 0 0 3.6 21h16.8a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg>
+              <div style="font-size: 26px; font-weight: 800; margin-top: 8px; color: #ff5b4a;">2</div>
+              <div style="font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; margin-top: 2px;">Expired</div>
+            </div>
+            <div style="padding: 16px 12px 14px; border-right: 1px solid rgba(245,242,240,0.14); border-top: 3px solid #f2b73c;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f2b73c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
+              <div style="font-size: 26px; font-weight: 800; margin-top: 8px; color: #f2b73c;">5</div>
+              <div style="font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; margin-top: 2px;">Expiring soon</div>
+            </div>
+            <div style="padding: 16px 12px 14px; border-top: 3px solid #3fb972;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3fb972" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="M22 4L12 14.01l-3-3"></path></svg>
+              <div style="font-size: 26px; font-weight: 800; margin-top: 8px; color: #3fb972;">14</div>
+              <div style="font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; margin-top: 2px;">Good</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; padding: 16px 20px;">
+            <div style="flex: 1; display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: #ec3013; color: #201e1d; font-weight: 800; font-size: 13px; padding: 12px 14px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              Scan
+            </div>
+            <div style="flex: 1; display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: transparent; border: 1px solid rgba(245,242,240,0.25); color: #f8f4f4; font-weight: 800; font-size: 13px; padding: 12px 14px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Add item
+            </div>
+          </div>
+
+          <div style="padding: 4px 20px 8px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; opacity: 0.6;">Needs attention · 7</div>
+            <div style="font-size: 11px; color: #ec3013; font-weight: 800;">View all</div>
+          </div>
+          <div style="border-top: 1px solid rgba(245,242,240,0.14);">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 38px; height: 38px; background: #302d2c; flex: none;"><image-slot id="home-item-1" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Chicken Breast</div>
+                <div style="font-size: 11px; opacity: 0.55;">Meat</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: flex; align-items: center; gap: 5px; background: rgba(255,59,48,0.18); color: #ff5b4a;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ff5b4a; flex: none;"></span>Expired 1d</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 38px; height: 38px; background: #302d2c; flex: none;"><image-slot id="home-item-2" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Greek Yogurt</div>
+                <div style="font-size: 11px; opacity: 0.55;">Dairy</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>2 days</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 20px;">
+              <div style="width: 38px; height: 38px; background: #302d2c; flex: none;"><image-slot id="home-item-3" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Sourdough Bread</div>
+                <div style="font-size: 11px; opacity: 0.55;">Bakery</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>4 days</div>
+            </div>
+          </div>
+
+          <div style="padding: 96px 20px 0;"></div>
+          <div style="position: sticky; bottom: 0; display: flex; justify-content: space-around; align-items: center; padding: 10px 8px 26px; background: #201e1d; border-top: 2px solid rgba(245,242,240,0.14);">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+              <div style="font-size: 9px; color: #ec3013; font-weight: 800;">Home</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <div style="font-size: 9px;">Scan</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+              <div style="font-size: 9px;">Add</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+              <div style="font-size: 9px;">All</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"></path><path d="M1 14h6M9 8h6M17 16h6"></path></svg>
+              <div style="font-size: 9px;">Settings</div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- SCREEN 2: ALL ITEMS -->
+    <div style="border-right: 2px solid var(--color-divider); padding-right: 40px; margin-right: 40px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">02 — All items</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402,874">
+        <div class="es-scroll" style="background: #201e1d; min-height: 100%; overflow-y: auto; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="height: 54px;"></div>
+          <div style="padding: 0 20px 14px;">
+            <div style="font-size: 22px; font-weight: 800;">All Items</div>
+            <div style="font-size: 12px; opacity: 0.55;">21 tracked</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; padding: 0 20px 14px;">
+            <div style="flex: 1; display: flex; align-items: center; gap: 8px; background: #302d2c; padding: 9px 12px; border: 1px solid rgba(245,242,240,0.14);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+              <div style="font-size: 13px; opacity: 0.45;">Search items…</div>
+            </div>
+            <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(245,242,240,0.14); flex: none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0; padding: 0 20px 16px;">
+            <div style="flex: 1; text-align: left; font-size: 11px; font-weight: 800; padding: 7px 10px; background: #ec3013; color: #201e1d;">Soonest</div>
+            <div style="flex: 1; text-align: left; font-size: 11px; font-weight: 800; padding: 7px 10px; border-top: 1px solid rgba(245,242,240,0.14); border-bottom: 1px solid rgba(245,242,240,0.14); opacity: 0.6;">Name</div>
+            <div style="flex: 1; text-align: left; font-size: 11px; font-weight: 800; padding: 7px 10px; border: 1px solid rgba(245,242,240,0.14); opacity: 0.6;">Recent</div>
+          </div>
+
+          <div style="border-top: 2px solid rgba(245,242,240,0.14);">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="all-item-1" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Chicken Breast</div>
+                <div style="font-size: 11px; opacity: 0.5;">Meat</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: flex; align-items: center; gap: 5px; background: rgba(255,59,48,0.18); color: #ff5b4a; flex: none;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ff5b4a; flex: none;"></span>Expired</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="all-item-2" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Greek Yogurt</div>
+                <div style="font-size: 11px; opacity: 0.5;">Dairy</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c; flex: none;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>2 days</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="all-item-3" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Sourdough Bread</div>
+                <div style="font-size: 11px; opacity: 0.5;">Bakery</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c; flex: none;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>4 days</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="all-item-4" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Cherry Tomatoes</div>
+                <div style="font-size: 11px; opacity: 0.5;">Produce</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 700; padding: 3px 9px; color: #3fb972; opacity: 0.9;">9 days</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 20px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="all-item-5" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Oat Milk</div>
+                <div style="font-size: 11px; opacity: 0.5;">Dairy</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 700; padding: 3px 9px; color: #3fb972; opacity: 0.9;">12 days</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 20px;">
+              <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="all-item-6" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 14px; font-weight: 600;">Eggs (dozen)</div>
+                <div style="font-size: 11px; opacity: 0.5;">Pantry</div>
+              </div>
+              <div style="font-size: 11px; font-weight: 700; padding: 3px 9px; color: #3fb972; opacity: 0.9;">18 days</div>
+            </div>
+          </div>
+
+          <div style="padding: 60px 20px 0;"></div>
+          <div style="position: sticky; bottom: 0; display: flex; justify-content: space-around; align-items: center; padding: 10px 8px 26px; background: #201e1d; border-top: 2px solid rgba(245,242,240,0.14);">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+              <div style="font-size: 9px;">Home</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <div style="font-size: 9px;">Scan</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+              <div style="font-size: 9px;">Add</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+              <div style="font-size: 9px; color: #ec3013; font-weight: 800;">All</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.55;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"></path><path d="M1 14h6M9 8h6M17 16h6"></path></svg>
+              <div style="font-size: 9px;">Settings</div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- SCREEN 3: SCAN -->
+    <div style="border-right: 2px solid var(--color-divider); padding-right: 40px; margin-right: 40px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">03 — Scan</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402,874">
+        <div style="background: #000; min-height: 100%; position: relative; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="position: absolute; inset: 0;"><image-slot id="scan-bg" shape="rect" placeholder="camera viewfinder" style="filter: grayscale(1) contrast(1.05) brightness(0.7);"></image-slot></div>
+          <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 60px 20px 0;">
+            <div style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+            </div>
+            <div style="font-size: 12px; font-weight: 800; background: rgba(0,0,0,0.4); padding: 6px 12px;">Scan Barcode</div>
+            <div style="width: 34px;"></div>
+          </div>
+
+          <div style="position: relative; z-index: 2; margin: 90px 44px 0; aspect-ratio: 1.6; border: 2px solid #ec3013;">
+            <div style="position: absolute; top: -2px; left: -2px; width: 22px; height: 22px; border-top: 4px solid #fff; border-left: 4px solid #fff;"></div>
+            <div style="position: absolute; top: -2px; right: -2px; width: 22px; height: 22px; border-top: 4px solid #fff; border-right: 4px solid #fff;"></div>
+            <div style="position: absolute; bottom: -2px; left: -2px; width: 22px; height: 22px; border-bottom: 4px solid #fff; border-left: 4px solid #fff;"></div>
+            <div style="position: absolute; bottom: -2px; right: -2px; width: 22px; height: 22px; border-bottom: 4px solid #fff; border-right: 4px solid #fff;"></div>
+          </div>
+
+          <div style="position: relative; z-index: 2; text-align: center; margin-top: 18px; font-size: 12px; opacity: 0.85; padding: 0 40px;">Aim at the expiry date label</div>
+
+          <div style="position: relative; z-index: 2; margin: 24px 44px 0; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.2); padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff9783" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+            <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.02em;">BEST BY 07 / 29 / 26</div>
+          </div>
+
+          <div style="position: absolute; bottom: 60px; left: 0; right: 0; z-index: 2; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 68px; height: 68px; border-radius: 50%; border: 4px solid #fff; display: flex; align-items: center; justify-content: center;">
+              <div style="width: 54px; height: 54px; border-radius: 50%; background: #ec3013;"></div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- SCREEN 4: ITEM DETAIL -->
+    <div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">04 — Item detail</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402,874">
+        <div class="es-scroll" style="background: #201e1d; min-height: 100%; overflow-y: auto; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="position: relative; height: 260px; background: #302d2c;">
+            <image-slot id="detail-photo" shape="rect" placeholder="package photo" style="filter: grayscale(1) contrast(1.08);"></image-slot>
+            <div style="position: absolute; top: 54px; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px;">
+              <div style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+              </div>
+              <div style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <div style="font-size: 22px; font-weight: 800;">Chicken Breast</div>
+              <div style="font-size: 11px; font-weight: 800; padding: 4px 10px; display: flex; align-items: center; gap: 5px; background: rgba(255,59,48,0.18); color: #ff5b4a;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ff5b4a; flex: none;"></span>Expired 1d</div>
+            </div>
+            <div style="font-size: 12px; opacity: 0.5; margin-bottom: 20px;">Added Jul 18, 2026</div>
+
+            <div style="border-top: 2px solid rgba(245,242,240,0.14);">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(245,242,240,0.14);">
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.6;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+                  Expiry date
+                </div>
+                <div style="font-size: 14px; font-weight: 700;">Jul 26, 2026</div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(245,242,240,0.14);">
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.6;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41L11 3.83a2 2 0 0 0-1.41-.58H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .58 1.41l9.58 9.58a2 2 0 0 0 2.83 0l4.6-4.6a2 2 0 0 0 0-2.83z"></path><circle cx="7.5" cy="7.5" r="1.5"></circle></svg>
+                  Category
+                </div>
+                <div style="font-size: 12px; font-weight: 800; padding: 3px 10px; background: rgba(245,242,240,0.12); color: rgba(245,242,240,0.8);">Meat</div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0;">
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.6;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  Barcode
+                </div>
+                <div style="font-size: 13px; font-weight: 700; opacity: 0.8;">0 41196 01234</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 28px;">
+              <div style="flex: 1; display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: #ec3013; color: #201e1d; font-weight: 800; font-size: 13px; padding: 12px 14px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+                Edit item
+              </div>
+              <div style="width: 46px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,86,60,0.4);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff563c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z"></path></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+  </div>
+
+  <div style="background: var(--color-accent); padding: 56px 48px 44px; border-top: 2px solid var(--color-text); border-bottom: 2px solid var(--color-text); margin-top: 40px;">
+    <div style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-bg); opacity: 0.85; margin-bottom: 10px;">Redesign — 02/02</div>
+    <h1 style="color: var(--color-bg); font-size: 46px; margin: 0 0 8px; max-width: 720px;">Desktop</h1>
+    <p style="color: var(--color-bg); opacity: 0.9; font-size: 16px; max-width: 620px; margin: 0;">Same dark, warm-toned system with room to breathe — a sidebar, a data table, elevated cards for the desktop-only "Pro" surface treatment.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 48px; box-sizing: border-box; max-width: 100%;">
+
+    <!-- DESKTOP 1: DASHBOARD -->
+    <div style="border-right: 2px solid var(--color-divider); padding-right: 40px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">01 — Dashboard</div>
+      <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1320 }}" height="{{ 840 }}" url="app.expirytracker.com/dashboard" hint-size="1320,840">
+        <div style="display: flex; height: 100%; background: #201e1d; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="width: 208px; flex: none; background: #181615; border-right: 2px solid rgba(245,242,240,0.14); display: flex; flex-direction: column; padding: 22px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 32px;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.29 7 12 12l8.71-5"></path><path d="M12 22V12"></path></svg>
+              <div style="font-weight: 800; font-size: 15px;">Expiry Tracker</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: rgba(236,48,19,0.14); color: #ec3013; font-weight: 700; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+                Overview
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+                All Items
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                Scan
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"></path><path d="M1 14h6M9 8h6M17 16h6"></path></svg>
+                Settings
+              </div>
+            </div>
+            <div style="margin-top: auto; display: flex; align-items: center; gap: 9px; padding-top: 16px; border-top: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 26px; height: 26px; background: #302d2c; flex: none;"></div>
+              <div style="font-size: 12px; opacity: 0.7;">Jordan A.</div>
+            </div>
+          </div>
+
+          <div style="flex: 1; overflow: auto; padding: 28px 32px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+              <div style="font-size: 24px; font-weight: 800;">Overview</div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px; background: #302d2c; padding: 8px 12px; border: 1px solid rgba(245,242,240,0.14); font-size: 12px; opacity: 0.5;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+                  Search items…
+                </div>
+                <div style="display: flex; align-items: center; gap: 7px; background: #ec3013; color: #201e1d; font-weight: 800; font-size: 12px; padding: 9px 14px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+                  Add item
+                </div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
+              <div style="background: #262322; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); border-top: 3px solid #ff3b30;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff5b4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86l-8.4 14.55A2 2 0 0 0 3.6 21h16.8a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg>
+                <div style="font-size: 32px; font-weight: 800; margin-top: 10px; color: #ff5b4a;">2</div>
+                <div style="font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; margin-top: 2px;">Expired</div>
+              </div>
+              <div style="background: #262322; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); border-top: 3px solid #f2b73c;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2b73c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
+                <div style="font-size: 32px; font-weight: 800; margin-top: 10px; color: #f2b73c;">5</div>
+                <div style="font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; margin-top: 2px;">Expiring soon</div>
+              </div>
+              <div style="background: #262322; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); border-top: 3px solid #3fb972;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3fb972" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="M22 4L12 14.01l-3-3"></path></svg>
+                <div style="font-size: 32px; font-weight: 800; margin-top: 10px; color: #3fb972;">14</div>
+                <div style="font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.55; margin-top: 2px;">Good</div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <div style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; opacity: 0.6;">Needs attention · 7</div>
+            <div style="font-size: 12px; color: #ec3013; font-weight: 800;">View all</div>
+            </div>
+            <div style="border-top: 2px solid rgba(245,242,240,0.14);">
+              <div style="display: flex; align-items: center; gap: 14px; padding: 13px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+                <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="desk-item-1" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+                <div style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px;">
+                  <div style="font-size: 14px; font-weight: 600; width: 160px;">Chicken Breast</div>
+                  <div style="font-size: 12px; opacity: 0.5;">Meat</div>
+                </div>
+                <div style="font-size: 11px; font-weight: 800; padding: 4px 10px; display: flex; align-items: center; gap: 5px; background: rgba(255,59,48,0.18); color: #ff5b4a;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ff5b4a; flex: none;"></span>Expired 1d</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px; padding: 13px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+                <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="desk-item-2" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+                <div style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px;">
+                  <div style="font-size: 14px; font-weight: 600; width: 160px;">Greek Yogurt</div>
+                  <div style="font-size: 12px; opacity: 0.5;">Dairy</div>
+                </div>
+                <div style="font-size: 11px; font-weight: 800; padding: 4px 10px; display: flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>2 days</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px; padding: 13px 4px;">
+                <div style="width: 40px; height: 40px; background: #302d2c; flex: none;"><image-slot id="desk-item-3" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+                <div style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px;">
+                  <div style="font-size: 14px; font-weight: 600; width: 160px;">Sourdough Bread</div>
+                  <div style="font-size: 12px; opacity: 0.5;">Bakery</div>
+                </div>
+                <div style="font-size: 11px; font-weight: 800; padding: 4px 10px; display: flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>4 days</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- DESKTOP 2: ALL ITEMS TABLE -->
+    <div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">02 — All items</div>
+      <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1320 }}" height="{{ 840 }}" url="app.expirytracker.com/items" hint-size="1320,840">
+        <div style="display: flex; height: 100%; background: #201e1d; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="width: 208px; flex: none; background: #181615; border-right: 2px solid rgba(245,242,240,0.14); display: flex; flex-direction: column; padding: 22px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 32px;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.29 7 12 12l8.71-5"></path><path d="M12 22V12"></path></svg>
+              <div style="font-weight: 800; font-size: 15px;">Expiry Tracker</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+                Overview
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: rgba(236,48,19,0.14); color: #ec3013; font-weight: 700; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+                All Items
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                Scan
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"></path><path d="M1 14h6M9 8h6M17 16h6"></path></svg>
+                Settings
+              </div>
+            </div>
+            <div style="margin-top: auto; display: flex; align-items: center; gap: 9px; padding-top: 16px; border-top: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 26px; height: 26px; background: #302d2c; flex: none;"></div>
+              <div style="font-size: 12px; opacity: 0.7;">Jordan A.</div>
+            </div>
+          </div>
+
+          <div style="flex: 1; overflow: auto; padding: 28px 32px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+              <div>
+                <div style="font-size: 24px; font-weight: 800;">All Items</div>
+                <div style="font-size: 12px; opacity: 0.5;">21 tracked</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex;">
+                  <div style="font-size: 12px; font-weight: 800; padding: 8px 12px; background: #ec3013; color: #201e1d;">Soonest</div>
+                  <div style="font-size: 12px; font-weight: 700; padding: 8px 12px; border-top: 1px solid rgba(245,242,240,0.14); border-bottom: 1px solid rgba(245,242,240,0.14); opacity: 0.6;">Name</div>
+                  <div style="font-size: 12px; font-weight: 700; padding: 8px 12px; border: 1px solid rgba(245,242,240,0.14); opacity: 0.6;">Recent</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 7px; border: 1px solid rgba(245,242,240,0.14); font-size: 12px; padding: 8px 12px; opacity: 0.7;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+                  Excel
+                </div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 0 4px 10px; border-bottom: 2px solid rgba(245,242,240,0.14); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.5;">
+              <div></div><div>Item</div><div>Category</div><div>Expiry date</div><div>Status</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 32px; height: 32px; background: #302d2c;"><image-slot id="desk-table-1" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="font-size: 13px; font-weight: 600;">Chicken Breast</div>
+              <div style="font-size: 12px; opacity: 0.6;">Meat</div>
+              <div style="font-size: 12px; opacity: 0.6;">Jul 26, 2026</div>
+              <div><span style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: inline-flex; align-items: center; gap: 5px; background: rgba(255,59,48,0.18); color: #ff5b4a;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #ff5b4a; flex: none;"></span>Expired</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 32px; height: 32px; background: #302d2c;"><image-slot id="desk-table-2" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="font-size: 13px; font-weight: 600;">Greek Yogurt</div>
+              <div style="font-size: 12px; opacity: 0.6;">Dairy</div>
+              <div style="font-size: 12px; opacity: 0.6;">Jul 29, 2026</div>
+              <div><span style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: inline-flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>2 days</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 32px; height: 32px; background: #302d2c;"><image-slot id="desk-table-3" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="font-size: 13px; font-weight: 600;">Sourdough Bread</div>
+              <div style="font-size: 12px; opacity: 0.6;">Bakery</div>
+              <div style="font-size: 12px; opacity: 0.6;">Jul 31, 2026</div>
+              <div><span style="font-size: 11px; font-weight: 800; padding: 3px 9px; display: inline-flex; align-items: center; gap: 5px; background: rgba(242,183,60,0.18); color: #f2b73c;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f2b73c; flex: none;"></span>4 days</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 32px; height: 32px; background: #302d2c;"><image-slot id="desk-table-4" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="font-size: 13px; font-weight: 600;">Cherry Tomatoes</div>
+              <div style="font-size: 12px; opacity: 0.6;">Produce</div>
+              <div style="font-size: 12px; opacity: 0.6;">Aug 5, 2026</div>
+              <div><span style="font-size: 11px; font-weight: 700; color: #3fb972; opacity: 0.9;">9 days</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 32px; height: 32px; background: #302d2c;"><image-slot id="desk-table-5" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="font-size: 13px; font-weight: 600;">Oat Milk</div>
+              <div style="font-size: 12px; opacity: 0.6;">Dairy</div>
+              <div style="font-size: 12px; opacity: 0.6;">Aug 8, 2026</div>
+              <div><span style="font-size: 11px; font-weight: 700; color: #3fb972; opacity: 0.9;">12 days</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 44px 2.4fr 1fr 1fr 1fr; align-items: center; padding: 12px 4px;">
+              <div style="width: 32px; height: 32px; background: #302d2c;"><image-slot id="desk-table-6" shape="rect" placeholder="photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="font-size: 13px; font-weight: 600;">Eggs (dozen)</div>
+              <div style="font-size: 12px; opacity: 0.6;">Pantry</div>
+              <div style="font-size: 12px; opacity: 0.6;">Aug 14, 2026</div>
+              <div><span style="font-size: 11px; font-weight: 700; color: #3fb972; opacity: 0.9;">18 days</span></div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- DESKTOP 3: ITEM DETAIL -->
+    <div style="border-right: 2px solid var(--color-divider); padding-right: 40px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">03 — Item detail</div>
+      <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1320 }}" height="{{ 840 }}" url="app.expirytracker.com/items/chicken-breast" hint-size="1320,840">
+        <div style="display: flex; height: 100%; background: #201e1d; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif;">
+          <div style="width: 208px; flex: none; background: #181615; border-right: 2px solid rgba(245,242,240,0.14); display: flex; flex-direction: column; padding: 22px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 32px;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.29 7 12 12l8.71-5"></path><path d="M12 22V12"></path></svg>
+              <div style="font-weight: 800; font-size: 15px;">Expiry Tracker</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+                Overview
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: rgba(236,48,19,0.14); color: #ec3013; font-weight: 700; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec3013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+                All Items
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                Scan
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; opacity: 0.65; font-size: 13px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"></path><path d="M1 14h6M9 8h6M17 16h6"></path></svg>
+                Settings
+              </div>
+            </div>
+            <div style="margin-top: auto; display: flex; align-items: center; gap: 9px; padding-top: 16px; border-top: 1px solid rgba(245,242,240,0.14);">
+              <div style="width: 26px; height: 26px; background: #302d2c; flex: none;"></div>
+              <div style="font-size: 12px; opacity: 0.7;">Jordan A.</div>
+            </div>
+          </div>
+
+          <div style="flex: 1; overflow: auto; padding: 28px 32px; display: flex; gap: 32px;">
+            <div style="width: 340px; flex: none;">
+              <div style="width: 100%; height: 340px; background: #302d2c;"><image-slot id="desk-detail-photo" shape="rect" placeholder="package photo" style="filter: grayscale(1) contrast(1.08);"></image-slot></div>
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <div style="flex: 1; display: flex; align-items: center; justify-content: flex-start; gap: 7px; background: #ec3013; color: #201e1d; font-weight: 800; font-size: 12px; padding: 10px 12px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#201e1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+                  Edit item
+                </div>
+                <div style="width: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,86,60,0.4);">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff563c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <div style="font-size: 28px; font-weight: 800;">Chicken Breast</div>
+                <div style="font-size: 12px; font-weight: 800; padding: 5px 12px; display: flex; align-items: center; gap: 6px; background: rgba(255,59,48,0.18); color: #ff5b4a;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #ff5b4a; flex: none;"></span>Expired 1d</div>
+              </div>
+              <div style="font-size: 13px; opacity: 0.5; margin-bottom: 24px;">Added Jul 18, 2026</div>
+
+              <div style="border-top: 2px solid rgba(245,242,240,0.14);">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(245,242,240,0.14);">
+                  <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.6;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+                    Expiry date
+                  </div>
+                  <div style="font-size: 15px; font-weight: 700;">July 26, 2026</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(245,242,240,0.14);">
+                  <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.6;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41L11 3.83a2 2 0 0 0-1.41-.58H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .58 1.41l9.58 9.58a2 2 0 0 0 2.83 0l4.6-4.6a2 2 0 0 0 0-2.83z"></path><circle cx="7.5" cy="7.5" r="1.5"></circle></svg>
+                    Category
+                  </div>
+                  <div style="font-size: 12px; font-weight: 800; padding: 4px 12px; background: rgba(245,242,240,0.12); color: rgba(245,242,240,0.8);">Meat</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0;">
+                  <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.6;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    Barcode
+                  </div>
+                  <div style="font-size: 14px; font-weight: 700; opacity: 0.8;">0 41196 01234</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- DESKTOP 4: SCAN DIALOG -->
+    <div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 14px;">04 — Scan</div>
+      <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1320 }}" height="{{ 840 }}" url="app.expirytracker.com/items" hint-size="1320,840">
+        <div style="display: flex; height: 100%; background: #201e1d; color: #f8f4f4; font-family: 'Archivo', system-ui, sans-serif; position: relative;">
+          <div style="width: 208px; flex: none; background: #181615; border-right: 2px solid rgba(245,242,240,0.14);"></div>
+          <div style="flex: 1; opacity: 0.35;"></div>
+
+          <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 620px; background: #262322; box-shadow: 0 24px 64px rgba(0,0,0,0.5);">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 2px solid rgba(245,242,240,0.14);">
+                <div style="font-size: 18px; font-weight: 800;">Scan Barcode &amp; Expiry Label</div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+              </div>
+              <div style="display: flex; gap: 20px; padding: 22px;">
+                <div style="width: 260px; flex: none; aspect-ratio: 1.2; position: relative;">
+                  <image-slot id="desk-scan-cam" shape="rect" placeholder="webcam view" style="filter: grayscale(1) contrast(1.05) brightness(0.7);"></image-slot>
+                  <div style="position: absolute; inset: 16px; border: 2px solid #ec3013;"></div>
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-size: 12px; opacity: 0.55; margin-bottom: 14px;">Aim your webcam at the expiry date label, or drop a photo below.</div>
+                  <div style="display: flex; align-items: center; gap: 10px; background: #201e1d; border: 1px solid rgba(245,242,240,0.14); padding: 10px 12px; margin-bottom: 10px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff9783" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+                    <div style="font-size: 13px; font-weight: 700;">BEST BY 07 / 29 / 26</div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 10px; background: #201e1d; border: 1px solid rgba(245,242,240,0.14); padding: 10px 12px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <div style="font-size: 13px; font-weight: 700; opacity: 0.8;">0 41196 01234</div>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 16px 22px; border-top: 1px solid rgba(245,242,240,0.14);">
+                <div style="font-size: 12px; font-weight: 700; padding: 9px 14px; opacity: 0.6;">Cancel</div>
+                <div style="font-size: 12px; font-weight: 800; padding: 9px 16px; background: #ec3013; color: #201e1d;">Save item</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+  </div>
+</div>
+]]>
+</x-dc>
+</body>
+</html>

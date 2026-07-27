@@ -533,11 +533,32 @@
     .login-card,.login-btn,.login-card input,.confirm-cancel,.confirm-ok,.bc-manual input { border-radius: 0 !important; }
 
     .top-bar { background: var(--page-bg); border-bottom: 2px solid var(--border); box-shadow: none; }
-    .brand-icon { background: var(--accent); box-shadow: none; }
+    .brand-icon { background: transparent !important; color: var(--accent); box-shadow: none; width: 24px; height: 24px; }
     .bc-section { font-weight: 800; }
+    /* Lucide icon coloring/alignment */
+    .head-icon { color: var(--accent); display: inline-flex; align-items: center; font-size: 0; }
+    .btn-cta { display: inline-flex; align-items: center; gap: 6px; }
+    .stat-cell.s-red .stat-icon-wrap    { color: var(--red); }
+    .stat-cell.s-yellow .stat-icon-wrap { color: var(--yellow); }
+    .stat-cell.s-green .stat-icon-wrap  { color: var(--green); }
+    .stat-icon-wrap { display: inline-flex; }
+    .item-edit-btn, .item-del-btn { color: var(--text-2); display: inline-flex; align-items: center; }
+    .barcode-btn, .full-photo-btn, .list-export-btn, .cat-add-btn, .add-bar-btn, .edit-save, .danger-btn,
+    .edit-photo-btn, .cam-btn, .ghost-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .edit-title { display: inline-flex; align-items: center; gap: 7px; }
+    .login-logo { color: var(--accent); display: inline-flex; align-items: center; justify-content: center; }
+    .e-icon { color: var(--text-2); display: inline-flex; align-items: center; justify-content: center; }
     .icon-btn { background: transparent; border: none; }
     .badge-pill { box-shadow: none; }
     .btn-cta { background: var(--accent); color: var(--page-bg); box-shadow: none; font-weight: 800; }
+    /* Segmented sort control (All Items) */
+    .sort-seg { display: flex; margin: 12px 16px 0; border: 1px solid var(--border); }
+    .sort-seg-btn { flex: 1; appearance: none; background: transparent; border: none; cursor: pointer;
+      font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 12px; letter-spacing: .01em;
+      color: var(--text-2); padding: 9px 8px; text-align: center; transition: background .12s, color .12s; }
+    .sort-seg-btn + .sort-seg-btn { border-left: 1px solid var(--border); }
+    .sort-seg-btn:hover:not(.on) { background: color-mix(in srgb, var(--text) 7%, transparent); }
+    .sort-seg-btn.on { background: var(--accent); color: var(--page-bg); }
 
     .bao-card { background: transparent; border: none; box-shadow: none; margin-bottom: 0; border-top: 2px solid var(--border); overflow: visible; }
     #dashboard-page > .bao-card:first-child, #list-page > .bao-card:first-child, #manual-page > .bao-card:first-child, #settings-page > .bao-card:first-child { border-top: none; }
@@ -584,7 +605,7 @@
 <!-- ════ LOGIN GATE ════ -->
 <div class="login-wrap" id="login-page">
   <div class="login-card">
-    <div class="login-logo">📦</div>
+    <div class="login-logo" data-ic="package" data-ic-size="34"></div>
     <div class="login-title">Expiry Tracker</div>
     <div class="login-sub" id="login-sub">Admin sign in</div>
     <input id="login-email" type="email" placeholder="Email" autocomplete="username" />
@@ -616,13 +637,13 @@
 <!-- ════ EDIT ITEM ════ -->
 <div id="edit-modal" onclick="if(event.target===this)closeEdit()">
   <div class="edit-card">
-    <div class="edit-head"><span class="edit-title">✏️ Edit Item</span><button class="edit-close" onclick="closeEdit()">✕</button></div>
+    <div class="edit-head"><span class="edit-title"><span data-ic="pencil" data-ic-size="17"></span>Edit Item</span><button class="edit-close" onclick="closeEdit()">✕</button></div>
     <input class="bao-name-input" id="edit-name" type="text" placeholder="Product name…" list="products-list" autocomplete="off" />
-    <button type="button" class="barcode-btn" onclick="openBarcodeScanner('edit-name')">🏷️ Scan barcode</button>
+    <button type="button" class="barcode-btn" onclick="openBarcodeScanner('edit-name')"><span data-ic="tag" data-ic-size="13"></span>Scan barcode</button>
     <div class="field-row"><span class="field-label">Expiry Date</span><div class="field-value"><input class="bao-input" type="date" id="edit-date" /></div></div>
     <div class="field-row"><span class="field-label">Category</span><div class="field-value"><div class="emoji-row" id="emoji-picker-edit"></div></div></div>
-    <button type="button" class="edit-photo-btn" id="edit-datephoto-btn" onclick="editPickPhoto(false)">🗓 Replace expiry date photo</button>
-    <button type="button" class="edit-photo-btn" id="edit-pkgphoto-btn" onclick="editPickPhoto(true)">📦 Add / replace package photo</button>
+    <button type="button" class="edit-photo-btn" id="edit-datephoto-btn" onclick="editPickPhoto(false)"><span data-ic="calendar" data-ic-size="14"></span>Replace expiry date photo</button>
+    <button type="button" class="edit-photo-btn" id="edit-pkgphoto-btn" onclick="editPickPhoto(true)"><span data-ic="package" data-ic-size="14"></span>Add / replace package photo</button>
     <button class="edit-save" onclick="saveEdit()">Save changes</button>
   </div>
 </div>
@@ -632,7 +653,7 @@
 <!-- ════ BARCODE SCANNER ════ -->
 <div id="barcode-modal" onclick="if(event.target===this)closeBarcode()">
   <div class="bc-card">
-    <div class="edit-head"><span class="edit-title">🏷️ Scan Barcode</span><button class="edit-close" onclick="closeBarcode()">✕</button></div>
+    <div class="edit-head"><span class="edit-title"><span data-ic="scan-line" data-ic-size="17"></span>Scan Barcode</span><button class="edit-close" onclick="closeBarcode()">✕</button></div>
     <div class="bc-video-wrap" id="bc-video-wrap">
       <video id="bc-video" playsinline muted></video>
       <div class="bc-frame"></div>
@@ -668,7 +689,7 @@
   <!-- ════ TOP BAR ════ -->
   <header class="top-bar">
     <div class="breadcrumb">
-      <div class="brand-icon">📦</div>
+      <div class="brand-icon" data-ic="package" data-ic-size="24"></div>
       <div class="bc-titlewrap">
         <span class="bc-section">Expiry Tracker</span>
         <span class="bc-version" id="app-version-top"></span>
@@ -677,7 +698,7 @@
     <div class="top-actions">
       <span class="badge-pill" id="alert-badge" onclick="showAttention()" title="Items needing attention">!</span>
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
-      <button class="btn-cta" onclick="switchTab('camera')">📸 Scan</button>
+      <button class="btn-cta" onclick="switchTab('camera')"><span data-ic="camera" data-ic-size="15"></span>Scan</button>
     </div>
   </header>
 
@@ -690,25 +711,25 @@
       <!-- Stats card — spans full width on desktop -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">⚡</span>
+          <span class="head-icon" data-ic="zap"></span>
           <span class="head-title">Overview</span>
           <span style="font-size:11px;color:var(--text-2);font-weight:500;" id="overview-date"></span>
         </div>
         <div class="stats-grid">
           <div class="stat-cell s-red" id="stat-expired" onclick="setDashFilter('expired')" title="Show expired">
-            <div class="stat-icon-wrap">🚨</div>
+            <div class="stat-icon-wrap" data-ic="triangle-alert" data-ic-size="17"></div>
             <div class="stat-num" id="count-expired">0</div>
             <div class="stat-lbl">Expired</div>
             <div class="stat-sub" id="sub-expired">Loading…</div>
           </div>
           <div class="stat-cell s-yellow" id="stat-soon" onclick="setDashFilter('soon')" title="Show expiring soon">
-            <div class="stat-icon-wrap">⏳</div>
+            <div class="stat-icon-wrap" data-ic="clock" data-ic-size="17"></div>
             <div class="stat-num" id="count-soon">0</div>
             <div class="stat-lbl">Expiring Soon</div>
             <div class="stat-sub" id="sub-soon">Loading…</div>
           </div>
           <div class="stat-cell s-green" id="stat-good" onclick="setDashFilter('good')" title="Show good">
-            <div class="stat-icon-wrap">✅</div>
+            <div class="stat-icon-wrap" data-ic="circle-check" data-ic-size="17"></div>
             <div class="stat-num" id="count-ok">0</div>
             <div class="stat-lbl">Good</div>
             <div class="stat-sub" id="sub-ok">Loading…</div>
@@ -719,7 +740,7 @@
       <!-- Needs Attention card -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">⚠️</span>
+          <span class="head-icon" data-ic="triangle-alert"></span>
           <span class="head-title" id="dash-list-title">Needs Attention</span>
           <span class="head-badge" id="attention-badge" style="display:none;">0</span>
         </div>
@@ -735,12 +756,12 @@
       <!-- Good Items card (desktop only, second column) -->
       <div class="bao-card" id="good-card">
         <div class="bao-card-head">
-          <span class="head-icon">🟢</span>
+          <span class="head-icon" data-ic="circle-check"></span>
           <span class="head-title">All Good</span>
           <span class="head-badge green" id="good-badge" style="display:none;">0</span>
         </div>
         <div class="bao-item-list" id="good-list">
-          <div class="empty"><div class="e-icon">📦</div><p>Loading…</p></div>
+          <div class="empty"><div class="e-icon" data-ic="package" data-ic-size="26"></div><p>Loading…</p></div>
         </div>
         <div class="add-bar">
           <span class="add-bar-label">View All Items</span>
@@ -760,8 +781,8 @@
         <div class="scan-label" id="scan-hint">Aim at the expiry date label</div>
       </div>
       <div class="cam-btn-row">
-        <button class="cam-btn primary" id="capture-btn" onclick="capturePhoto()">📸 Capture</button>
-        <button class="cam-btn secondary" id="retake-btn" onclick="retakePhoto()" style="display:none;">🔄 Retake</button>
+        <button class="cam-btn primary" id="capture-btn" onclick="capturePhoto()"><span data-ic="camera" data-ic-size="16"></span>Capture</button>
+        <button class="cam-btn secondary" id="retake-btn" onclick="retakePhoto()" style="display:none;"><span data-ic="rotate-ccw" data-ic-size="16"></span>Retake</button>
       </div>
       <div class="ocr-row" id="ocr-status">
         <div class="spin"></div>
@@ -770,12 +791,12 @@
       <div id="add-form">
         <div class="bao-card">
           <div class="bao-card-head">
-            <span class="head-icon">📦</span>
+            <span class="head-icon" data-ic="package"></span>
             <span class="head-title">Confirm Item Details</span>
             <button class="head-action" onclick="retakePhoto()">↺</button>
           </div>
           <input class="bao-name-input" type="text" id="scan-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
-          <button type="button" class="barcode-btn" onclick="openBarcodeScanner('scan-name')">🏷️ Scan barcode</button>
+          <button type="button" class="barcode-btn" onclick="openBarcodeScanner('scan-name')"><span data-ic="tag" data-ic-size="13"></span>Scan barcode</button>
           <div class="field-row">
             <span class="field-label">Expiry Date</span>
             <div class="field-value"><input class="bao-input" type="date" id="scan-date" /></div>
@@ -785,10 +806,10 @@
             <span class="field-label">Category</span>
             <div class="field-value"><div class="emoji-row" id="emoji-picker-scan"></div></div>
           </div>
-          <button type="button" class="full-photo-btn" id="full-photo-btn" onclick="pickFullPhoto('')">📷 Add package photo (optional)</button>
+          <button type="button" class="full-photo-btn" id="full-photo-btn" onclick="pickFullPhoto('')"><span data-ic="package" data-ic-size="14"></span>Add package photo (optional)</button>
           <div class="add-bar">
             <span class="add-bar-label">Save to cloud</span>
-            <button class="add-bar-btn" onclick="saveScannedItem()">Save ✅</button>
+            <button class="add-bar-btn" onclick="saveScannedItem()"><span data-ic="check" data-ic-size="15"></span>Save</button>
           </div>
         </div>
       </div>
@@ -798,11 +819,11 @@
     <div class="page" id="manual-page">
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">📋</span>
+          <span class="head-icon" data-ic="file-plus"></span>
           <span class="head-title">New Item</span>
         </div>
         <input class="bao-name-input" type="text" id="manual-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
-        <button type="button" class="barcode-btn" onclick="openBarcodeScanner('manual-name')">🏷️ Scan barcode</button>
+        <button type="button" class="barcode-btn" onclick="openBarcodeScanner('manual-name')"><span data-ic="tag" data-ic-size="13"></span>Scan barcode</button>
         <div class="field-row">
           <span class="field-label">Expiry Date</span>
           <div class="field-value"><input class="bao-input" type="date" id="manual-date" /></div>
@@ -832,8 +853,8 @@
           <span class="field-label">Category</span>
           <div class="field-value"><div class="emoji-row" id="emoji-picker-manual"></div></div>
         </div>
-        <button type="button" class="full-photo-btn" id="manual-photo-btn" onclick="manualPickPhoto(false)">📷 Add photo (optional)</button>
-        <button type="button" class="full-photo-btn" id="manual-pkg-btn" onclick="manualPickPhoto(true)">📦 Add package photo (optional)</button>
+        <button type="button" class="full-photo-btn" id="manual-photo-btn" onclick="manualPickPhoto(false)"><span data-ic="camera" data-ic-size="14"></span>Add photo (optional)</button>
+        <button type="button" class="full-photo-btn" id="manual-pkg-btn" onclick="manualPickPhoto(true)"><span data-ic="package" data-ic-size="14"></span>Add package photo (optional)</button>
         <!-- Add bar visible on both mobile AND desktop for this page -->
         <div class="add-bar">
           <span class="add-bar-label">Save Item</span>
@@ -846,20 +867,20 @@
     <div class="page" id="list-page">
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">📋</span>
+          <span class="head-icon" data-ic="list"></span>
           <span class="head-title">All Items</span>
-          <select id="sort-select" onchange="filterAll()" style="background:var(--muted-bg);border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-2);outline:none;-webkit-appearance:none;cursor:pointer;">
-            <option value="expiry">Soonest First</option>
-            <option value="name">By Name</option>
-            <option value="added">Recently Added</option>
-          </select>
-          <button class="list-export-btn" onclick="exportToExcel()" title="Export all items to Excel">⬇️ Excel</button>
+          <button class="list-export-btn" onclick="exportToExcel()" title="Export all items to Excel"><span data-ic="download" data-ic-size="14"></span>Excel</button>
         </div>
-        <div style="padding:10px 14px 2px;">
-          <input class="bao-input" id="search-input" type="search" placeholder="🔍 Search products…" oninput="filterAll()" autocomplete="off" style="font-size:13px;" />
+        <div style="padding:12px 16px 0;">
+          <input class="bao-input" id="search-input" type="search" placeholder="Search products…" oninput="filterAll()" autocomplete="off" style="font-size:13px;" />
+        </div>
+        <div class="sort-seg" id="sort-seg">
+          <button class="sort-seg-btn on" data-sort="expiry" onclick="setSort('expiry')">Soonest</button>
+          <button class="sort-seg-btn" data-sort="name" onclick="setSort('name')">Name</button>
+          <button class="sort-seg-btn" data-sort="added" onclick="setSort('added')">Recent</button>
         </div>
         <div class="bao-item-list" id="all-list">
-          <div class="empty"><div class="e-icon">📦</div><p>No items yet.</p></div>
+          <div class="empty"><div class="e-icon" data-ic="package" data-ic-size="26"></div><p>No items yet.</p></div>
         </div>
         <div class="add-bar">
           <span class="add-bar-label">Add New Item</span>
@@ -874,7 +895,7 @@
       <!-- Thresholds -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">⏰</span>
+          <span class="head-icon" data-ic="clock"></span>
           <span class="head-title">Expiry Thresholds</span>
         </div>
         <div class="settings-section">
@@ -900,7 +921,7 @@
       <!-- Appearance -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">🎨</span>
+          <span class="head-icon" data-ic="palette"></span>
           <span class="head-title">Appearance</span>
         </div>
         <div class="settings-section">
@@ -916,7 +937,7 @@
       <!-- Scanning / OCR -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">🔎</span>
+          <span class="head-icon" data-ic="scan-search"></span>
           <span class="head-title">Scanning &amp; OCR</span>
         </div>
         <div class="settings-section">
@@ -924,7 +945,7 @@
           <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">
             Sharper date reading runs <b>server-side</b> — the Google Vision key is stored securely as a Supabase secret, never in the app. On-device OCR is the automatic fallback when the cloud is unavailable.
           </p>
-          <button class="cat-add-btn" onclick="testCloudOCR()">🔌 Test cloud OCR</button>
+          <button class="cat-add-btn" onclick="testCloudOCR()"><span data-ic="plug" data-ic-size="14"></span>Test cloud OCR</button>
           <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="vision-key-status"></div>
         </div>
       </div>
@@ -932,7 +953,7 @@
       <!-- Categories -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">🏷️</span>
+          <span class="head-icon" data-ic="tag"></span>
           <span class="head-title">Product Categories</span>
         </div>
         <div class="settings-section">
@@ -949,7 +970,7 @@
       <!-- Autocomplete Product List -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">🔍</span>
+          <span class="head-icon" data-ic="search"></span>
           <span class="head-title">Autocomplete Products</span>
         </div>
         <div class="settings-section">
@@ -957,7 +978,7 @@
           <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">These appear as suggestions when typing a product name. One product per line.</p>
           <textarea class="bao-input" id="products-textarea" rows="8" style="resize:vertical;font-size:12px;line-height:1.9;"></textarea>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-            <button class="cat-add-btn" onclick="saveProductList()">💾 Save List</button>
+            <button class="cat-add-btn" onclick="saveProductList()"><span data-ic="check" data-ic-size="14"></span>Save List</button>
             <button class="ghost-btn" onclick="resetProductList()">Reset to Default</button>
           </div>
           <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="product-count-label"></div>
@@ -967,7 +988,7 @@
       <!-- Account -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">👤</span>
+          <span class="head-icon" data-ic="user"></span>
           <span class="head-title">Account</span>
         </div>
         <div class="settings-section">
@@ -993,14 +1014,14 @@
       <!-- User Management (admin only) -->
       <div class="bao-card" id="user-mgmt-card" style="display:none;">
         <div class="bao-card-head">
-          <span class="head-icon">🛡️</span>
+          <span class="head-icon" data-ic="shield"></span>
           <span class="head-title">User Management</span>
         </div>
         <div class="settings-section">
           <div class="settings-heading">Create user (no admin privileges)</div>
           <input class="bao-input" type="email" id="nu-email" placeholder="Email…" autocomplete="off" style="font-size:13px;margin-bottom:8px;" />
           <input class="bao-input" type="text" id="nu-pass" placeholder="Temporary password (6+ chars)…" autocomplete="off" style="font-size:13px;" />
-          <div style="margin-top:10px;"><button class="cat-add-btn" onclick="adminCreateUser()">➕ Create User</button></div>
+          <div style="margin-top:10px;"><button class="cat-add-btn" onclick="adminCreateUser()"><span data-ic="plus" data-ic-size="14"></span>Create User</button></div>
           <div style="margin-top:8px;font-size:11px;" id="nu-status"></div>
           <div class="settings-heading" style="margin-top:16px;">All users</div>
           <div id="user-list"></div>
@@ -1010,7 +1031,7 @@
       <!-- Export -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">📊</span>
+          <span class="head-icon" data-ic="download"></span>
           <span class="head-title">Export Data</span>
         </div>
         <div class="settings-section">
@@ -1023,7 +1044,7 @@
       <!-- About -->
       <div class="bao-card">
         <div class="bao-card-head">
-          <span class="head-icon">ℹ️</span>
+          <span class="head-icon" data-ic="info"></span>
           <span class="head-title">About</span>
         </div>
         <div class="settings-section">
@@ -1087,8 +1108,42 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <script>
+/* ═══ LUCIDE line icons (Modernist) ═══ */
+const LUCIDE={
+  package:'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  zap:'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+  'triangle-alert':'<path d="m10.29 3.86-8.4 14.55A2 2 0 0 0 3.6 21h16.8a2 2 0 0 0 1.71-3.03L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  'circle-check':'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  'file-plus':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M12 12v6M9 15h6"/>',
+  pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  trash:'<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>',
+  palette:'<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z"/>',
+  'scan-search':'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="m16 16-1.9-1.9"/>',
+  tag:'<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  'rotate-ccw':'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  'scan-line':'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/>',
+  plug:'<path d="M12 22v-5M9 8V2M15 8V2M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="0"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>'
+};
+function ic(name,size){ const p=LUCIDE[name]; if(!p) return ''; const s=size||18; return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none">${p}</svg>`; }
+function renderIcons(root){ (root||document).querySelectorAll('[data-ic]').forEach(el=>{ el.innerHTML=ic(el.getAttribute('data-ic'), +(el.getAttribute('data-ic-size')||18)); }); }
+
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='6.0';
+const APP_VERSION='6.1';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1097,7 +1152,7 @@ document.addEventListener('DOMContentLoaded',renderVersion);
 
 /* ═══ THEME ═══ */
 const THEMES=['dark','light'];
-const THEME_META={ dark:{icon:'☾',color:'#201e1d'}, light:{icon:'☀',color:'#f3f2f2'} };
+const THEME_META={ dark:{icon:'moon',color:'#201e1d'}, light:{icon:'sun',color:'#f3f2f2'} };
 (function(){ let t=localStorage.getItem('expiry_theme'); if(!THEME_META[t]) t='dark'; applyTheme(t); })();
 /* Optional "Pro" desktop card design (opt-in, desktop-only visuals). */
 (function(){ document.documentElement.setAttribute('data-cards', localStorage.getItem('expiry_cards') || 'classic'); })();
@@ -1115,7 +1170,7 @@ function applyTheme(t) {
   if(!THEME_META[t]) t='light';
   document.documentElement.setAttribute('data-theme', t);
   const btn=document.getElementById('theme-btn'), meta=document.getElementById('meta-theme-color');
-  if(btn)btn.textContent=THEME_META[t].icon; if(meta)meta.content=THEME_META[t].color;
+  if(btn)btn.innerHTML=ic(THEME_META[t].icon,18); if(meta)meta.content=THEME_META[t].color;
   localStorage.setItem('expiry_theme', t);
 }
 function toggleTheme(){
@@ -1312,11 +1367,13 @@ function clearLocalImages(){ localStorage.removeItem('expiry_images'); notify('�
 
 /* ═══ PACKAGE (2nd) PHOTO + IMAGE LIGHTBOX ═══ */
 function setBtn(id,txt){ const b=document.getElementById(id); if(b) b.textContent=txt; }
+/* Set a button's label with a leading Lucide icon (keeps flex row + gap from CSS). */
+function setBtnIc(id,icon,txt){ const b=document.getElementById(id); if(b) b.innerHTML=ic(icon,14)+'<span>'+txt+'</span>'; }
 let pendingFullPhoto=null;   // package photo attached to the item being scanned
 function resetFullPhoto(){
   pendingFullPhoto=null;
   const b=document.getElementById('full-photo-btn');
-  if(b){ b.classList.remove('added'); b.textContent='📷 Add package photo (optional)'; }
+  if(b){ b.classList.remove('added'); setBtnIc('full-photo-btn','package','Add package photo (optional)'); }
 }
 /* Trigger the camera / file picker for the scan flow's package photo. */
 function pickFullPhoto(forId){
@@ -1333,8 +1390,8 @@ function manualPickPhoto(full){
 }
 function resetManualPhotos(){
   pendingManualThumb=null; pendingManualFull=null;
-  setBtn('manual-photo-btn','📷 Add photo (optional)');
-  setBtn('manual-pkg-btn','📦 Add package photo (optional)');
+  setBtnIc('manual-photo-btn','camera','Add photo (optional)');
+  setBtnIc('manual-pkg-btn','package','Add package photo (optional)');
 }
 /* Load a chosen photo and downscale it for storage. */
 function loadDownscaled(file,maxDim,q){
@@ -1359,13 +1416,13 @@ async function onFullPhotoSelected(inp){
   try{ dataUrl=await loadDownscaled(file, full?1100:900, .82); }
   catch(e){ notify('⚠️ Could not read that image'); return; }
   if(inp.dataset.mode==='edit'){       // editing an item → stage, upload on Save
-    if(full){ editPendingFull=dataUrl;  setBtn('edit-pkgphoto-btn','✓ Package photo set — tap to change'); }
-    else    { editPendingThumb=dataUrl; setBtn('edit-datephoto-btn','✓ Date photo set — tap to change'); }
+    if(full){ editPendingFull=dataUrl;  setBtnIc('edit-pkgphoto-btn','check','Package photo set — tap to change'); }
+    else    { editPendingThumb=dataUrl; setBtnIc('edit-datephoto-btn','check','Date photo set — tap to change'); }
     return;
   }
   if(inp.dataset.mode==='manual'){     // manual New Item form → attach on save
-    if(full){ pendingManualFull=dataUrl;  setBtn('manual-pkg-btn','✓ Package photo added — tap to change'); }
-    else    { pendingManualThumb=dataUrl; setBtn('manual-photo-btn','✓ Photo added — tap to change'); }
+    if(full){ pendingManualFull=dataUrl;  setBtnIc('manual-pkg-btn','check','Package photo added — tap to change'); }
+    else    { pendingManualThumb=dataUrl; setBtnIc('manual-photo-btn','check','Photo added — tap to change'); }
     return;
   }
   const forId=inp.dataset.forId;
@@ -1373,7 +1430,7 @@ async function onFullPhotoSelected(inp){
   else{                                // scan flow → attach on save
     pendingFullPhoto=dataUrl;
     const b=document.getElementById('full-photo-btn');
-    if(b){ b.classList.add('added'); b.textContent='✓ Package photo added — tap to change'; }
+    if(b){ b.classList.add('added'); setBtnIc('full-photo-btn','check','Package photo added — tap to change'); }
   }
 }
 
@@ -1423,8 +1480,8 @@ function openEdit(id){
   document.getElementById('edit-name').value=item.name||'';
   document.getElementById('edit-date').value=item.expiry||'';
   renderCategoryPicker('edit'); preselectCat('edit', item.icon||'');
-  setBtn('edit-datephoto-btn','🗓 Replace expiry date photo');
-  setBtn('edit-pkgphoto-btn','📦 Add / replace package photo');
+  setBtnIc('edit-datephoto-btn','calendar','Replace expiry date photo');
+  setBtnIc('edit-pkgphoto-btn','package','Add / replace package photo');
   document.getElementById('edit-modal').classList.add('show');
 }
 function editPickPhoto(full){
@@ -1978,8 +2035,8 @@ function buildItem(item,idx){
       <div class="item-sub">${fmtDate(item.expiry)}</div>
     </div>
     <span class="item-tag ${getTag(days)}">${daysLabel(days)}</span>
-    <button class="item-edit-btn" onclick="openEdit('${item.id}')" title="Edit">✏️</button>
-    <button class="item-del-btn" onclick="deleteItem('${item.id}')" title="Delete">🗑</button>`;
+    <button class="item-edit-btn" onclick="openEdit('${item.id}')" title="Edit">${ic('pencil',15)}</button>
+    <button class="item-del-btn" onclick="deleteItem('${item.id}')" title="Delete">${ic('trash',15)}</button>`;
   if(!local) hydrateImage(div.querySelector('.item-thumb'), item.id);  // pull from Storage
   attachSwipe(div, item.id);
   return div;
@@ -2074,7 +2131,7 @@ async function renderDashboard(){
   if(goodList){
     goodList.innerHTML='';
     if(!ok.length){
-      goodList.innerHTML='<div class="empty"><div class="e-icon">📦</div><p>No items tracked yet.</p></div>';
+      goodList.innerHTML='<div class="empty"><div class="e-icon">'+ic('package',26)+'</div><p>No items tracked yet.</p></div>';
     }else{
       ok.slice(0,8).forEach((item,i)=>goodList.appendChild(buildItem(item,i)));
     }
@@ -2088,18 +2145,25 @@ async function renderAll(){
   allItemsCache=await dbGetAll();
   filterAll();
 }
+/* All-Items sort mode, driven by the segmented control. */
+let sortMode='expiry';
+function setSort(m){
+  sortMode=m;
+  document.querySelectorAll('#sort-seg .sort-seg-btn').forEach(b=>b.classList.toggle('on', b.getAttribute('data-sort')===m));
+  filterAll();
+}
 /* Render the All-Items list from cache, applying the search box + sort (no refetch). */
 function filterAll(){
   const list=document.getElementById('all-list'); if(!list) return;
   let items=allItemsCache.filter(i=>!pendingDeletes.has(i.id));
   const q=(document.getElementById('search-input')?.value||'').trim().toLowerCase();
   if(q) items=items.filter(i=>(i.name||'').toLowerCase().includes(q));
-  const sort=document.getElementById('sort-select').value;
+  const sort=sortMode;
   items.sort((a,b)=>sort==='expiry'?new Date(a.expiry)-new Date(b.expiry):sort==='name'?a.name.localeCompare(b.name):new Date(b.added)-new Date(a.added));
   list.innerHTML='';
   if(!items.length){ list.innerHTML = q
-    ? '<div class="empty"><div class="e-icon">🔍</div><p>No matches for “'+esc(q)+'”.</p></div>'
-    : '<div class="empty"><div class="e-icon">📦</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>'; }
+    ? '<div class="empty"><div class="e-icon">'+ic('search',26)+'</div><p>No matches for “'+esc(q)+'”.</p></div>'
+    : '<div class="empty"><div class="e-icon">'+ic('package',26)+'</div><p>No items yet.<br/>Use Scan or Add to begin.</p></div>'; }
   else items.forEach((item,i)=>list.appendChild(buildItem(item,i)));
 }
 
@@ -2274,6 +2338,7 @@ renderDatalist();
 renderCategoryPicker('scan');
 renderCategoryPicker('manual');
 document.getElementById('manual-date').value=new Date().toISOString().split('T')[0];
+renderIcons();       // fill static [data-ic] elements with Lucide line icons
 initAuth();          // decides: show login page or the app (+ loads this account's data)
 </script>
 </body>

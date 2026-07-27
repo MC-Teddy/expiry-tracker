@@ -542,7 +542,16 @@
     .stat-cell.s-yellow .stat-icon-wrap { color: var(--yellow); }
     .stat-cell.s-green .stat-icon-wrap  { color: var(--green); }
     .stat-icon-wrap { display: inline-flex; }
-    .item-edit-btn, .item-del-btn { color: var(--text-2); display: inline-flex; align-items: center; }
+    /* Row action buttons — flat zero-radius blocks, amber edit / red delete */
+    .item-edit-btn, .item-del-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; padding: 0; flex-shrink: 0; opacity: 1;
+      background: transparent; border: 1px solid var(--border); border-radius: 0;
+      cursor: pointer; transition: background .12s, border-color .12s, color .12s; }
+    .item-edit-btn { color: var(--yellow); border-color: color-mix(in srgb, var(--yellow) 42%, transparent); }
+    .item-del-btn  { color: var(--red);    border-color: color-mix(in srgb, var(--red) 42%, transparent); }
+    .item-edit-btn:hover, .item-edit-btn:active { background: var(--yellow); color: var(--page-bg); border-color: var(--yellow); }
+    .item-del-btn:hover,  .item-del-btn:active  { background: var(--red);    color: var(--page-bg); border-color: var(--red); }
     .barcode-btn, .full-photo-btn, .list-export-btn, .cat-add-btn, .add-bar-btn, .edit-save, .danger-btn,
     .edit-photo-btn, .cam-btn, .ghost-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
     .edit-title { display: inline-flex; align-items: center; gap: 7px; }
@@ -1143,7 +1152,7 @@ function ic(name,size){ const p=LUCIDE[name]; if(!p) return ''; const s=size||18
 function renderIcons(root){ (root||document).querySelectorAll('[data-ic]').forEach(el=>{ el.innerHTML=ic(el.getAttribute('data-ic'), +(el.getAttribute('data-ic-size')||18)); }); }
 
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='6.1';
+const APP_VERSION='6.2';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;

@@ -1152,7 +1152,7 @@ function ic(name,size){ const p=LUCIDE[name]; if(!p) return ''; const s=size||18
 function renderIcons(root){ (root||document).querySelectorAll('[data-ic]').forEach(el=>{ el.innerHTML=ic(el.getAttribute('data-ic'), +(el.getAttribute('data-ic-size')||18)); }); }
 
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='6.3';
+const APP_VERSION='6.4';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -2079,14 +2079,14 @@ function renderDashList(){
   const titleEl=document.getElementById('dash-list-title'); if(!list) return;
   const iconEl=document.getElementById('dash-list-icon');
   const cfg={
-    expired:{arr:dashItems.expired, title:'Expired',       head:'triangle-alert', icon:'circle-check', empty:'Nothing expired'},
-    soon:   {arr:dashItems.soon,    title:'Expiring Soon', head:'clock',          icon:'circle-check', empty:'None due soon'},
-    good:   {arr:dashItems.ok,      title:'Good',          head:'circle-check',   icon:'package',      empty:'No good items yet'},
-    all:    {arr:[...dashItems.expired,...dashItems.soon], title:'Needs Attention', head:'triangle-alert', icon:'circle-check', empty:'All clear!<br/>Nothing expiring soon.'}
-  }[dashFilter] || {arr:[],title:'Needs Attention',head:'triangle-alert',icon:'circle-check',empty:'—'};
+    expired:{arr:dashItems.expired, title:'Expired',       head:'triangle-alert', color:'var(--red)',    icon:'circle-check', empty:'Nothing expired'},
+    soon:   {arr:dashItems.soon,    title:'Expiring Soon', head:'clock',          color:'var(--yellow)', icon:'circle-check', empty:'None due soon'},
+    good:   {arr:dashItems.ok,      title:'Good',          head:'circle-check',   color:'var(--green)',  icon:'package',      empty:'No good items yet'},
+    all:    {arr:[...dashItems.expired,...dashItems.soon], title:'Needs Attention', head:'triangle-alert', color:'var(--accent)', icon:'circle-check', empty:'All clear!<br/>Nothing expiring soon.'}
+  }[dashFilter] || {arr:[],title:'Needs Attention',head:'triangle-alert',color:'var(--accent)',icon:'circle-check',empty:'—'};
   ['expired','soon','good'].forEach(k=>{ const el=document.getElementById('stat-'+k); if(el) el.classList.toggle('active', dashFilter===k); });
   if(titleEl) titleEl.textContent=cfg.title;
-  if(iconEl) iconEl.innerHTML=ic(cfg.head,18);
+  if(iconEl){ iconEl.innerHTML=ic(cfg.head,18); iconEl.style.color=cfg.color; }
   const arr=cfg.arr.slice().sort((a,b)=>new Date(a.expiry)-new Date(b.expiry));
   const badge=document.getElementById('attention-badge');
   if(badge){ badge.textContent=arr.length; badge.style.display=arr.length>0?'inline':'none'; }

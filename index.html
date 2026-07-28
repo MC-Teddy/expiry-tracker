@@ -1152,7 +1152,7 @@ function ic(name,size){ const p=LUCIDE[name]; if(!p) return ''; const s=size||18
 function renderIcons(root){ (root||document).querySelectorAll('[data-ic]').forEach(el=>{ el.innerHTML=ic(el.getAttribute('data-ic'), +(el.getAttribute('data-ic-size')||18)); }); }
 
 /* ═══ VERSION ═══ (bumped on every edit — single source of truth) */
-const APP_VERSION='6.4';
+const APP_VERSION='6.5';
 function renderVersion(){
   const t=document.getElementById('app-version-top');     if(t) t.textContent='v'+APP_VERSION;
   const s=document.getElementById('app-version-settings');if(s) s.textContent=APP_VERSION;
@@ -1927,18 +1927,20 @@ function extractDates(raw){
   const MON='(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)';
   const S='[\\/\\-. ]';                                  // /  -  .  or space separator
   const mk=(y,m,d)=>{ let yy=+y,mm=+m,dd=+d; if(yy<100)yy+=2000; if(!yy||mm<1||mm>12||dd<1||dd>31||yy<2020||yy>2041)return null; return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; };
+  // Month/year only (e.g. 07/2026) → default to the LAST day of that month (expiry = good through end of month).
+  const mkEOM=(y,m)=>{ let yy=+y; if(yy<100)yy+=2000; const mm=+m; if(mm<1||mm>12||yy<2020||yy>2041)return null; return mk(yy,mm,new Date(yy,mm,0).getDate()); };
   const two=(a,b,y)=>{ a=+a;b=+b; if(a>12&&b<=12)return mk(y,b,a); if(b>12&&a<=12)return mk(y,a,b); return mk(y,b,a); };
   const P=[
     {r:new RegExp(`(\\d{1,2})\\s*${MON}[A-Z]*\\s*(\\d{2,4})`),           f:m=>mk(m[3],M[m[2]],m[1])},  // 31 DEC 2026 / 31DEC26
     {r:new RegExp(`${MON}[A-Z]*\\s*(\\d{1,2})\\s*[, ]\\s*(\\d{2,4})`),   f:m=>mk(m[3],M[m[1]],m[2])},  // DEC 31, 2026
-    {r:new RegExp(`${MON}[A-Z]*${S}*(20\\d{2}|\\d{2})\\b`),             f:m=>mk(m[2],M[m[1]],1)},      // DEC 2026 / DEC26
+    {r:new RegExp(`${MON}[A-Z]*${S}*(20\\d{2}|\\d{2})\\b`),             f:m=>mkEOM(m[2],M[m[1]])},     // DEC 2026 / DEC26 → end of month
     {r:/(20\d{2})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/,                     f:m=>mk(m[1],m[2],m[3])},      // 2026-07-21 (no space sep: avoids bridging two dates)
     {r:/\b(20\d{2})(\d{2})(\d{2})\b/,                                    f:m=>mk(m[1],m[2],m[3])},      // 20260721
     {r:new RegExp(`(\\d{1,2})${S}(\\d{1,2})${S}(20\\d{2})`),            f:m=>two(m[1],m[2],m[3])},     // 21/07/2026 or 07/21/2026
     {r:new RegExp(`\\b(\\d{1,2})${S}(\\d{1,2})${S}(\\d{2})\\b`),        f:m=>{const a=+m[1],b=+m[2],y=+m[3]; if(y<24||y>41)return null; if(a>12&&b<=12)return mk(y,b,a); if(b>12&&a<=12)return mk(y,a,b); return mk(y,b,a);}}, // 21/07/26
-    {r:new RegExp(`\\b(\\d{1,2})${S}(20\\d{2})\\b`),                    f:m=>mk(m[2],m[1],1)},         // 07/2026
-    {r:new RegExp(`\\b(\\d{2})${S}(\\d{2})\\b`),                        f:m=>{const mm=+m[1],yy=+m[2]; return(mm>=1&&mm<=12&&yy>=24&&yy<=41)?mk(yy,mm,1):null;}}, // 07/26
-    {r:/\b(\d{2})(20\d{2})\b/,                                          f:m=>mk(m[2],m[1],1)},         // 072026
+    {r:new RegExp(`\\b(\\d{1,2})${S}(20\\d{2})\\b`),                    f:m=>mkEOM(m[2],m[1])},        // 07/2026 → end of month
+    {r:new RegExp(`\\b(\\d{2})${S}(\\d{2})\\b`),                        f:m=>{const mm=+m[1],yy=+m[2]; return(mm>=1&&mm<=12&&yy>=24&&yy<=41)?mkEOM(yy,mm):null;}}, // 07/26 → end of month
+    {r:/\b(\d{2})(20\d{2})\b/,                                          f:m=>mkEOM(m[2],m[1])},        // 072026 → end of month
   ];
   const consumed=[], cands=[];
   for(const {r,f} of P){                    // patterns run most-specific first; consumed spans block weaker overlaps

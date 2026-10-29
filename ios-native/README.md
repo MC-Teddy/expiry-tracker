@@ -1,6 +1,6 @@
 # Expiry Tracker — native iPhone app
 
-A local-first SwiftUI rewrite, not a web wrapper. iOS 17+. Native version **1.1.0 (11)**; bundle identity **com.ahasan.expirytracker**.
+A local-first SwiftUI app, not a web wrapper. iOS 17+. Native version **1.2.0 (12)**; bundle identity **com.ahasan.expirytracker**. Signed-in accounts share items and photos with the website through the existing Supabase project. The app still works with no account and with no network.
 
 ## What is implemented
 
@@ -16,7 +16,7 @@ A local-first SwiftUI rewrite, not a web wrapper. iOS 17+. Native version **1.1.
 - Gregorian `yyyy-MM-dd` storage, POSIX date formatter, and the device's local time zone; date pickers explicitly use the same Gregorian calendar. Display dates remain localized.
 - Local repository-backed inventory/settings. The `@MainActor ObservableObject` publishes changed snapshots **only after a successful disk save**. Failed writes leave displayed data unchanged. Failed opening does not silently replace a corrupt store with an empty inventory.
 - Critical/soon thresholds, explicitly saved, with threshold explanations.
-- Storage label **On this iPhone**. Online sync is explicitly unavailable in this release; there is no nonfunctional mode selector, login, or upload implementation.
+- Settings shows account status. Sign in with the same email and password as the website (no sign-up; accounts are created on the web by an admin). The session is kept in the Keychain. Last sync time, pending changes, and **Sync now** are shown. Sign out stops syncing and leaves items on the phone. Warning days stay on the device.
 - Native share sheet for complete JSON backups and real quoted UTF-8/CRLF CSV exports. CSV includes item fields, not photos or settings, and escapes spreadsheet-formula values.
 - Native JSON file importer: bounded read, decode/validation before confirmation, visible incoming item count, destructive replacement confirmation, then atomic repository save. Cancellation/invalid import do not replace current data. A successful restore shows its item count.
 - Clear local-storage, invalid-backup, item-validation, camera, and recognition errors.
@@ -29,18 +29,30 @@ Photo recognition uses a one-shot generation token for each new selection; selec
 
 The repository's iOS branch applies Data Protection and excludes the local directory from automatic backup; this is compiled but its iOS-only runtime test cannot execute on Linux. **Export JSON backups before uninstalling or changing phones.** Share exports are temporary files with iOS Data Protection; backup files contain private notes/photos and should be shared deliberately.
 
-The configured bundle ID matches the prior app, but this native implementation uses a new storage directory. There is **no migration from the previous web/localStorage/Supabase dataset**, and no claim that old backup formats can be restored. A normal signed upgrade may retain the prior sandbox, but signing/deployment has not been performed here and does not constitute a migration.
+## Account sync
+
+The phone uses the same Supabase project as `index.html`: `https://viupqrjyszvvcpnxrmsq.supabase.co`, the public anon key, the `items` table, and the `item-images` bucket. Requests go through URLSession to the Auth, REST, and Storage HTTP APIs. There is no schema change.
+
+Rows use the website's columns: `id`, `name`, `expiry` (`yyyy-MM-dd`), `icon` (the native category), `added` (creation time, UTC ISO-8601), `user_id`, and `device_id`. Inserts send the phone's item id so both sides share it. Photos use `<user_id>/<item_id>.jpg` (the phone's photo, which the website shows first) and `<user_id>/<item_id>_full.jpg` (the website's package photo). If only the package photo exists, the phone shows that. Replacing a photo uploads the primary file. Removing a photo deletes both files, so a package photo does not reappear as the only picture.
+
+`quantity`, `notes`, and `barcode` are sent when the table accepts them. If PostgREST reports that a column is missing, the phone stops sending it and keeps the value locally; pulling a web row does not erase it. `updated_at` is sent the same way and, when the column exists, is the last-write time. The website does not write `updated_at` itself. Without that column, a web edit still applies when the phone has no pending edit, but if both sides changed the same field the phone edit wins when it is newer than `added`. With `updated_at` (or a database trigger that maintains it), the newer timestamp wins. Adding nullable `quantity`, `notes`, `barcode`, and `updated_at timestamptz` columns would let those fields and web edit times sync; that migration was not applied.
+
+Sync is offline-first. Adds, edits, and deletes are saved in `tracker.json` first, then recorded in `sync-ledger.json` in the same directory. The queue is sent when the network returns, when the app becomes active, and from **Sync now**. A failed send stays queued. The same account's items are merged; local-only items that exist at the first sign-in are uploaded, not discarded. Signing out keeps the on-phone copy. Signing in as a different person parks the previous account on disk and uploads only items created while signed out, so one account's inventory is not copied into another.
+
+The whole store is still limited to 20 MB and each photo to 5 MB. A cloud account larger than that cannot be saved locally; the error is shown and the previous on-phone data is kept. Warning days are not in the `items` table and are not synced. Recognition stays on the device.
+
+On a phone, check: sign in with a website account and confirm the same items appear; add, edit, and delete on each side and run **Sync now**; add a photo on each side; turn on airplane mode, edit, then reconnect and confirm the queued change is sent; sign out and confirm the on-phone list remains; sign in again and confirm a second account does not receive the first account's items.
 
 ## Package layout
 
-- `Sources/ExpiryCore/`: Foundation models, status/day calculations, validation, persistence, and backup format (separate core workstream).
+- `Sources/ExpiryCore/`: Foundation models, status/day calculations, validation, persistence, backup format, and the Supabase row/queue/merge logic exercised on Linux.
 - `Sources/ExpiryTracker/`: native SwiftUI screens/model, camera, Vision integration, calendar/date suggestions, CSV export, and user-facing error explanations.
-- `Tests/ExpiryCoreTests/`: core tests and original TDD evidence.
+- `Tests/ExpiryCoreTests/`: core tests, including sync queue, merge, and Supabase row mapping, plus original TDD evidence.
 - `Tests/AppLogicTests/`: date/OCR suggestion, fixed storage-calendar, CSV, and error-explanation tests.
 - `Support/`: plist and opaque 1024px native calendar/checkmark app icon.
 - `verification/`: reproducible unsigned-build verifier, test/build logs, TDD RED logs, and inspected artifact metadata.
 
-There is exactly one library product (`ExpiryTracker`), an `ExpiryCore` target, an app target, and XCTest targets. Apple-only files are guarded so the same package can run Foundation tests on Linux. No bundled HTML/JavaScript/CSS, web runtime, WebKit dependency, cloud SDK, or networking code is included in the native sources.
+There is exactly one library product (`ExpiryTracker`), an `ExpiryCore` target, an app target, and XCTest targets. Apple-only files, Keychain, and URLSession are guarded so the same package can run Foundation tests on Linux. There is no bundled HTML/JavaScript/CSS, web runtime, or WebKit dependency. Networking is limited to the Supabase host above.
 
 ## Reproduce verification (existing Windows/WSL setup)
 
@@ -158,4 +170,4 @@ Compilation and Foundation tests are not on-phone UI/runtime verification. Befor
 7. Locked-device Data Protection and automatic backup exclusion behavior, storage/write failures, and persisted user-visible errors.
 8. Same-identity signed-upgrade behavior with the existing app, **without assuming old data is migrated**.
 
-Online sync, automatic migration, notifications, product databases, and cloud storage are deliberately out of this local-only release.
+Notifications and product databases are not part of this release. Account sync is the Supabase behavior described above; it is not a migration of an older web backup file, and it has not been exercised on a phone in this environment.

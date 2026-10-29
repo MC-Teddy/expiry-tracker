@@ -41,8 +41,8 @@ build = run("build", "xtool dev build")
 app = ROOT / "xtool" / "ExpiryTracker.app"
 info = plistlib.loads((app / "Info.plist").read_bytes())
 assert info["CFBundleIdentifier"] == "com.ahasan.expirytracker", info
-assert info["CFBundleShortVersionString"] == "1.1.0", info
-assert str(info["CFBundleVersion"]) == "11", info
+assert info["CFBundleShortVersionString"] == "1.2.0", info
+assert str(info["CFBundleVersion"]) == "12", info
 exe = app / info["CFBundleExecutable"]
 data = exe.read_bytes()
 magic, cpu, subtype, kind, count, size, flags, reserved = struct.unpack_from("<8I", data)
@@ -58,7 +58,10 @@ for _ in range(count):
     offset += length
 assert not any("webkit" in lib.lower() for lib in libraries), libraries
 for file in (ROOT / "Sources").rglob("*.swift"):
-    assert not re.search(r"WebKit|WKWebView|JavaScript|URLSession|https?://", file.read_text(encoding="utf-8"), re.I), str(file)
+    text = file.read_text(encoding="utf-8")
+    assert not re.search(r"WebKit|WKWebView|JavaScript", text, re.I), str(file)
+    for match in re.findall(r"https?://[^\s\"']+", text):
+        assert "viupqrjyszvvcpnxrmsq.supabase.co" in match, (str(file), match)
 web_resources = [str(file.relative_to(app)) for file in app.rglob("*") if file.suffix.lower() in (".html", ".js", ".mjs", ".css")]
 assert not web_resources, web_resources
 assert (app / "AppIcon.png").is_file()

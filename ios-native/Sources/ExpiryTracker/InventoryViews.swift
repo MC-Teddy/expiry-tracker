@@ -4,10 +4,15 @@ import Combine
 import ExpiryCore
 
 struct TrackerHome: View {
+    @EnvironmentObject private var model: TrackerModel
+    @Environment(\.scenePhase) private var scenePhase
     var body: some View {
         TabView {
             InventoryView().tabItem { Label("Inventory", systemImage: "square.stack.3d.up") }
             SettingsView().tabItem { Label("Settings", systemImage: "gearshape") }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { model.scheduleSync() }
         }
     }
 }
@@ -189,7 +194,7 @@ struct ItemDetail: View {
                     .sheet(isPresented: $editing) { ItemEditor(item: item) }
                     .confirmationDialog("Delete \(item.name)?", isPresented: $deleting, titleVisibility: .visible) {
                         Button("Delete item", role: .destructive) { if model.delete(item) { dismiss() } }
-                    } message: { Text("The item and its photo will be removed from this iPhone.") }
+                    } message: { Text(model.isSignedIn ? "The item and its photo will be removed from this iPhone and your account." : "The item and its photo will be removed from this iPhone.") }
             } else { ContentUnavailableView("Item no longer exists", systemImage: "shippingbox") }
         }.onReceive(timer) { now = $0 }
             .onChange(of: scenePhase) { _, phase in if phase == .active { now = Date() } }

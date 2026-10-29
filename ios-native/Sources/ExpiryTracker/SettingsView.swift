@@ -22,6 +22,10 @@ struct SettingsView: View {
     @State private var saved = false
     @State private var restoredCount: Int?
     @State private var loaded = false
+    @State private var email = ""
+    @State private var password = ""
+    @State private var signingIn = false
+    @State private var authError: String?
     private var version: String {
         let info = Bundle.main.infoDictionary ?? [:]
         return "\(info["CFBundleShortVersionString"] as? String ?? "—") (\(info["CFBundleVersion"] as? String ?? "—"))"
@@ -33,15 +37,63 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    HStack(alignment: .top, spacing: 14) {
-                        Image(systemName: "lock.shield").font(.title).foregroundStyle(Color.trackerAccent)
-                            .frame(width: 48, height: 48).background(Color.trackerAccent.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("On this iPhone").font(.headline)
-                            Text("Your items and photos stay on your device.").font(.subheadline).foregroundStyle(.secondary)
+                    if model.isSignedIn {
+                        HStack(alignment: .top, spacing: 14) {
+                            Image(systemName: "person.crop.circle.badge.checkmark").font(.title).foregroundStyle(Color.trackerAccent)
+                                .frame(width: 48, height: 48).background(Color.trackerAccent.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(model.accountEmail ?? "Signed in").font(.headline).textSelection(.enabled)
+                                Text(model.syncing ? "Syncing…" : "Signed in").font(.subheadline).foregroundStyle(.secondary)
+                            }
+                        }.padding(.vertical, 8)
+                        LabeledContent("Last sync", value: model.lastSyncedAt?.formatted(date: .abbreviated, time: .shortened) ?? "Not yet")
+                        if model.pendingChanges > 0 {
+                            LabeledContent("Waiting to sync", value: "\(model.pendingChanges)")
                         }
-                    }.padding(.vertical, 8)
-                } footer: { Text("No account or internet needed. Recognition runs locally with Apple Vision.") }
+                        if let syncMessage = model.syncMessage {
+                            Text(syncMessage).font(.footnote).foregroundStyle(.red)
+                        }
+                        Button { Task { await model.syncNow() } } label: {
+                            Label(model.syncing ? "Syncing…" : "Sync now", systemImage: "arrow.triangle.2.circlepath").frame(minHeight: 44)
+                        }.disabled(model.syncing || !model.ready)
+                        Button("Sign out", role: .destructive) { model.signOut() }.frame(minHeight: 44)
+                    } else {
+                        HStack(alignment: .top, spacing: 14) {
+                            Image(systemName: "iphone").font(.title).foregroundStyle(Color.trackerAccent)
+                                .frame(width: 48, height: 48).background(Color.trackerAccent.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("On this iPhone").font(.headline)
+                                Text("Sign in to share items and photos with the website.").font(.subheadline).foregroundStyle(.secondary)
+                            }
+                        }.padding(.vertical, 8)
+                        TextField("Email", text: $email)
+                            .textContentType(.username)
+                            .keyboardType(.emailAddress)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                        SecureField("Password", text: $password).textContentType(.password)
+                        if let authError {
+                            Text(authError).font(.footnote).foregroundStyle(.red)
+                        }
+                        Button {
+                            signingIn = true
+                            authError = nil
+                            Task {
+                                let failure = await model.signIn(email: email, password: password)
+                                signingIn = false
+                                authError = failure
+                                if failure == nil { password = "" }
+                            }
+                        } label: {
+                            if signingIn { ProgressView().frame(minHeight: 44) }
+                            else { Text("Sign in").frame(minHeight: 44) }
+                        }.disabled(signingIn || !model.ready)
+                    }
+                } header: { Text("Account") } footer: {
+                    Text(model.isSignedIn
+                         ? "This account uses the same items and photos as the website. Edits made offline are sent when you're back online. If both sides changed the same detail, the newest change is kept. Warning days stay on this iPhone. Recognition runs on this iPhone with Apple Vision."
+                         : "Without an account, items stay on this iPhone. Sign in with the same email and password as the website. Items already here are kept and uploaded. Recognition runs on this iPhone with Apple Vision.")
+                }
                 Section {
                     Stepper(value: $critical, in: 0...3650) {
                         LabeledContent { Text("\(critical) days").monospacedDigit() } label: { Label("Use first", systemImage: "clock.badge.exclamationmark") }
@@ -99,7 +151,7 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) { pendingImport = nil }
             } message: {
-                Text("This validated backup contains \(pendingImport?.items.count ?? 0) items. It will replace all current items, photos, and warning settings on this iPhone. This cannot be undone. Export a JSON backup first if you need to keep the current inventory.")
+                Text("This validated backup contains \(pendingImport?.items.count ?? 0) items. It will replace all current items, photos, and warning settings on this iPhone. If you are signed in, your account is updated to match it. This cannot be undone. Export a JSON backup first if you need to keep the current inventory.")
             }
             .sheet(item: $shared) { file in NativeShareSheet(url: file.url) }
             .alert("Unable to complete action", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {

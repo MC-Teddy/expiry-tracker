@@ -35,6 +35,11 @@ struct EditorCaptureState {
     private var pending: Result<CameraCapture, Error>?
     private var pendingPurpose = LabelScanPurpose.expiry
 
+    init(photo: Data? = nil, barcode: String) {
+        self.photo = photo
+        self.barcode = barcode
+    }
+
     mutating func beginCamera(purpose: LabelScanPurpose = .expiry) { pending = nil; pendingPurpose = purpose; isPresented = true }
 
     mutating func removePhoto() {

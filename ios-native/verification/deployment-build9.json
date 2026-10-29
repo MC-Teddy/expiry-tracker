@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-16",
+  "version": "1.1.0",
+  "build": "9",
+  "sourceBundleIdentifier": "com.ahasan.expirytracker",
+  "signedBundleIdentifier": "XTL-S7Q3EFT28Y.com.ahasan.expirytracker",
+  "installation": {
+    "tool": "xtool dev run --usb",
+    "exitCode": 0,
+    "provisioningCompleted": true,
+    "signingCompleted": true,
+    "installingCompleted": true,
+    "verifyingCompleted": true
+  },
+  "launchAttempted": false,
+  "physicalProductOCRVerified": false,
+  "note": "Build 9 installed successfully after the user reconnected the iPhone. Open the app manually to check front-label product-name recognition, suggested names, existing-name protection, and the retained expiry scan. Automated name tests use text/geometry/confidence fixtures, not real product-image recognition."
+}

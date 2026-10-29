@@ -1,0 +1,40 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 3] AppLogicTests-product
+[2 / 4] AppLogicTests-product
+[4 / 4] AppLogicTests-product
+[5 / 5] AppLogicTests-product
+[6 / 8] AppLogicTests-product
+[8 / 9] AppLogicTests-product
+[9 / 10] AppLogicTests-product
+[10 / 10] AppLogicTests-product
+[11 / 13] AppLogicTests-test-runner
+[12 / 14] AppLogicTests-test-runner
+[13 / 15] AppLogicTests-test-runner
+[15 / 15] AppLogicTests-test-runner
+[16 / 18] AppLogicTests-test-runner
+[18 / 19] AppLogicTests-test-runner
+[20 / 20] AppLogicTests-test-runner
+Build complete! (8.50 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:39:45.220
+Test Suite 'Selected tests' passed at 2026-10-15 21:39:45.222
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:39:45.297
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-15 21:39:45.298
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-15 21:39:45.298
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.005 seconds)
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' started at 2026-10-15 21:39:45.304
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift:23: error: CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter : XCTAssertEqual failed: ("Optional(Foundation.CGPoint(x: -3.0, y: 4.0))") is not equal to ("Optional(Foundation.CGPoint(x: 0.0, y: 1.0))") - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift:26: error: CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter : XCTAssertEqual failed: ("Optional(Foundation.CGPoint(x: nan, y: inf))") is not equal to ("Optional(Foundation.CGPoint(x: 0.5, y: 0.5))") - 
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' failed (0.001 seconds)
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' started at 2026-10-15 21:39:45.305
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift:12: error: CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested : XCTAssertFalse failed - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift:14: error: CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested : XCTAssertNil failed: "CGPoint(x: 0.5, y: 0.5)" - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift:15: error: CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested : XCTAssertFalse failed - A near-range hint is meaningless without continuous autofocus
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' failed (0.0 seconds)
+Test Suite 'CameraFocusPolicyTests' failed at 2026-10-15 21:39:45.305
+	 Executed 3 tests, with 5 failures (0 unexpected) in 0.006 (0.006) seconds
+Test Suite 'Selected tests' failed at 2026-10-15 21:39:45.305
+	 Executed 3 tests, with 5 failures (0 unexpected) in 0.006 (0.006) seconds
+Note: Some test targets reported failures:
+  - AppLogicTests (XCTest)

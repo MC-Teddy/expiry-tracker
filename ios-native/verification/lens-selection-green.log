@@ -1,0 +1,46 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[3 / 10] ExpiryTracker
+[4 / 11] ExpiryTracker
+[6 / 11] ExpiryTracker
+[8 / 13] ExpiryTracker
+[9 / 14] AppLogicTests-product
+[14 / 19] AppLogicTests-product
+[15 / 20] AppLogicTests-product
+[16 / 20] AppLogicTests-product
+[16 / 20] ExpiryCore
+[19 / 25] AppLogicTests-product
+[19 / 25] ExpiryTracker
+[21 / 26] ExpiryTracker
+[22 / 26] ExpiryTracker
+[23 / 26] AppLogicTests-product
+[25 / 29] AppLogicTests-product
+[26 / 29] AppLogicTests-product
+[27 / 29] AppLogicTests-test-runner
+[28 / 30] AppLogicTests-test-runner
+[30 / 32] AppLogicTests-test-runner
+[32 / 33] AppLogicTests-test-runner
+[34 / 34] AppLogicTests-test-runner
+[34 / 40] ExpiryCoreTests-product
+[34 / 38] ExpiryTracker-product
+[37 / 37] AppLogicTests-test-runner
+Build complete! (10.59 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:41:12.348
+Test Suite 'Selected tests' passed at 2026-10-15 21:41:12.349
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:41:12.418
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-15 21:41:12.419
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-15 21:41:12.419
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.104 seconds)
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' started at 2026-10-15 21:41:12.523
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' passed (0.001 seconds)
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' started at 2026-10-15 21:41:12.524
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' started at 2026-10-15 21:41:12.524
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' passed (0.0 seconds)
+Test Suite 'CameraFocusPolicyTests' passed at 2026-10-15 21:41:12.524
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.105 (0.105) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:41:12.524
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.105 (0.105) seconds

@@ -1,0 +1,31 @@
+Test Suite 'Selected tests' started at 2026-10-15 20:30:47.372
+Test Suite 'Selected tests' passed at 2026-10-15 20:30:47.373
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 20:30:47.442
+Test Suite 'AppLogicTests' started at 2026-10-15 20:30:47.443
+Test Case 'AppLogicTests.testOCRAllowsRecognitionSpacingAroundDateSeparators' started at 2026-10-15 20:30:47.444
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift:28: error: AppLogicTests.testOCRAllowsRecognitionSpacingAroundDateSeparators : XCTAssertEqual failed: ("[]") is not equal to ("["2027-12-31"]") - 
+Test Case 'AppLogicTests.testOCRAllowsRecognitionSpacingAroundDateSeparators' failed (0.003 seconds)
+Test Suite 'AppLogicTests' failed at 2026-10-15 20:30:47.446
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'Selected tests' failed at 2026-10-15 20:30:47.446
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.003 (0.003) seconds
+Note: Some test targets reported failures:
+  - AppLogicTests (XCTest)
+Building for debugging...
+[Computing dependencies]
+[1 / 11] ExpiryTracker
+[4 / 14] ExpiryTracker
+[4 / 15] ExpiryTracker
+[8 / 15] ExpiryTracker
+[10 / 18] ExpiryTracker
+[13 / 21] AppLogicTests-product
+[15 / 21] AppLogicTests-product
+[18 / 25] AppLogicTests-product
+[20 / 25] AppLogicTests-product
+[22 / 29] AppLogicTests-test-runner
+[24 / 31] AppLogicTests-test-runner
+[26 / 29] AppLogicTests-test-runner
+[28 / 30] AppLogicTests-test-runner
+[30 / 30] AppLogicTests-test-runner
+Build complete! (6.60 secs)

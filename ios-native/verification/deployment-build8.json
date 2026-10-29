@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-16",
+  "version": "1.1.0",
+  "build": "8",
+  "sourceBundleIdentifier": "com.ahasan.expirytracker",
+  "signedBundleIdentifier": "XTL-S7Q3EFT28Y.com.ahasan.expirytracker",
+  "installation": {
+    "tool": "xtool dev run --usb",
+    "exitCode": 0,
+    "provisioningCompleted": true,
+    "signingCompleted": true,
+    "installingCompleted": true,
+    "verifyingCompleted": true
+  },
+  "launch": {
+    "installedExecutableResolved": "ExpiryTracker",
+    "exitCode": 1,
+    "error": "DebugserverClient.Error.unknown",
+    "launched": false
+  },
+  "visualRuntimeVerified": false,
+  "physicalCameraOCRVerified": false,
+  "note": "The redesigned build installed successfully on the reconnected iPhone. Launch resolved the signed app but the device debug service failed. Open Expiry Tracker manually. SwiftUI/UIKit layout and physical-camera behavior are not established by the compile and Foundation tests."
+}

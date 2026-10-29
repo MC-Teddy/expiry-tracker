@@ -1,0 +1,51 @@
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 9] AppLogicTests-product
+error: SwiftCompile normal x86_64 /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift failed with a nonzero exit code. Command line:     cd /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker
+    builtin-SwiftPerFileCompile CameraFocusWorkTests.swift
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:12:54: [1;33mwarning: [1;39mmutation of captured var 'applied' in concurrently-executing code; this is an error in the Swift 6 language mode[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures\SendableClosureCaptures]8;;\]
+[0;36m10 |[0;0m         var applied = false
+[0;36m11 |[0;0m         queue.async { release.wait() }
+[0;36m12 |[0;0m         queue.async { gate.performIfCurrent(token) { applied = true } }
+   [0;36m|[0;0m                                                      `- [1;33mwarning: [1;39mmutation of captured var 'applied' in concurrently-executing code; this is an error in the Swift 6 language mode[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures\SendableClosureCaptures]8;;\]
+[0;36m13 |[0;0m         gate.suspend()
+[0;36m14 |[0;0m         release.signal()
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:27:28: [1;31merror: [1;39mvalue of type 'CameraFocusWork' has no member 'canPrepareSession'[0;0m
+[0;36m25 |[0;0m     func testPickerSuspensionStillAllowsSessionPreparationButFinishDoesNot() {
+[0;36m26 |[0;0m         let gate = CameraFocusWork()
+[0;36m27 |[0;0m         XCTAssertTrue([4;39mgate[0;0m.[4;39mcanPrepareSession[0;0m)
+   [0;36m|[0;0m                            `- [1;31merror: [1;39mvalue of type 'CameraFocusWork' has no member 'canPrepareSession'[0;0m
+[0;36m28 |[0;0m         gate.suspend()
+[0;36m29 |[0;0m         XCTAssertTrue(gate.canPrepareSession, "The picker may open while camera discovery is pending")
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:29:28: [1;31merror: [1;39mcannot convert value of type '_' to expected argument type 'Bool'[0;0m
+[0;36m27 |[0;0m         XCTAssertTrue(gate.canPrepareSession)
+[0;36m28 |[0;0m         gate.suspend()
+[0;36m29 |[0;0m         XCTAssertTrue(gate.canPrepareSession, "The picker may open while camera discovery is pending")
+   [0;36m|[0;0m                            `- [1;31merror: [1;39mcannot convert value of type '_' to expected argument type 'Bool'[0;0m
+[0;36m30 |[0;0m         XCTAssertNil(gate.currentToken(), "Preparing is not permission to change focus or start capture")
+[0;36m31 |[0;0m         gate.finish()
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:29:28: [1;31merror: [1;39mvalue of type 'CameraFocusWork' has no member 'canPrepareSession'[0;0m
+[0;36m27 |[0;0m         XCTAssertTrue(gate.canPrepareSession)
+[0;36m28 |[0;0m         gate.suspend()
+[0;36m29 |[0;0m         XCTAssertTrue([4;39mgate[0;0m.[4;39mcanPrepareSession[0;0m, "The picker may open while camera discovery is pending")
+   [0;36m|[0;0m                            `- [1;31merror: [1;39mvalue of type 'CameraFocusWork' has no member 'canPrepareSession'[0;0m
+[0;36m30 |[0;0m         XCTAssertNil(gate.currentToken(), "Preparing is not permission to change focus or start capture")
+[0;36m31 |[0;0m         gate.finish()
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:32:29: [1;31merror: [1;39mvalue of type 'CameraFocusWork' has no member 'canPrepareSession'[0;0m
+[0;36m30 |[0;0m         XCTAssertNil(gate.currentToken(), "Preparing is not permission to change focus or start capture")
+[0;36m31 |[0;0m         gate.finish()
+[0;36m32 |[0;0m         XCTAssertFalse([4;39mgate[0;0m.[4;39mcanPrepareSession[0;0m)
+   [0;36m|[0;0m                             `- [1;31merror: [1;39mvalue of type 'CameraFocusWork' has no member 'canPrepareSession'[0;0m
+[0;36m33 |[0;0m     }
+[0;36m34 |[0;0m 
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+Failed frontend command:
+/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-frontend -frontend -c /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/test_anchor.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift -primary-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/EditorCaptureStateTests.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift -emit-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.d -emit-const-values-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.swiftconstvalues -emit-reference-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.swiftdeps -serialize-diagnostics-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.dia -target x86_64-unknown-linux-gnu -disable-objc-interop -I /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64 -module-cache-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex -color-diagnostics -Xcc -fcolor-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -swift-version 5 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -external-plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins/testing\#/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-plugin-server -validate-clang-modules-once -clang-build-session-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -enable-anonymous-context-mangled-names -file-compilation-dir /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -Xcc -fno-omit-frame-pointer -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64/include -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources-normal/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name AppLogicTests -package-name ios_native -const-gather-protocols-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests_const_extract_protocols.json -in-process-plugin-server-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/local/lib/swift/host/plugins -parse-as-library -o /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.o -index-unit-output-path /ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.o -index-store-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out -index-system-modules
+error: Build failed
+error: fatalError

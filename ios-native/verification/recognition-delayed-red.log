@@ -1,0 +1,43 @@
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 4] ExpiryTracker
+[3 / 6] ExpiryTracker
+[5 / 7] ExpiryTracker
+[5 / 9]
+[6 / 8] ExpiryTracker
+[7 / 8] ExpiryTracker
+[8 / 9] ExpiryTracker
+[9 / 11] ExpiryCoreTests-product
+[9 / 20] AppLogicTests-product
+[9 / 17] ExpiryCoreTests-product
+[9 / 17] AppLogicTests-test-runner
+[10 / 15] AppLogicTests-product
+[11 / 19] AppLogicTests-test-runner
+[12 / 19] AppLogicTests-test-runner
+[14 / 21] AppLogicTests-test-runner
+[16 / 19] AppLogicTests-test-runner
+[18 / 20] AppLogicTests-test-runner
+[19 / 19] AppLogicTests-test-runner
+Build complete! (7.52 secs)
+Test Suite 'Selected tests' started at 2026-10-15 20:38:28.634
+Test Suite 'Selected tests' passed at 2026-10-15 20:38:28.635
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 20:38:28.703
+Test Suite 'RecognitionGenerationTests' started at 2026-10-15 20:38:28.704
+Test Case 'RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState' started at 2026-10-15 20:38:28.704
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:16: error: RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState : XCTAssertEqual failed: ("old result or failure") is not equal to ("new photo") - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:17: error: RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState : XCTAssertTrue failed - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:20: error: RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState : XCTAssertFalse failed - Completion is one-shot
+Test Case 'RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState' failed (0.013 seconds)
+Test Case 'RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy' started at 2026-10-15 20:38:28.718
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:28: error: RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy : XCTAssertFalse failed - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:30: error: RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy : XCTAssertFalse failed - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:31: error: RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy : XCTAssertTrue failed - 
+Test Case 'RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy' failed (0.0 seconds)
+Test Suite 'RecognitionGenerationTests' failed at 2026-10-15 20:38:28.718
+	 Executed 2 tests, with 6 failures (0 unexpected) in 0.014 (0.014) seconds
+Test Suite 'Selected tests' failed at 2026-10-15 20:38:28.718
+	 Executed 2 tests, with 6 failures (0 unexpected) in 0.014 (0.014) seconds
+Note: Some test targets reported failures:
+  - AppLogicTests (XCTest)

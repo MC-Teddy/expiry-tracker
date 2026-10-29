@@ -1,0 +1,42 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[3 / 28] ExpiryCore
+[4 / 29] ExpiryCore
+[6 / 31] ExpiryCore
+[6 / 32] ExpiryCore
+[12 / 31] ExpiryCore
+[15 / 35] ExpiryCore
+[15 / 35] ExpiryCoreTests-product
+[18 / 38] ExpiryTracker
+[20 / 40] ExpiryCoreTests-product
+[23 / 40] ExpiryTracker
+[26 / 42] AppLogicTests-product
+[28 / 43] ExpiryTracker
+[31 / 44] ExpiryCoreTests-product
+[34 / 44] ExpiryCoreTests-product
+[35 / 44] ExpiryTracker-product
+[35 / 44] AppLogicTests-product
+[37 / 43] AppLogicTests-test-runner
+[39 / 44] ExpiryCoreTests-test-runner
+[40 / 49] AppLogicTests-test-runner
+[42 / 51] ExpiryCoreTests-test-runner
+[44 / 53] ExpiryCoreTests-test-runner
+[46 / 52] AppLogicTests-test-runner
+[51 / 55] AppLogicTests-test-runner
+[54 / 57] AppLogicTests-test-runner
+[55 / 55] AppLogicTests-test-runner
+[55 / 55] ExpiryCoreTests-test-runner
+Build complete! (8.24 secs)
+Test Suite 'Selected tests' started at 2026-10-15 20:37:05.450
+Test Suite 'PhotoPolicyTests' started at 2026-10-15 20:37:05.451
+Test Case 'PhotoPolicyTests.testMetadataDimensionsRejectCompressedBombsAndMalformedValues' started at 2026-10-15 20:37:05.451
+Test Case 'PhotoPolicyTests.testMetadataDimensionsRejectCompressedBombsAndMalformedValues' passed (0.002 seconds)
+Test Suite 'PhotoPolicyTests' passed at 2026-10-15 20:37:05.453
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 20:37:05.453
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-10-15 20:37:05.534
+Test Suite 'Selected tests' passed at 2026-10-15 20:37:05.536
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds

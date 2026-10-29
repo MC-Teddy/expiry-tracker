@@ -1,0 +1,12 @@
+Building for debugging...
+[0/3] Write sources
+[2/3] Write swift-version-17545676818F3CEE.txt
+[4/7] Emitting module ExpiryCore
+[5/7] Compiling ExpiryCore LocalRepository.swift
+[6/7] Compiling ExpiryCore PhotoPolicy.swift
+[7/7] Compiling ExpiryCore Models.swift
+[8/10] Compiling ExpiryCoreTests PhotoPolicyTests.swift
+[9/10] Emitting module ExpiryCoreTests
+[10/10] Compiling ExpiryCoreTests ExpiryCoreTests.swift
+Build of target: 'ExpiryCoreTests' complete! (60.34s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.

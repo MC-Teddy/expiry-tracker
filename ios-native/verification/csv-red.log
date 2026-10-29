@@ -1,0 +1,48 @@
+warning: 'ios-native': found 2 file(s) which are unhandled; explicitly declare them as resources or exclude from the target
+    /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/ExpiryCoreTests/TDD-EVIDENCE.md
+    /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/ExpiryCoreTests/verification.log
+Building for debugging...
+[Computing dependencies]
+[1 / 3] ExpiryCore
+[2 / 4] ExpiryCore
+[3 / 4] ExpiryCore
+[4 / 4] ExpiryCore
+[5 / 7] ExpiryCore
+[7 / 8] ExpiryCore
+[8 / 8] ExpiryCore
+[9 / 11] ExpiryCoreTests-product
+[10 / 12] ExpiryCoreTests-product
+[12 / 12] ExpiryCoreTests-product
+[13 / 13] ExpiryCoreTests-product
+[13 / 15] ExpiryTracker
+[14 / 16] ExpiryTracker
+[15 / 17] ExpiryTracker
+[17 / 17] ExpiryTracker
+[18 / 18] ExpiryTracker
+[19 / 21] AppLogicTests-product
+[20 / 22] AppLogicTests-product
+[22 / 22] AppLogicTests-product
+[23 / 23] AppLogicTests-product
+[27 / 29] ExpiryTracker
+[29 / 30] ExpiryTracker
+[30 / 30] ExpiryTracker
+[31 / 33] ExpiryCoreTests-product
+[33 / 34] ExpiryCoreTests-product
+[35 / 35] ExpiryCoreTests-product
+[36 / 42] AppLogicTests-test-runner
+[38 / 47] ExpiryCoreTests-test-runner
+[39 / 51] ExpiryCoreTests-test-runner
+[41 / 53] ExpiryCoreTests-test-runner
+error: SwiftCompile normal x86_64 /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift failed with a nonzero exit code. Command line:     cd /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker
+    builtin-SwiftPerFileCompile AppLogicTests.swift
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift:20:30: [1;31merror: [1;39mtype 'CSVExport' has no member 'encode'[0;0m
+[0;36m18 |[0;0m     }
+[0;36m19 |[0;0m     func testCSVEncodingProducesUTF8RowsWithCRLFAndQuotedFields() {
+[0;36m20 |[0;0m         let data = [4;39mCSVExport[0;0m.[4;39mencode[0;0m(rows: [["name", "notes"], ["Crème", "a, b\nnext"]])
+   [0;36m|[0;0m                              `- [1;31merror: [1;39mtype 'CSVExport' has no member 'encode'[0;0m
+[0;36m21 |[0;0m         XCTAssertEqual(String(data: data, encoding: .utf8), "\"name\",\"notes\"\r\n\"Crème\",\"a, b\nnext\"\r\n")
+[0;36m22 |[0;0m     }
+Failed frontend command:
+/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-frontend -frontend -c /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/test_anchor.swift -primary-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift -emit-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests.d -emit-const-values-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests.swiftconstvalues -emit-reference-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests.swiftdeps -serialize-diagnostics-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests.dia -target x86_64-unknown-linux-gnu -disable-objc-interop -I /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64 -module-cache-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex -color-diagnostics -Xcc -fcolor-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -swift-version 5 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -external-plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins/testing\#/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-plugin-server -validate-clang-modules-once -clang-build-session-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -enable-anonymous-context-mangled-names -file-compilation-dir /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -Xcc -fno-omit-frame-pointer -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64/include -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources-normal/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name AppLogicTests -package-name ios_native -const-gather-protocols-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests_const_extract_protocols.json -in-process-plugin-server-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/local/lib/swift/host/plugins -parse-as-library -o /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests.o -index-unit-output-path /ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests.o -index-store-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out -index-system-modules
+error: Build failed
+error: fatalError

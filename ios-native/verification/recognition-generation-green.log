@@ -1,0 +1,41 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[3 / 5] ExpiryTracker
+[4 / 6] ExpiryTracker
+[6 / 6] ExpiryTracker
+[8 / 8] ExpiryTracker
+[10 / 12] ExpiryTracker
+[11 / 13] ExpiryTracker
+[12 / 13] ExpiryTracker
+[13 / 13] ExpiryTracker
+[14 / 16] ExpiryCoreTests-test-runner
+[14 / 14] ExpiryCoreTests-test-runner
+[14 / 19] AppLogicTests-test-runner
+[15 / 25] AppLogicTests-product
+[18 / 28] AppLogicTests-product
+[19 / 28] AppLogicTests-product
+[21 / 28] AppLogicTests-product
+[22 / 28] AppLogicTests-product
+[23 / 28] AppLogicTests-product
+[24 / 31] AppLogicTests-test-runner
+[25 / 32] AppLogicTests-test-runner
+[27 / 34] AppLogicTests-test-runner
+[29 / 32] AppLogicTests-test-runner
+[31 / 33] AppLogicTests-test-runner
+[33 / 33] AppLogicTests-test-runner
+Build complete! (10.87 secs)
+Test Suite 'Selected tests' started at 2026-10-15 20:38:06.148
+Test Suite 'Selected tests' passed at 2026-10-15 20:38:06.150
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 20:38:06.231
+Test Suite 'RecognitionGenerationTests' started at 2026-10-15 20:38:06.233
+Test Case 'RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState' started at 2026-10-15 20:38:06.233
+Test Case 'RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState' passed (0.012 seconds)
+Test Case 'RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy' started at 2026-10-15 20:38:06.245
+Test Case 'RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy' passed (0.0 seconds)
+Test Suite 'RecognitionGenerationTests' passed at 2026-10-15 20:38:06.246
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.012 (0.012) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 20:38:06.246
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.012 (0.012) seconds

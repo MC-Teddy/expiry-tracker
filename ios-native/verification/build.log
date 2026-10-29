@@ -1,0 +1,15 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 8] ExpiryTracker
+[6 / 13] ExpiryTracker
+[8 / 13] ExpiryTracker
+[11 / 15] ExpiryTracker-App-product
+[12 / 15] ExpiryTracker-App-product
+[12 / 15] ExpiryTracker
+[13 / 15] ExpiryTracker
+[14 / 15] ExpiryTracker
+[15 / 16] ExpiryTracker-App-product
+Build complete! (14.94 secs)
+Planning...
+Wrote to /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/xtool/ExpiryTracker.app
+bash: initialize_job_control: no job control in background: Bad file descriptor

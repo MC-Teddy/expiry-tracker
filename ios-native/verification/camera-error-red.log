@@ -1,0 +1,42 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 3] AppLogicTests-product
+[2 / 4] AppLogicTests-product
+[4 / 4] AppLogicTests-product
+[5 / 5] AppLogicTests-product
+[6 / 8] AppLogicTests-product
+[8 / 9] AppLogicTests-product
+[9 / 10] AppLogicTests-product
+[10 / 10] AppLogicTests-product
+[11 / 13] AppLogicTests-test-runner
+[12 / 14] AppLogicTests-test-runner
+[13 / 15] AppLogicTests-test-runner
+[15 / 15] AppLogicTests-test-runner
+[16 / 18] AppLogicTests-test-runner
+[18 / 19] AppLogicTests-test-runner
+[19 / 20] AppLogicTests-test-runner
+[20 / 20] AppLogicTests-test-runner
+Build complete! (9.09 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:26:56.590
+Test Suite 'Selected tests' passed at 2026-10-15 21:26:56.592
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:26:56.649
+Test Suite 'EditorCaptureStateTests' started at 2026-10-15 21:26:56.651
+Test Case 'EditorCaptureStateTests.testCameraErrorIsStagedAndDoesNotReplaceDraft' started at 2026-10-15 21:26:56.651
+Test Case 'EditorCaptureStateTests.testCameraErrorIsStagedAndDoesNotReplaceDraft' passed (0.002 seconds)
+Test Case 'EditorCaptureStateTests.testCancellationAndDuplicateResultCannotReplaceDraft' started at 2026-10-15 21:26:56.653
+Test Case 'EditorCaptureStateTests.testCancellationAndDuplicateResultCannotReplaceDraft' passed (0.101 seconds)
+Test Case 'EditorCaptureStateTests.testNoDateIsPersistentInlineWarningAndRetainsPhotoDraft' started at 2026-10-15 21:26:56.754
+Test Case 'EditorCaptureStateTests.testNoDateIsPersistentInlineWarningAndRetainsPhotoDraft' passed (0.002 seconds)
+Test Case 'EditorCaptureStateTests.testOCRFailureKeepsDraftAndAlertUntilAcknowledged' started at 2026-10-15 21:26:56.756
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/EditorCaptureStateTests.swift:8: error: EditorCaptureStateTests.testOCRFailureKeepsDraftAndAlertUntilAcknowledged : XCTAssertNotNil failed - 
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/EditorCaptureStateTests.swift:15: error: EditorCaptureStateTests.testOCRFailureKeepsDraftAndAlertUntilAcknowledged : XCTAssertNotNil failed - Cancellation is not alert acknowledgement
+Test Case 'EditorCaptureStateTests.testOCRFailureKeepsDraftAndAlertUntilAcknowledged' failed (0.0 seconds)
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' started at 2026-10-15 21:26:56.756
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' passed (0.0 seconds)
+Test Suite 'EditorCaptureStateTests' failed at 2026-10-15 21:26:56.757
+	 Executed 5 tests, with 2 failures (0 unexpected) in 0.105 (0.105) seconds
+Test Suite 'Selected tests' failed at 2026-10-15 21:26:56.757
+	 Executed 5 tests, with 2 failures (0 unexpected) in 0.105 (0.105) seconds
+Note: Some test targets reported failures:
+  - AppLogicTests (XCTest)

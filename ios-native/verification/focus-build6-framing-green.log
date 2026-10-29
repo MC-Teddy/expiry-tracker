@@ -1,0 +1,54 @@
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 15] ExpiryTracker
+[3 / 17] ExpiryTracker
+[6 / 18] ExpiryTracker
+[9 / 20] ExpiryTracker
+[10 / 21] ExpiryTracker
+[11 / 21] AppLogicTests-product
+[17 / 27] AppLogicTests-product
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:12:54: [1;33mwarning: [1;39mmutation of captured var 'applied' in concurrently-executing code; this is an error in the Swift 6 language mode[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures\SendableClosureCaptures]8;;\]
+[0;36m10 |[0;0m         var applied = false
+[0;36m11 |[0;0m         queue.async { release.wait() }
+[0;36m12 |[0;0m         queue.async { gate.performIfCurrent(token) { applied = true } }
+   [0;36m|[0;0m                                                      `- [1;33mwarning: [1;39mmutation of captured var 'applied' in concurrently-executing code; this is an error in the Swift 6 language mode[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures\SendableClosureCaptures]8;;\]
+[0;36m13 |[0;0m         gate.suspend()
+[0;36m14 |[0;0m         release.signal()
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+[20 / 26] AppLogicTests-product
+[22 / 27] AppLogicTests-product
+[23 / 27] AppLogicTests-product
+[24 / 27] AppLogicTests-product
+[25 / 27] AppLogicTests-test-runner
+[26 / 28] AppLogicTests-test-runner
+[28 / 30] AppLogicTests-test-runner
+[30 / 31] AppLogicTests-test-runner
+[32 / 32] AppLogicTests-test-runner
+[32 / 38] ExpiryTracker
+[32 / 36] ExpiryCoreTests-test-runner
+[34 / 37] AppLogicTests-test-runner
+[35 / 35] AppLogicTests-test-runner
+Build complete! (10.63 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:49:36.968
+Test Suite 'Selected tests' passed at 2026-10-15 21:49:36.970
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:49:37.052
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-15 21:49:37.054
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-15 21:49:37.054
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.002 seconds)
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' started at 2026-10-15 21:49:37.056
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' started at 2026-10-15 21:49:37.056
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesFirstSwitchOverFactorAndValidatesBounds' started at 2026-10-15 21:49:37.057
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesFirstSwitchOverFactorAndValidatesBounds' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesWideConstituentThresholdNotAnArbitraryZoom' started at 2026-10-15 21:49:37.057
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesWideConstituentThresholdNotAnArbitraryZoom' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' started at 2026-10-15 21:49:37.057
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' passed (0.0 seconds)
+Test Suite 'CameraFocusPolicyTests' passed at 2026-10-15 21:49:37.057
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:49:37.057
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds

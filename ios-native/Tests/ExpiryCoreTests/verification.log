@@ -1,0 +1,37 @@
+Test Suite 'All tests' started at 2026-10-15 20:27:29.787
+Test Suite 'expiry-core-mxyit7tf.xctest' started at 2026-10-15 20:27:29.789
+Test Suite 'ExpiryCoreTests' started at 2026-10-15 20:27:29.789
+Test Case 'ExpiryCoreTests.testCRUDSurvivesRepositoryRestart' started at 2026-10-15 20:27:29.789
+Test Case 'ExpiryCoreTests.testCRUDSurvivesRepositoryRestart' passed (0.091 seconds)
+Test Case 'ExpiryCoreTests.testBackupRoundTripsPhotoAndStableDatesWithoutWriting' started at 2026-10-15 20:27:29.880
+Test Case 'ExpiryCoreTests.testBackupRoundTripsPhotoAndStableDatesWithoutWriting' passed (0.005 seconds)
+Test Case 'ExpiryCoreTests.testInvalidItemsAreRejectedBeforeSaveOrImport' started at 2026-10-15 20:27:29.885
+Test Case 'ExpiryCoreTests.testInvalidItemsAreRejectedBeforeSaveOrImport' passed (0.177 seconds)
+Test Case 'ExpiryCoreTests.testSnapshotEnvelopeRejectsUnsupportedVersionDuplicateIDsAndBadSettings' started at 2026-10-15 20:27:30.062
+Test Case 'ExpiryCoreTests.testSnapshotEnvelopeRejectsUnsupportedVersionDuplicateIDsAndBadSettings' passed (0.003 seconds)
+Test Case 'ExpiryCoreTests.testPhotoAndSerializedBackupByteLimits' started at 2026-10-15 20:27:30.066
+Test Case 'ExpiryCoreTests.testPhotoAndSerializedBackupByteLimits' passed (0.352 seconds)
+Test Case 'ExpiryCoreTests.testCorruptedExistingFileCannotBeSilentlyReplaced' started at 2026-10-15 20:27:30.417
+Test Case 'ExpiryCoreTests.testCorruptedExistingFileCannotBeSilentlyReplaced' passed (0.047 seconds)
+Test Case 'ExpiryCoreTests.testWriteFailurePreservesPreviousBytes' started at 2026-10-15 20:27:30.464
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/ExpiryCoreTests/ExpiryCoreTests.swift:156: ExpiryCoreTests.testWriteFailurePreservesPreviousBytes : Test skipped - Filesystem does not enforce POSIX directory permissions; run this test on APFS or Linux ext4
+Test Case 'ExpiryCoreTests.testWriteFailurePreservesPreviousBytes' skipped (0.025 seconds)
+Test Case 'ExpiryCoreTests.testMalformedImportPreservesExistingSnapshot' started at 2026-10-15 20:27:30.489
+Test Case 'ExpiryCoreTests.testMalformedImportPreservesExistingSnapshot' passed (0.035 seconds)
+Test Case 'ExpiryCoreTests.testIOSStorageProtectionAndBackupExclusion' started at 2026-10-15 20:27:30.524
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/ExpiryCoreTests/ExpiryCoreTests.swift:187: ExpiryCoreTests.testIOSStorageProtectionAndBackupExclusion : Test skipped - Requires an iOS simulator or device; Linux cannot verify Data Protection
+Test Case 'ExpiryCoreTests.testIOSStorageProtectionAndBackupExclusion' skipped (0.0 seconds)
+Test Case 'ExpiryCoreTests.testBackupPreservesSubmillisecondDatePrecision' started at 2026-10-15 20:27:30.525
+Test Case 'ExpiryCoreTests.testBackupPreservesSubmillisecondDatePrecision' passed (0.105 seconds)
+Test Case 'ExpiryCoreTests.testISOExpiryRemainsGregorianForNonGregorianUserCalendar' started at 2026-10-15 20:27:30.630
+Test Case 'ExpiryCoreTests.testISOExpiryRemainsGregorianForNonGregorianUserCalendar' passed (0.001 seconds)
+Test Case 'ExpiryCoreTests.testImportAlsoEnforcesCanonicalSerializedSize' started at 2026-10-15 20:27:30.631
+Test Case 'ExpiryCoreTests.testImportAlsoEnforcesCanonicalSerializedSize' passed (0.296 seconds)
+Test Case 'ExpiryCoreTests.testCalendarDayAndStatusBoundaries' started at 2026-10-15 20:27:30.927
+Test Case 'ExpiryCoreTests.testCalendarDayAndStatusBoundaries' passed (0.001 seconds)
+Test Suite 'ExpiryCoreTests' passed at 2026-10-15 20:27:30.928
+	 Executed 13 tests, with 2 tests skipped and 0 failures (0 unexpected) in 1.139 (1.139) seconds
+Test Suite 'expiry-core-mxyit7tf.xctest' passed at 2026-10-15 20:27:30.928
+	 Executed 13 tests, with 2 tests skipped and 0 failures (0 unexpected) in 1.139 (1.139) seconds
+Test Suite 'All tests' passed at 2026-10-15 20:27:30.928
+	 Executed 13 tests, with 2 tests skipped and 0 failures (0 unexpected) in 1.139 (1.139) seconds

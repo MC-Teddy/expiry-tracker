@@ -1,0 +1,218 @@
+Test Suite 'All tests' started at 2026-10-17 02:08:53.979
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-17 02:08:53.985
+Test Suite 'ExpiryCoreTests' started at 2026-10-17 02:08:53.985
+Test Case 'ExpiryCoreTests.testBackupPreservesSubmillisecondDatePrecision' started at 2026-10-17 02:08:53.985
+Test Case 'ExpiryCoreTests.testBackupPreservesSubmillisecondDatePrecision' passed (0.005 seconds)
+Test Case 'ExpiryCoreTests.testBackupRoundTripsPhotoAndStableDatesWithoutWriting' started at 2026-10-17 02:08:53.990
+Test Case 'ExpiryCoreTests.testBackupRoundTripsPhotoAndStableDatesWithoutWriting' passed (0.001 seconds)
+Test Case 'ExpiryCoreTests.testCRUDSurvivesRepositoryRestart' started at 2026-10-17 02:08:53.991
+Test Case 'ExpiryCoreTests.testCRUDSurvivesRepositoryRestart' passed (0.01 seconds)
+Test Case 'ExpiryCoreTests.testCalendarDayAndStatusBoundaries' started at 2026-10-17 02:08:54.002
+Test Case 'ExpiryCoreTests.testCalendarDayAndStatusBoundaries' passed (0.001 seconds)
+Test Case 'ExpiryCoreTests.testCorruptedExistingFileCannotBeSilentlyReplaced' started at 2026-10-17 02:08:54.002
+Test Case 'ExpiryCoreTests.testCorruptedExistingFileCannotBeSilentlyReplaced' passed (0.006 seconds)
+Test Case 'ExpiryCoreTests.testIOSStorageProtectionAndBackupExclusion' started at 2026-10-17 02:08:54.008
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/ExpiryCoreTests/ExpiryCoreTests.swift:196: ExpiryCoreTests.testIOSStorageProtectionAndBackupExclusion : Test skipped - Requires an iOS simulator or device; Linux cannot verify Data Protection
+Test Case 'ExpiryCoreTests.testIOSStorageProtectionAndBackupExclusion' skipped (0.0 seconds)
+Test Case 'ExpiryCoreTests.testISOExpiryRemainsGregorianForNonGregorianUserCalendar' started at 2026-10-17 02:08:54.008
+Test Case 'ExpiryCoreTests.testISOExpiryRemainsGregorianForNonGregorianUserCalendar' passed (0.001 seconds)
+Test Case 'ExpiryCoreTests.testImportAlsoEnforcesCanonicalSerializedSize' started at 2026-10-17 02:08:54.009
+Test Case 'ExpiryCoreTests.testImportAlsoEnforcesCanonicalSerializedSize' passed (0.346 seconds)
+Test Case 'ExpiryCoreTests.testInvalidItemsAreRejectedBeforeSaveOrImport' started at 2026-10-17 02:08:54.354
+Test Case 'ExpiryCoreTests.testInvalidItemsAreRejectedBeforeSaveOrImport' passed (0.012 seconds)
+Test Case 'ExpiryCoreTests.testMalformedImportPreservesExistingSnapshot' started at 2026-10-17 02:08:54.366
+Test Case 'ExpiryCoreTests.testMalformedImportPreservesExistingSnapshot' passed (0.005 seconds)
+Test Case 'ExpiryCoreTests.testPhotoAndSerializedBackupByteLimits' started at 2026-10-17 02:08:54.371
+Test Case 'ExpiryCoreTests.testPhotoAndSerializedBackupByteLimits' passed (0.238 seconds)
+Test Case 'ExpiryCoreTests.testSnapshotEnvelopeRejectsUnsupportedVersionDuplicateIDsAndBadSettings' started at 2026-10-17 02:08:54.609
+Test Case 'ExpiryCoreTests.testSnapshotEnvelopeRejectsUnsupportedVersionDuplicateIDsAndBadSettings' passed (0.002 seconds)
+Test Case 'ExpiryCoreTests.testWriteFailurePreservesPreviousBytes' started at 2026-10-17 02:08:54.610
+Test Case 'ExpiryCoreTests.testWriteFailurePreservesPreviousBytes' passed (0.004 seconds)
+Test Suite 'ExpiryCoreTests' passed at 2026-10-17 02:08:54.614
+	 Executed 13 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.629 (0.629) seconds
+Test Suite 'PhotoPolicyTests' started at 2026-10-17 02:08:54.614
+Test Case 'PhotoPolicyTests.testAppleImageHeadersAndRepositoryEntryPoints' started at 2026-10-17 02:08:54.615
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/ExpiryCoreTests/PhotoPolicyTests.swift:42: PhotoPolicyTests.testAppleImageHeadersAndRepositoryEntryPoints : Test skipped - Requires Apple ImageIO; metadata bounds still run on Linux
+Test Case 'PhotoPolicyTests.testAppleImageHeadersAndRepositoryEntryPoints' skipped (0.0 seconds)
+Test Case 'PhotoPolicyTests.testMetadataDimensionsRejectCompressedBombsAndMalformedValues' started at 2026-10-17 02:08:54.615
+Test Case 'PhotoPolicyTests.testMetadataDimensionsRejectCompressedBombsAndMalformedValues' passed (0.0 seconds)
+Test Suite 'PhotoPolicyTests' passed at 2026-10-17 02:08:54.615
+	 Executed 2 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-17 02:08:54.615
+	 Executed 15 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.629 (0.629) seconds
+Test Suite 'All tests' passed at 2026-10-17 02:08:54.615
+	 Executed 15 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.629 (0.629) seconds
+Test Suite 'All tests' started at 2026-10-17 02:08:54.704
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-17 02:08:54.705
+Test Suite 'AppLogicTests' started at 2026-10-17 02:08:54.705
+Test Case 'AppLogicTests.testCSVEncodingProducesUTF8RowsWithCRLFAndQuotedFields' started at 2026-10-17 02:08:54.705
+Test Case 'AppLogicTests.testCSVEncodingProducesUTF8RowsWithCRLFAndQuotedFields' passed (0.002 seconds)
+Test Case 'AppLogicTests.testCSVQuotesAndNeutralizesSpreadsheetFormulas' started at 2026-10-17 02:08:54.707
+Test Case 'AppLogicTests.testCSVQuotesAndNeutralizesSpreadsheetFormulas' passed (0.001 seconds)
+Test Case 'AppLogicTests.testOCRAllowsRecognitionSpacingAroundDateSeparators' started at 2026-10-17 02:08:54.707
+Test Case 'AppLogicTests.testOCRAllowsRecognitionSpacingAroundDateSeparators' passed (0.113 seconds)
+Test Case 'AppLogicTests.testOCRDatesRejectImpossibleDaysAndOfferBothRegionalInterpretations' started at 2026-10-17 02:08:54.821
+Test Case 'AppLogicTests.testOCRDatesRejectImpossibleDaysAndOfferBothRegionalInterpretations' passed (0.012 seconds)
+Test Case 'AppLogicTests.testRepositoryErrorsTellUserWhatToFix' started at 2026-10-17 02:08:54.833
+Test Case 'AppLogicTests.testRepositoryErrorsTellUserWhatToFix' passed (0.0 seconds)
+Test Case 'AppLogicTests.testStorageCalendarIsGregorianAndUsesLocalTimeZone' started at 2026-10-17 02:08:54.833
+Test Case 'AppLogicTests.testStorageCalendarIsGregorianAndUsesLocalTimeZone' passed (0.102 seconds)
+Test Suite 'AppLogicTests' passed at 2026-10-17 02:08:54.935
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.23 (0.23) seconds
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-17 02:08:54.935
+Test Case 'CameraFocusPolicyTests.testAutoFocusFallbackAndUnrestrictedRange' started at 2026-10-17 02:08:54.935
+Test Case 'CameraFocusPolicyTests.testAutoFocusFallbackAndUnrestrictedRange' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-17 02:08:54.936
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' started at 2026-10-17 02:08:54.936
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' passed (0.001 seconds)
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' started at 2026-10-17 02:08:54.937
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesFirstSwitchOverFactorAndValidatesBounds' started at 2026-10-17 02:08:54.937
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesFirstSwitchOverFactorAndValidatesBounds' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesWideConstituentThresholdNotAnArbitraryZoom' started at 2026-10-17 02:08:54.937
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesWideConstituentThresholdNotAnArbitraryZoom' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' started at 2026-10-17 02:08:54.938
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' passed (0.0 seconds)
+Test Suite 'CameraFocusPolicyTests' passed at 2026-10-17 02:08:54.938
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'CameraFocusWorkTests' started at 2026-10-17 02:08:54.938
+Test Case 'CameraFocusWorkTests.testFinishingIsTerminalAndRejectsLateSetupOrFocus' started at 2026-10-17 02:08:54.938
+Test Case 'CameraFocusWorkTests.testFinishingIsTerminalAndRejectsLateSetupOrFocus' passed (0.0 seconds)
+Test Case 'CameraFocusWorkTests.testPickerSuspensionStillAllowsSessionPreparationButFinishDoesNot' started at 2026-10-17 02:08:54.938
+Test Case 'CameraFocusWorkTests.testPickerSuspensionStillAllowsSessionPreparationButFinishDoesNot' passed (0.0 seconds)
+Test Case 'CameraFocusWorkTests.testQueuedWorkIsDiscardedWhenCaptureOrPickerSuspendsFocus' started at 2026-10-17 02:08:54.939
+Test Case 'CameraFocusWorkTests.testQueuedWorkIsDiscardedWhenCaptureOrPickerSuspendsFocus' passed (0.001 seconds)
+Test Suite 'CameraFocusWorkTests' passed at 2026-10-17 02:08:54.939
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'EditorCaptureStateTests' started at 2026-10-17 02:08:54.939
+Test Case 'EditorCaptureStateTests.testCameraErrorIsStagedAndDoesNotReplaceDraft' started at 2026-10-17 02:08:54.939
+Test Case 'EditorCaptureStateTests.testCameraErrorIsStagedAndDoesNotReplaceDraft' passed (0.0 seconds)
+Test Case 'EditorCaptureStateTests.testCancellationAndDuplicateResultCannotReplaceDraft' started at 2026-10-17 02:08:54.940
+Test Case 'EditorCaptureStateTests.testCancellationAndDuplicateResultCannotReplaceDraft' passed (0.0 seconds)
+Test Case 'EditorCaptureStateTests.testNoDateIsPersistentInlineWarningAndRetainsPhotoDraft' started at 2026-10-17 02:08:54.940
+Test Case 'EditorCaptureStateTests.testNoDateIsPersistentInlineWarningAndRetainsPhotoDraft' passed (0.007 seconds)
+Test Case 'EditorCaptureStateTests.testOCRFailureKeepsDraftAndAlertUntilAcknowledged' started at 2026-10-17 02:08:54.947
+Test Case 'EditorCaptureStateTests.testOCRFailureKeepsDraftAndAlertUntilAcknowledged' passed (0.0 seconds)
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' started at 2026-10-17 02:08:54.947
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' passed (0.0 seconds)
+Test Case 'EditorCaptureStateTests.testReplacementClearsOldFeedbackOnlyAfterDismissAndRemovalKeepsBarcode' started at 2026-10-17 02:08:54.948
+Test Case 'EditorCaptureStateTests.testReplacementClearsOldFeedbackOnlyAfterDismissAndRemovalKeepsBarcode' passed (0.015 seconds)
+Test Suite 'EditorCaptureStateTests' passed at 2026-10-17 02:08:54.962
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.023 (0.023) seconds
+Test Suite 'ExpiryAutofillTests' started at 2026-10-17 02:08:54.962
+Test Case 'ExpiryAutofillTests.testAmbiguousDatesStayManualAndDuplicateDatesDoNotAddAmbiguity' started at 2026-10-17 02:08:54.962
+Test Case 'ExpiryAutofillTests.testAmbiguousDatesStayManualAndDuplicateDatesDoNotAddAmbiguity' passed (0.045 seconds)
+Test Case 'ExpiryAutofillTests.testClearDateFillsDraftAndKeepsPhotoAndBarcode' started at 2026-10-17 02:08:55.007
+Test Case 'ExpiryAutofillTests.testClearDateFillsDraftAndKeepsPhotoAndBarcode' passed (0.007 seconds)
+Test Case 'ExpiryAutofillTests.testCommonPrintedFormatsAndArabicDigits' started at 2026-10-17 02:08:55.015
+Test Case 'ExpiryAutofillTests.testCommonPrintedFormatsAndArabicDigits' passed (0.066 seconds)
+Test Case 'ExpiryAutofillTests.testExpiryTakesPriorityOverManufacturingOnSameAndSeparateLines' started at 2026-10-17 02:08:55.081
+Test Case 'ExpiryAutofillTests.testExpiryTakesPriorityOverManufacturingOnSameAndSeparateLines' passed (0.036 seconds)
+Test Case 'ExpiryAutofillTests.testLowConfidenceOrManualEditDuringScanKeepsCandidatesWithoutFilling' started at 2026-10-17 02:08:55.117
+Test Case 'ExpiryAutofillTests.testLowConfidenceOrManualEditDuringScanKeepsCandidatesWithoutFilling' passed (0.008 seconds)
+Test Case 'ExpiryAutofillTests.testProductionDateAndIncompleteOrInvalidExpiryNeverFill' started at 2026-10-17 02:08:55.125
+Test Case 'ExpiryAutofillTests.testProductionDateAndIncompleteOrInvalidExpiryNeverFill' passed (0.071 seconds)
+Test Case 'ExpiryAutofillTests.testReplacementRemovalAndFailedScanClearAutofillFeedback' started at 2026-10-17 02:08:55.196
+Test Case 'ExpiryAutofillTests.testReplacementRemovalAndFailedScanClearAutofillFeedback' passed (0.124 seconds)
+Test Case 'ExpiryAutofillTests.testStaleRecognitionCannotFillDateOrClearLatestBusyState' started at 2026-10-17 02:08:55.320
+Test Case 'ExpiryAutofillTests.testStaleRecognitionCannotFillDateOrClearLatestBusyState' passed (0.008 seconds)
+Test Suite 'ExpiryAutofillTests' passed at 2026-10-17 02:08:55.328
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.365 (0.365) seconds
+Test Suite 'PrintedDateFormatsTests' started at 2026-10-17 02:08:55.328
+Test Case 'PrintedDateFormatsTests.testAmbiguousDatesNeedChoiceAndManualDateEntryResolvesReview' started at 2026-10-17 02:08:55.328
+Test Case 'PrintedDateFormatsTests.testAmbiguousDatesNeedChoiceAndManualDateEntryResolvesReview' passed (0.008 seconds)
+Test Case 'PrintedDateFormatsTests.testCommonExpiryHeadingsAndProductionExclusion' started at 2026-10-17 02:08:55.336
+Test Case 'PrintedDateFormatsTests.testCommonExpiryHeadingsAndProductionExclusion' passed (0.249 seconds)
+Test Case 'PrintedDateFormatsTests.testCompactDatesRequireDateLabelsAndDoNotTurnBatchCodesIntoExpiry' started at 2026-10-17 02:08:55.585
+Test Case 'PrintedDateFormatsTests.testCompactDatesRequireDateLabelsAndDoNotTurnBatchCodesIntoExpiry' passed (0.096 seconds)
+Test Case 'PrintedDateFormatsTests.testDotMatrixPhotoSeparatesPAndEAndRetainsRegionalAmbiguity' started at 2026-10-17 02:08:55.682
+Test Case 'PrintedDateFormatsTests.testDotMatrixPhotoSeparatesPAndEAndRetainsRegionalAmbiguity' passed (0.016 seconds)
+Test Case 'PrintedDateFormatsTests.testMonthOnlyFormatsAndLeapYearLastDaysAreReviewOnly' started at 2026-10-17 02:08:55.698
+Test Case 'PrintedDateFormatsTests.testMonthOnlyFormatsAndLeapYearLastDaysAreReviewOnly' passed (0.117 seconds)
+Test Case 'PrintedDateFormatsTests.testMonthSelectionIsExplicitAndInvalidatedWithPhotoRemoval' started at 2026-10-17 02:08:55.815
+Test Case 'PrintedDateFormatsTests.testMonthSelectionIsExplicitAndInvalidatedWithPhotoRemoval' passed (0.009 seconds)
+Test Case 'PrintedDateFormatsTests.testNumericSeparatorsSpacingSingleDigitsAndTimeSuffixes' started at 2026-10-17 02:08:55.823
+Test Case 'PrintedDateFormatsTests.testNumericSeparatorsSpacingSingleDigitsAndTimeSuffixes' passed (0.107 seconds)
+Test Case 'PrintedDateFormatsTests.testOCRDigitCorrectionsAreLabelBoundAndRequireReview' started at 2026-10-17 02:08:55.931
+Test Case 'PrintedDateFormatsTests.testOCRDigitCorrectionsAreLabelBoundAndRequireReview' passed (0.03 seconds)
+Test Case 'PrintedDateFormatsTests.testPrintedMonthNamesWithAndWithoutSpacesAndArabicForms' started at 2026-10-17 02:08:55.961
+Test Case 'PrintedDateFormatsTests.testPrintedMonthNamesWithAndWithoutSpacesAndArabicForms' passed (0.071 seconds)
+Test Case 'PrintedDateFormatsTests.testSellByIsAReviewablePrintedDateAndNotAnAutomaticExpiry' started at 2026-10-17 02:08:56.031
+Test Case 'PrintedDateFormatsTests.testSellByIsAReviewablePrintedDateAndNotAnAutomaticExpiry' passed (0.009 seconds)
+Test Case 'PrintedDateFormatsTests.testShampooPhotoMonthAndYearAreRecognizedWithoutInventingAnAutomaticDay' started at 2026-10-17 02:08:56.040
+Test Case 'PrintedDateFormatsTests.testShampooPhotoMonthAndYearAreRecognizedWithoutInventingAnAutomaticDay' passed (0.027 seconds)
+Test Case 'PrintedDateFormatsTests.testSpatialMatchingWorksWhenVisionListsAllLabelsBeforeAllValues' started at 2026-10-17 02:08:56.068
+Test Case 'PrintedDateFormatsTests.testSpatialMatchingWorksWhenVisionListsAllLabelsBeforeAllValues' passed (0.185 seconds)
+Test Case 'PrintedDateFormatsTests.testStackedLabelsAndConflictingOrDistantLabels' started at 2026-10-17 02:08:56.253
+Test Case 'PrintedDateFormatsTests.testStackedLabelsAndConflictingOrDistantLabels' passed (0.121 seconds)
+Test Case 'PrintedDateFormatsTests.testUnrelatedLowConfidenceTextDoesNotBlockClearExpiryButDateConfidenceDoes' started at 2026-10-17 02:08:56.374
+Test Case 'PrintedDateFormatsTests.testUnrelatedLowConfidenceTextDoesNotBlockClearExpiryButDateConfidenceDoes' passed (0.104 seconds)
+Test Suite 'PrintedDateFormatsTests' passed at 2026-10-17 02:08:56.477
+	 Executed 14 tests, with 0 failures (0 unexpected) in 1.149 (1.149) seconds
+Test Suite 'ProductNameTests' started at 2026-10-17 02:08:56.477
+Test Case 'ProductNameTests.testAmbiguousLowConfidenceTinyAndSingleWordLabelsRequireAChoice' started at 2026-10-17 02:08:56.477
+Test Case 'ProductNameTests.testAmbiguousLowConfidenceTinyAndSingleWordLabelsRequireAChoice' passed (0.037 seconds)
+Test Case 'ProductNameTests.testArabicUnicodeDeduplicationAndPlainTextFallback' started at 2026-10-17 02:08:56.514
+Test Case 'ProductNameTests.testArabicUnicodeDeduplicationAndPlainTextFallback' passed (0.035 seconds)
+Test Case 'ProductNameTests.testBrandAndProductAreSuggestedWithoutPretendingGeometryEstablishesIdentity' started at 2026-10-17 02:08:56.549
+Test Case 'ProductNameTests.testBrandAndProductAreSuggestedWithoutPretendingGeometryEstablishesIdentity' passed (0.014 seconds)
+Test Case 'ProductNameTests.testExistingNamesAndEditsDuringRecognitionAreNeverOverwritten' started at 2026-10-17 02:08:56.563
+Test Case 'ProductNameTests.testExistingNamesAndEditsDuringRecognitionAreNeverOverwritten' passed (0.007 seconds)
+Test Case 'ProductNameTests.testInvalidGeometryAndUnreadableTextAreIgnored' started at 2026-10-17 02:08:56.570
+Test Case 'ProductNameTests.testInvalidGeometryAndUnreadableTextAreIgnored' passed (0.007 seconds)
+Test Case 'ProductNameTests.testLateRecognitionCannotPublishNamesForRemovedOrReplacedPhoto' started at 2026-10-17 02:08:56.577
+Test Case 'ProductNameTests.testLateRecognitionCannotPublishNamesForRemovedOrReplacedPhoto' passed (0.101 seconds)
+Test Case 'ProductNameTests.testMetadataMeasurementsDatesAndNutritionAreNotNames' started at 2026-10-17 02:08:56.678
+Test Case 'ProductNameTests.testMetadataMeasurementsDatesAndNutritionAreNotNames' passed (0.029 seconds)
+Test Case 'ProductNameTests.testProductScanDoesNotWarnAboutMissingDateAndStillExtractsDatesIfPresent' started at 2026-10-17 02:08:56.707
+Test Case 'ProductNameTests.testProductScanDoesNotWarnAboutMissingDateAndStillExtractsDatesIfPresent' passed (0.069 seconds)
+Test Case 'ProductNameTests.testProminentNameCanFillAnEmptyDraft' started at 2026-10-17 02:08:56.776
+Test Case 'ProductNameTests.testProminentNameCanFillAnEmptyDraft' passed (0.015 seconds)
+Test Case 'ProductNameTests.testUnreadableProductAndFailureKeepManualEntryAvailableAndClearOldSuggestions' started at 2026-10-17 02:08:56.792
+Test Case 'ProductNameTests.testUnreadableProductAndFailureKeepManualEntryAvailableAndClearOldSuggestions' passed (0.025 seconds)
+Test Suite 'ProductNameTests' passed at 2026-10-17 02:08:56.816
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.338 (0.338) seconds
+Test Suite 'RecognitionGenerationTests' started at 2026-10-17 02:08:56.816
+Test Case 'RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState' started at 2026-10-17 02:08:56.816
+Test Case 'RecognitionGenerationTests.testDelayedOldCompletionCannotPublishOrClearNewBusyState' passed (0.011 seconds)
+Test Case 'RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy' started at 2026-10-17 02:08:56.828
+Test Case 'RecognitionGenerationTests.testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy' passed (0.0 seconds)
+Test Suite 'RecognitionGenerationTests' passed at 2026-10-17 02:08:56.828
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.011 (0.011) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-17 02:08:56.828
+	 Executed 56 tests, with 0 failures (0 unexpected) in 2.12 (2.12) seconds
+Test Suite 'All tests' passed at 2026-10-17 02:08:56.828
+	 Executed 56 tests, with 0 failures (0 unexpected) in 2.12 (2.12) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.4 (efd8d65801f569d)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 6.4 (efd8d65801f569d)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+Building for debugging...
+[Computing dependencies]
+[1 / 11] ExpiryTracker
+[6 / 16] ExpiryTracker
+[8 / 17] ExpiryTracker
+[9 / 20] AppLogicTests-product
+[11 / 20] ExpiryTracker
+[13 / 22] ExpiryTracker
+[14 / 22] ExpiryTracker
+[15 / 22] AppLogicTests-product
+[16 / 22] AppLogicTests-product
+[17 / 22] AppLogicTests-product
+[17 / 24] AppLogicTests-product
+[18 / 25] AppLogicTests-product
+[19 / 25] AppLogicTests-product
+[20 / 26] AppLogicTests-product
+[21 / 26] AppLogicTests-product
+[22 / 28] AppLogicTests-test-runner
+[23 / 30] AppLogicTests-test-runner
+[25 / 32] AppLogicTests-test-runner
+[27 / 30] AppLogicTests-test-runner
+[28 / 31] AppLogicTests-test-runner
+[30 / 30] AppLogicTests-test-runner
+Build complete! (9.82 secs)

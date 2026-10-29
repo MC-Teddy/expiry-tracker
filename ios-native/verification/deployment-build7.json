@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-16",
+  "version": "1.1.0",
+  "build": "7",
+  "sourceBundleIdentifier": "com.ahasan.expirytracker",
+  "signedBundleIdentifier": "XTL-S7Q3EFT28Y.com.ahasan.expirytracker",
+  "installation": {
+    "tool": "xtool dev run --usb",
+    "exitCode": 0,
+    "provisioningCompleted": true,
+    "signingCompleted": true,
+    "installingCompleted": true,
+    "verifyingCompleted": true
+  },
+  "launch": {
+    "installedExecutableResolved": "ExpiryTracker",
+    "exitCode": 1,
+    "error": "DebugserverClient.Error.unknown",
+    "launched": false
+  },
+  "physicalCameraOCRVerified": false,
+  "note": "Installation completed successfully. The signed identity was confirmed through xtool's existing provisioning identifier and resolved by xtool launch. Automatic opening failed at DebugserverClient; open the app manually. Photo OCR and UI behavior still require on-phone acceptance."
+}

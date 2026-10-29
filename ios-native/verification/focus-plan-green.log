@@ -1,0 +1,32 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[1 / 21] ExpiryTracker
+[4 / 22] ExpiryTracker
+[6 / 24] ExpiryTracker
+[6 / 25] ExpiryTracker
+[12 / 24] ExpiryTracker
+[14 / 25] ExpiryTracker
+[20 / 30] AppLogicTests-product
+[22 / 29] AppLogicTests-product
+[26 / 31] AppLogicTests-product
+[27 / 32] AppLogicTests-product
+[29 / 36] AppLogicTests-test-runner
+[31 / 38] AppLogicTests-test-runner
+[33 / 36] AppLogicTests-test-runner
+[34 / 37] AppLogicTests-test-runner
+[36 / 37] AppLogicTests-test-runner
+[37 / 37] AppLogicTests-test-runner
+Build complete! (7.86 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:39:14.318
+Test Suite 'Selected tests' passed at 2026-10-15 21:39:14.321
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:39:14.389
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-15 21:39:14.391
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-15 21:39:14.391
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.004 seconds)
+Test Suite 'CameraFocusPolicyTests' passed at 2026-10-15 21:39:14.395
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:39:14.395
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.004 (0.004) seconds

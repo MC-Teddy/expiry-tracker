@@ -1,0 +1,67 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[1 / 7] ExpiryCore
+[1 / 6] ExpiryCore
+[1 / 8] ExpiryTracker
+[3 / 13] ExpiryTracker
+[4 / 14] AppLogicTests-product
+error: SwiftCompile normal x86_64 /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift failed with a nonzero exit code. Command line:     cd /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker
+    builtin-SwiftPerFileCompile CameraFocusWorkTests.swift
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:6:20: [1;31merror: [1;39mcannot find 'CameraFocusWork' in scope[0;0m
+ [0;36m4 |[0;0m final class CameraFocusWorkTests: XCTestCase {
+ [0;36m5 |[0;0m     func testQueuedWorkIsDiscardedWhenCaptureOrPickerSuspendsFocus() throws {
+ [0;36m6 |[0;0m         let gate = [4;39mCameraFocusWork[0;0m()
+   [0;36m|[0;0m                    `- [1;31merror: [1;39mcannot find 'CameraFocusWork' in scope[0;0m
+ [0;36m7 |[0;0m         let token = try XCTUnwrap(gate.currentToken())
+ [0;36m8 |[0;0m         let queue = DispatchQueue(label: "focus-test")
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:7:25: [1;31merror: [1;39mgeneric parameter 'T' could not be inferred[0;0m
+ [0;36m5 |[0;0m     func testQueuedWorkIsDiscardedWhenCaptureOrPickerSuspendsFocus() throws {
+ [0;36m6 |[0;0m         let gate = CameraFocusWork()
+ [0;36m7 |[0;0m         let token = try XCTUnwrap(gate.currentToken())
+   [0;36m|[0;0m                         `- [1;31merror: [1;39mgeneric parameter 'T' could not be inferred[0;0m
+ [0;36m8 |[0;0m         let queue = DispatchQueue(label: "focus-test")
+ [0;36m9 |[0;0m         let release = DispatchSemaphore(value: 0)
+
+XCTest.XCTUnwrap:1:13: [1;39mnote: [1;39min call to function 'XCTUnwrap(_:_:file:line:)'[0;0m
+[0;36m1 |[0;0m public func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) throws -> T
+  [0;36m|[0;0m             `- [1;39mnote: [1;39min call to function 'XCTUnwrap(_:_:file:line:)'[0;0m
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:18:27: [1;31merror: [1;39mgeneric parameter 'T' could not be inferred[0;0m
+[0;36m16 |[0;0m         XCTAssertFalse(applied)
+[0;36m17 |[0;0m         XCTAssertNil(gate.currentToken())
+[0;36m18 |[0;0m         let resumed = try XCTUnwrap(gate.resume())
+   [0;36m|[0;0m                           `- [1;31merror: [1;39mgeneric parameter 'T' could not be inferred[0;0m
+[0;36m19 |[0;0m         XCTAssertNotEqual(token, resumed)
+[0;36m20 |[0;0m         XCTAssertFalse(gate.performIfCurrent(token) { XCTFail("Old work must stay invalid after resume") })
+
+XCTest.XCTUnwrap:1:13: [1;39mnote: [1;39min call to function 'XCTUnwrap(_:_:file:line:)'[0;0m
+[0;36m1 |[0;0m public func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) throws -> T
+  [0;36m|[0;0m             `- [1;39mnote: [1;39min call to function 'XCTUnwrap(_:_:file:line:)'[0;0m
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:26:20: [1;31merror: [1;39mcannot find 'CameraFocusWork' in scope[0;0m
+[0;36m24 |[0;0m 
+[0;36m25 |[0;0m     func testFinishingIsTerminalAndRejectsLateSetupOrFocus() throws {
+[0;36m26 |[0;0m         let gate = [4;39mCameraFocusWork[0;0m()
+   [0;36m|[0;0m                    `- [1;31merror: [1;39mcannot find 'CameraFocusWork' in scope[0;0m
+[0;36m27 |[0;0m         let token = try XCTUnwrap(gate.currentToken())
+[0;36m28 |[0;0m         gate.finish()
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift:27:25: [1;31merror: [1;39mgeneric parameter 'T' could not be inferred[0;0m
+[0;36m25 |[0;0m     func testFinishingIsTerminalAndRejectsLateSetupOrFocus() throws {
+[0;36m26 |[0;0m         let gate = CameraFocusWork()
+[0;36m27 |[0;0m         let token = try XCTUnwrap(gate.currentToken())
+   [0;36m|[0;0m                         `- [1;31merror: [1;39mgeneric parameter 'T' could not be inferred[0;0m
+[0;36m28 |[0;0m         gate.finish()
+[0;36m29 |[0;0m         gate.finish()
+
+XCTest.XCTUnwrap:1:13: [1;39mnote: [1;39min call to function 'XCTUnwrap(_:_:file:line:)'[0;0m
+[0;36m1 |[0;0m public func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) throws -> T
+  [0;36m|[0;0m             `- [1;39mnote: [1;39min call to function 'XCTUnwrap(_:_:file:line:)'[0;0m
+Failed frontend command:
+/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-frontend -frontend -c /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/test_anchor.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusPolicyTests.swift -primary-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/CameraFocusWorkTests.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/EditorCaptureStateTests.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift -emit-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.d -emit-const-values-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.swiftconstvalues -emit-reference-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.swiftdeps -serialize-diagnostics-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.dia -target x86_64-unknown-linux-gnu -disable-objc-interop -I /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64 -module-cache-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex -color-diagnostics -Xcc -fcolor-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -swift-version 5 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -external-plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins/testing\#/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-plugin-server -validate-clang-modules-once -clang-build-session-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -enable-anonymous-context-mangled-names -file-compilation-dir /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -Xcc -fno-omit-frame-pointer -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64/include -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources-normal/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name AppLogicTests -package-name ios_native -const-gather-protocols-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests_const_extract_protocols.json -in-process-plugin-server-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/local/lib/swift/host/plugins -parse-as-library -o /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.o -index-unit-output-path /ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/CameraFocusWorkTests.o -index-store-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out -index-system-modules
+[6 / 16] AppLogicTests-product
+error: Build failed
+error: fatalError

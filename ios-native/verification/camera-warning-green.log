@@ -1,0 +1,40 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 3] ExpiryTracker
+[2 / 4] ExpiryTracker
+[4 / 4] ExpiryTracker
+[5 / 5] ExpiryTracker
+[5 / 8] ExpiryTracker
+[6 / 8] ExpiryTracker
+[7 / 9] ExpiryTracker
+[8 / 9] ExpiryTracker
+[9 / 9] ExpiryTracker
+[10 / 10] ExpiryTracker-product
+[10 / 15] ExpiryCoreTests-test-runner
+[11 / 18] AppLogicTests-product
+[13 / 20] AppLogicTests-product
+[14 / 21] AppLogicTests-product
+[16 / 22] AppLogicTests-product
+[17 / 23] AppLogicTests-product
+[18 / 23] AppLogicTests-product
+[19 / 23] AppLogicTests-test-runner
+[20 / 27] AppLogicTests-test-runner
+[22 / 29] AppLogicTests-test-runner
+[24 / 27] AppLogicTests-test-runner
+[25 / 28] AppLogicTests-test-runner
+[27 / 28] AppLogicTests-test-runner
+[28 / 28] AppLogicTests-test-runner
+Build complete! (10.24 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:26:25.070
+Test Suite 'Selected tests' passed at 2026-10-15 21:26:25.072
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:26:25.137
+Test Suite 'EditorCaptureStateTests' started at 2026-10-15 21:26:25.139
+Test Case 'EditorCaptureStateTests.testNoDateIsPersistentInlineWarningAndRetainsPhotoDraft' started at 2026-10-15 21:26:25.139
+Test Case 'EditorCaptureStateTests.testNoDateIsPersistentInlineWarningAndRetainsPhotoDraft' passed (0.002 seconds)
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' started at 2026-10-15 21:26:25.141
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' passed (0.0 seconds)
+Test Suite 'EditorCaptureStateTests' passed at 2026-10-15 21:26:25.141
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:26:25.141
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds

@@ -1,0 +1,35 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 8] ExpiryTracker
+[2 / 9] ExpiryTracker
+[3 / 9] ExpiryTracker
+[4 / 9] ExpiryTracker
+[4 / 11] ExpiryTracker
+[5 / 11] ExpiryTracker
+[7 / 12] ExpiryTracker
+[8 / 12] ExpiryTracker
+[9 / 12] AppLogicTests-product
+[10 / 12] AppLogicTests-test-runner
+[11 / 13] AppLogicTests-test-runner
+[13 / 15] AppLogicTests-test-runner
+[15 / 16] AppLogicTests-test-runner
+[16 / 16] AppLogicTests-test-runner
+[16 / 22] ExpiryCoreTests-product
+[18 / 21] AppLogicTests-test-runner
+[19 / 19] AppLogicTests-test-runner
+Build complete! (7.92 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:40:11.729
+Test Suite 'Selected tests' passed at 2026-10-15 21:40:11.730
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:40:11.799
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-15 21:40:11.801
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-15 21:40:11.801
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.004 seconds)
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' started at 2026-10-15 21:40:11.805
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' started at 2026-10-15 21:40:11.805
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' passed (0.101 seconds)
+Test Suite 'CameraFocusPolicyTests' passed at 2026-10-15 21:40:11.906
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.105 (0.105) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:40:11.906
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.105 (0.105) seconds

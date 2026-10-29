@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-17",
+  "version": "1.1.0",
+  "build": "10",
+  "sourceBundleIdentifier": "com.ahasan.expirytracker",
+  "installationAttempted": true,
+  "installed": true,
+  "signedBundleIdentifier": "XTL-S7Q3EFT28Y.com.ahasan.expirytracker",
+  "installationExitCode": 0,
+  "installationVerificationCompleted": true,
+  "launchAttempted": false,
+  "reason": "xtool completed signing, installation, and device verification over USB.",
+  "physicalOriginalPhotoOCRVerified": false,
+  "note": "Compile and 69 passing Swift tests verify code and transcribed date/geometry fixtures, not Apple Vision's actual recognition output from the original two HEIC photos."
+}

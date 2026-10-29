@@ -1,0 +1,51 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 6] ExpiryTracker
+[2 / 7] ExpiryTracker
+[3 / 7] ExpiryTracker
+[4 / 7] ExpiryTracker
+[5 / 8] ExpiryTracker
+[6 / 11] AppLogicTests-product
+[7 / 12] AppLogicTests-product
+[8 / 13] AppLogicTests-product
+[9 / 14] AppLogicTests-product
+[11 / 15] AppLogicTests-product
+[11 / 17] ExpiryTracker
+[11 / 18] ExpiryTracker
+[12 / 18] ExpiryTracker
+[14 / 19] ExpiryTracker
+[15 / 19] ExpiryTracker
+[16 / 20] AppLogicTests-product
+[17 / 20] AppLogicTests-product
+[18 / 20] AppLogicTests-test-runner
+[19 / 21] AppLogicTests-test-runner
+[21 / 23] AppLogicTests-test-runner
+[23 / 24] AppLogicTests-test-runner
+[25 / 25] AppLogicTests-test-runner
+[25 / 30] ExpiryCoreTests-product
+[25 / 29] AppLogicTests-test-runner
+[28 / 28] AppLogicTests-test-runner
+Build complete! (12.56 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:50:51.763
+Test Suite 'Selected tests' passed at 2026-10-15 21:50:51.765
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:50:51.862
+Test Suite 'CameraFocusPolicyTests' started at 2026-10-15 21:50:51.864
+Test Case 'CameraFocusPolicyTests.testAutoFocusFallbackAndUnrestrictedRange' started at 2026-10-15 21:50:51.864
+Test Case 'CameraFocusPolicyTests.testAutoFocusFallbackAndUnrestrictedRange' passed (0.002 seconds)
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' started at 2026-10-15 21:50:51.866
+Test Case 'CameraFocusPolicyTests.testAutomaticFocusPlanUsesSupportedCapabilitiesAtCenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' started at 2026-10-15 21:50:51.866
+Test Case 'CameraFocusPolicyTests.testCameraSelectionPrefersAutofocusVirtualTripleThenDualWideThenWide' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' started at 2026-10-15 21:50:51.866
+Test Case 'CameraFocusPolicyTests.testConvertedPointIsClampedAndNonfiniteComponentsRecenter' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesFirstSwitchOverFactorAndValidatesBounds' started at 2026-10-15 21:50:51.866
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesFirstSwitchOverFactorAndValidatesBounds' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesWideConstituentThresholdNotAnArbitraryZoom' started at 2026-10-15 21:50:51.867
+Test Case 'CameraFocusPolicyTests.testNormalFramingUsesWideConstituentThresholdNotAnArbitraryZoom' passed (0.0 seconds)
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' started at 2026-10-15 21:50:51.867
+Test Case 'CameraFocusPolicyTests.testUnsupportedCapabilitiesAreNeverRequested' passed (0.0 seconds)
+Test Suite 'CameraFocusPolicyTests' passed at 2026-10-15 21:50:51.867
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:50:51.867
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds

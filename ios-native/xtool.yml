@@ -1,0 +1,6 @@
+version: 1
+bundleID: com.ahasan.expirytracker
+product: ExpiryTracker
+infoPath: Support/Info.plist
+iconPath: Support/AppIcon.png
+skipLSP: true

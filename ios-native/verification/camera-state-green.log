@@ -1,0 +1,35 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[3 / 21] ExpiryTracker
+[4 / 22] ExpiryTracker
+[7 / 25] ExpiryTracker
+[12 / 25] ExpiryTracker
+[13 / 26] AppLogicTests-product
+[15 / 26] AppLogicTests-product
+[20 / 30] ExpiryTracker-product
+[20 / 30] AppLogicTests-product
+[23 / 29] AppLogicTests-product
+[25 / 32] AppLogicTests-product
+[26 / 32] AppLogicTests-product
+[27 / 32] AppLogicTests-product
+[28 / 32] AppLogicTests-test-runner
+[29 / 36] AppLogicTests-test-runner
+[31 / 38] AppLogicTests-test-runner
+[33 / 36] AppLogicTests-test-runner
+[34 / 37] AppLogicTests-test-runner
+[36 / 37] AppLogicTests-test-runner
+[37 / 37] AppLogicTests-test-runner
+Build complete! (8.73 secs)
+Test Suite 'Selected tests' started at 2026-10-15 21:25:31.324
+Test Suite 'Selected tests' passed at 2026-10-15 21:25:31.333
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'Selected tests' started at 2026-10-15 21:25:31.443
+Test Suite 'EditorCaptureStateTests' started at 2026-10-15 21:25:31.444
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' started at 2026-10-15 21:25:31.444
+Test Case 'EditorCaptureStateTests.testPhotoIsStagedUntilCoverDismissesAndConsumedOnce' passed (0.002 seconds)
+Test Suite 'EditorCaptureStateTests' passed at 2026-10-15 21:25:31.446
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Selected tests' passed at 2026-10-15 21:25:31.447
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds

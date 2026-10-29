@@ -1,0 +1,5 @@
+.build/
+.swiftpm/
+xtool/
+verification/
+Sources/ExpiryTracker/Resources/Web/

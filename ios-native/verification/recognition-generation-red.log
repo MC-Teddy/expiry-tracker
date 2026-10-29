@@ -1,0 +1,47 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 211]
+[Planning deferred tasks]
+[3 / 5] AppLogicTests-product
+[4 / 6] AppLogicTests-product
+[6 / 6] AppLogicTests-product
+[7 / 7] AppLogicTests-product
+error: SwiftCompile normal x86_64 /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift failed with a nonzero exit code. Command line:     cd /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker
+    builtin-SwiftPerFileCompile RecognitionGenerationTests.swift
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:6:26: [1;31merror: [1;39mcannot find 'RecognitionGeneration' in scope[0;0m
+ [0;36m4 |[0;0m final class RecognitionGenerationTests: XCTestCase {
+ [0;36m5 |[0;0m     func testDelayedOldCompletionCannotPublishOrClearNewBusyState() async throws {
+ [0;36m6 |[0;0m         var generation = [4;39mRecognitionGeneration[0;0m()
+   [0;36m|[0;0m                          `- [1;31merror: [1;39mcannot find 'RecognitionGeneration' in scope[0;0m
+ [0;36m7 |[0;0m         let old = generation.begin()
+ [0;36m8 |[0;0m         let delayed = Task {
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:14:25: [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m12 |[0;0m         let latest = generation.begin()
+[0;36m13 |[0;0m         var visible = "new photo"
+[0;36m14 |[0;0m         let stale = try await delayed.value
+   [0;36m|[0;0m                         `- [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m15 |[0;0m         if generation.finish(stale) { visible = "old result or failure" }
+[0;36m16 |[0;0m         XCTAssertEqual(visible, "new photo")
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:14:21: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m12 |[0;0m         let latest = generation.begin()
+[0;36m13 |[0;0m         var visible = "new photo"
+[0;36m14 |[0;0m         let stale = try await delayed.value
+   [0;36m|[0;0m                     `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m15 |[0;0m         if generation.finish(stale) { visible = "old result or failure" }
+[0;36m16 |[0;0m         XCTAssertEqual(visible, "new photo")
+
+/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift:24:26: [1;31merror: [1;39mcannot find 'RecognitionGeneration' in scope[0;0m
+[0;36m22 |[0;0m 
+[0;36m23 |[0;0m     func testRemovalInvalidatesBothSuccessAndFailureAndClearsBusy() {
+[0;36m24 |[0;0m         var generation = [4;39mRecognitionGeneration[0;0m()
+   [0;36m|[0;0m                          `- [1;31merror: [1;39mcannot find 'RecognitionGeneration' in scope[0;0m
+[0;36m25 |[0;0m         let removed = generation.begin()
+[0;36m26 |[0;0m         generation.invalidate()
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+Failed frontend command:
+/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-frontend -frontend -c /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/test_anchor.swift /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/AppLogicTests.swift -primary-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/Tests/AppLogicTests/RecognitionGenerationTests.swift -emit-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/RecognitionGenerationTests.d -emit-const-values-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/RecognitionGenerationTests.swiftconstvalues -emit-reference-dependencies-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/RecognitionGenerationTests.swiftdeps -serialize-diagnostics-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/RecognitionGenerationTests.dia -target x86_64-unknown-linux-gnu -disable-objc-interop -I /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64 -module-cache-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex -color-diagnostics -Xcc -fcolor-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -swift-version 5 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -external-plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins/testing\#/home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/bin/swift-plugin-server -validate-clang-modules-once -clang-build-session-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -enable-anonymous-context-mangled-names -file-compilation-dir /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker -Xcc -fno-omit-frame-pointer -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Products/Debug-linux-x86_64/include -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources-normal/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources/x86_64 -Xcc -I/mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name AppLogicTests -package-name ios_native -const-gather-protocols-file /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/AppLogicTests_const_extract_protocols.json -in-process-plugin-server-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/lib/swift/host/plugins -plugin-path /home/mr_an/.local/share/swiftly/toolchains/6.4.0/usr/local/lib/swift/host/plugins -parse-as-library -o /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out/Intermediates.noindex/ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/RecognitionGenerationTests.o -index-unit-output-path /ExpiryTracker.build/Debug-linux-x86_64/AppLogicTests-p.build/Objects-normal/x86_64/RecognitionGenerationTests.o -index-store-path /mnt/c/Users/mr_an/Desktop/Dev/Claude/expiry-tracker/ios-native/.build/out -index-system-modules
+error: Build failed
+error: fatalError

@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Expiry Tracker" />
+  <meta name="theme-color" content="#201e1d" id="meta-theme-color" />
+
+  
+  
+  <title>Expiry Tracker</title>
+  <style>
+    @font-face {font-family:'Archivo';font-style:normal;font-weight:100 900;font-display:swap;src:url('assets/Archivo.ttf') format('truetype');}
+    /* ══ MODERNIST TOKENS — flat, architectural, single red accent, zero radius ══ */
+    :root {   /* light Modernist */
+      --page-bg:   #f3f2f2; --card-bg:  #eae9e9;
+      --accent:    #ec3013; --accent-lt:#fff2ef;
+      --text:      #201e1d; --text-2:   rgba(32,30,29,.55);
+      --border:    rgba(32,30,29,.16); --muted-bg: #eae9e9;
+      --green:     #2f9e5e; --green-lt: rgba(47,158,94,.14);
+      --yellow:    #b4791a; --yellow-lt:rgba(242,183,60,.20);
+      --red:       #dd2b0f; --red-lt:   rgba(236,48,19,.12);
+      --shadow:    0 12px 32px rgba(45,43,43,.14);
+      --shadow-sm: 0 1px 2px rgba(45,43,43,.12);
+      --pattern-dot: transparent;
+      --r: 0px;
+      --st: env(safe-area-inset-top,0px);
+      --sb: env(safe-area-inset-bottom,0px);
+    }
+    [data-theme="dark"] {   /* dark Modernist (primary — the redesign) */
+      --page-bg:   #201e1d; --card-bg:  #302d2c;
+      --accent:    #ec3013; --accent-lt:rgba(236,48,19,.16);
+      --text:      #f8f4f4; --text-2:   rgba(248,244,244,.55);
+      --border:    rgba(245,242,240,.14); --muted-bg:#302d2c;
+      --green:     #3fb972; --green-lt: rgba(63,185,114,.16);
+      --yellow:    #f2b73c; --yellow-lt:rgba(242,183,60,.18);
+      --red:       #ff5b4a; --red-lt:   rgba(255,59,48,.18);
+      --shadow:    0 12px 32px rgba(0,0,0,.45);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+      --pattern-dot: transparent;
+    }
+    /* ══ GLASS THEME (glassmorphism) ══ */
+    [data-theme="glass"] {
+      --page-bg:  #0E2137; --card-bg:  rgba(255,255,255,.12); --muted-bg: rgba(255,255,255,.10);
+      --accent:   #FF4D8D; --accent-lt: rgba(255,77,141,.24);
+      --text:     #FBFCFF; --text-2:   rgba(223,234,247,.82);   /* higher-contrast sub-text */
+      --border:   rgba(255,255,255,.22);
+      --green:    #43E0A8; --green-lt:  rgba(67,224,168,.18);
+      --yellow:   #FFCF63; --yellow-lt: rgba(255,207,99,.18);
+      --red:      #FF8585; --red-lt:    rgba(255,133,133,.18);
+      --shadow:   0 8px 32px rgba(4,12,28,.40);
+      --shadow-sm:0 2px 10px rgba(4,12,28,.24);
+    }
+    /* Subtle dot-grid pattern + two gradients (pink glow over a blue→teal wash).
+       The faint dots stay low-contrast and get softly blurred under the frosted
+       panels, adding depth without distraction. */
+    [data-theme="glass"] body,
+    [data-theme="glass"] .login-wrap {
+      background:
+        radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.6px) 0 0 / 24px 24px,          /* pattern */
+        radial-gradient(115% 90% at 85% 8%, rgba(255,77,141,.26) 0%, rgba(255,77,141,0) 55%),   /* gradient 2: pink */
+        linear-gradient(150deg, #0E2137 0%, #123A4D 52%, #0C4A45 100%);                          /* gradient 1: blue → teal */
+      background-attachment: fixed;
+    }
+    /* Match accent-glow shadows to the magenta accent */
+    [data-theme="glass"] .btn-cta,
+    [data-theme="glass"] .login-btn { box-shadow: 0 2px 14px rgba(255,77,141,.45); }
+    /* Frost the primary surfaces — shared by all glass themes ([data-theme^="glass"]) */
+    [data-theme^="glass"] .top-bar,
+    [data-theme^="glass"] .bottom-nav,
+    [data-theme^="glass"] .bao-card,
+    [data-theme^="glass"] .sync-bar,
+    [data-theme^="glass"] .login-card,
+    [data-theme^="glass"] .ocr-row {
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid var(--border);
+    }
+    [data-theme^="glass"] .top-bar,
+    [data-theme^="glass"] .bottom-nav { background: rgba(255,255,255,.07); }
+    [data-theme^="glass"] .bao-card,
+    [data-theme^="glass"] .login-card { box-shadow: 0 8px 32px rgba(8,4,40,.35), inset 0 1px 0 rgba(255,255,255,.14); }
+    /* Translucent controls */
+    [data-theme^="glass"] input:not([type=range]),
+    [data-theme^="glass"] textarea,
+    [data-theme^="glass"] .bao-input { background: rgba(255,255,255,.08); color: var(--text); border-color: var(--border); }
+    [data-theme^="glass"] input::placeholder,
+    [data-theme^="glass"] textarea::placeholder { color: rgba(223,234,247,.55); }
+    [data-theme^="glass"] .icon-btn { background: rgba(255,255,255,.12); }
+
+    /* ══ GLASS 2 — warm muted-orange accent over a purple/plum backdrop ══ */
+    [data-theme="glassmorph2"] {
+      --page-bg:  #1B1533; --card-bg:  rgba(255,255,255,.11); --muted-bg: rgba(255,255,255,.09);
+      --accent:   #FF9D4D; --accent-lt: rgba(255,157,77,.24);   /* orange at same brightness as glass pink */
+      --text:     #FBF7FF; --text-2:   rgba(232,224,244,.82);
+      --border:   rgba(255,255,255,.20);
+      --green:    #46DDA6; --green-lt:  rgba(70,221,166,.18);
+      --yellow:   #F2C25A; --yellow-lt: rgba(242,194,90,.18);
+      --red:      #FF8080; --red-lt:    rgba(255,128,128,.18);
+      --shadow:   0 8px 32px rgba(12,4,30,.42);
+      --shadow-sm:0 2px 10px rgba(12,4,30,.26);
+    }
+    /* More-visible dot pattern + two gradients (amber glow over an indigo→plum wash) */
+    [data-theme="glassmorph2"] body,
+    [data-theme="glassmorph2"] .login-wrap {
+      background:
+        radial-gradient(rgba(255,255,255,.09) 1.2px, transparent 1.8px) 0 0 / 22px 22px,          /* pattern (more visible) */
+        radial-gradient(115% 90% at 84% 8%, rgba(230,140,70,.24) 0%, rgba(230,140,70,0) 55%),     /* gradient 2: amber */
+        linear-gradient(150deg, #1B1533 0%, #331B47 52%, #452247 100%);                            /* gradient 1: indigo → plum */
+      background-attachment: fixed;
+    }
+    [data-theme="glassmorph2"] .btn-cta,
+    [data-theme="glassmorph2"] .login-btn { box-shadow: 0 2px 14px rgba(255,157,77,.48); }
+
+    /* ══ BASE ══ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; background: radial-gradient(var(--pattern-dot, transparent) 1px, transparent 1.6px) 0 0 / 24px 24px, var(--page-bg); background-attachment: fixed; color: var(--text); min-height: 100dvh; -webkit-font-smoothing: antialiased; transition: background .3s, color .3s; }
+    /* Light theme: slightly bigger, more visible dots */
+    [data-theme="light"] body,
+    [data-theme="light"] .login-wrap { background: radial-gradient(var(--pattern-dot) 1.7px, transparent 2.6px) 0 0 / 26px 26px, var(--page-bg); background-attachment: fixed; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ══ SHELL ══ */
+    #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }  /* fixed viewport height: only .main-scroll scrolls, top bar + bottom nav stay pinned (100vh fallback for old browsers) */
+    .top-bar, .sync-bar, .bottom-nav { flex-shrink: 0; }
+
+    /* ══ TOP BAR ══ */
+    .top-bar { background: var(--card-bg); border-bottom: 1.5px solid var(--border); padding: calc(var(--st) + 12px) 16px 12px; display: flex; align-items: center; position: sticky; top: 0; z-index: 80; box-shadow: var(--shadow-sm); }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+    .brand-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(232,97,58,.3); }
+    .bc-titlewrap { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+    .bc-section { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bc-version { font-size: 10px; font-weight: 600; color: var(--text-2); letter-spacing: .4px; }
+    .top-actions { display: flex; align-items: center; gap: 8px; margin-left: 10px; flex-shrink: 0; }
+    .badge-pill { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: none; cursor: pointer; box-shadow: 0 2px 8px rgba(232,97,58,.35); }
+    .badge-pill:active { opacity: .8; }
+    .icon-btn { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 5px 8px; font-size: 14px; color: var(--text-2); line-height: 1; }
+    .btn-cta { background: var(--accent); color: #fff; border: none; border-radius: 9px; padding: 7px 14px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 10px rgba(232,97,58,.35); white-space: nowrap; }
+    .btn-cta:active { opacity: .85; transform: scale(.96); }
+
+    /* ══ SCROLL ══ */
+    .main-scroll { flex: 1; overflow-y: auto; padding: 14px 14px 0; -webkit-overflow-scrolling: touch; }
+
+    /* ══ PAGES ══ */
+    .page { display: none; padding-bottom: 16px; }
+    .page.active { display: block; }
+    #camera-page.active { display: flex; flex-direction: column; }
+
+    /* ══ CARD ══ */
+    .bao-card { background: var(--card-bg); border-radius: var(--r); border: 1.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 12px; }
+    .bao-card-head { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1.5px solid var(--border); }
+    .head-icon { font-size: 15px; }
+    .head-title { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; letter-spacing: -.1px; }
+    .head-action { font-size: 20px; color: var(--accent); background: none; border: none; line-height: 1; padding: 2px; }
+    .head-badge { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .head-badge.green { background: var(--green); }
+
+    /* ══ STATS ══ */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .stat-cell { padding: 20px 12px 16px; text-align: center; border-right: 1.5px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 0; cursor: pointer; transition: background .15s; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell:active { opacity: .75; }
+    .stat-cell.s-red.active    { background: var(--red-lt);    box-shadow: inset 0 -3px 0 var(--red); }
+    .stat-cell.s-yellow.active { background: var(--yellow-lt); box-shadow: inset 0 -3px 0 var(--yellow); }
+    .stat-cell.s-green.active  { background: var(--green-lt);  box-shadow: inset 0 -3px 0 var(--green); }
+    /* Dashboard list scrolls internally when it gets long (mobile); desktop tuned below */
+    #dashboard-list { max-height: 58vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .stat-icon-wrap { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 8px; }
+    .stat-num { font-size: 30px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+    .stat-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; margin-top: 5px; }
+    .stat-sub { font-size: 11px; margin-top: 4px; font-weight: 500; }
+    .stat-cell.s-red  .stat-icon-wrap { background: var(--red-lt); }
+    .stat-cell.s-yellow .stat-icon-wrap { background: var(--yellow-lt); }
+    .stat-cell.s-green  .stat-icon-wrap { background: var(--green-lt); }
+    .stat-cell.s-red  .stat-num { color: var(--red); }
+    .stat-cell.s-yellow .stat-num { color: var(--yellow); }
+    .stat-cell.s-green  .stat-num { color: var(--green); }
+    .stat-cell.s-red  .stat-lbl { color: var(--red); }
+    .stat-cell.s-yellow .stat-lbl { color: var(--yellow); }
+    .stat-cell.s-green  .stat-lbl { color: var(--green); }
+    .stat-cell.s-red  .stat-sub { color: var(--text-2); }
+    .stat-cell.s-yellow .stat-sub { color: var(--text-2); }
+    .stat-cell.s-green  .stat-sub { color: var(--text-2); }
+
+    /* ══ ITEM LIST ══ */
+    .bao-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1.5px solid var(--border); position: relative; }
+    .bao-item:last-child { border-bottom: none; }
+    .bao-item:active { background: var(--muted-bg); }
+    .item-num { font-size: 12px; font-weight: 700; color: var(--text-2); width: 18px; flex-shrink: 0; }
+    .item-thumb { width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0; cursor: pointer; background: var(--muted-bg); background-size: cover; background-position: center; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .item-thumb::after { content: '📷'; font-size: 14px; opacity: .28; }   /* placeholder when no photo */
+    .item-thumb.has-photo::after { content: none; }
+    .item-thumb:active { opacity: .7; }
+    /* Package-photo button (scan form) */
+    .full-photo-btn { display: block; width: calc(100% - 32px); margin: 0 16px 12px; padding: 11px; border: 1.5px dashed var(--border); border-radius: 12px; background: var(--muted-bg); color: var(--text-2); font-size: 13px; font-weight: 600; }
+    .full-photo-btn.added { border-style: solid; border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+    /* Export button on All Items page */
+    .list-export-btn { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 4px 9px; font-size: 12px; font-weight: 700; color: var(--text-2); margin-left: 6px; white-space: nowrap; flex-shrink: 0; }
+    /* Image lightbox */
+    #lightbox { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.86); align-items: center; justify-content: center; padding: 24px; }
+    #lightbox.show { display: flex; }
+    .lb-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 96vw; }
+    .lb-stage { position: relative; display: flex; align-items: center; justify-content: center; visibility: hidden; }
+    #lightbox-img { max-width: 96vw; max-height: 74vh; border-radius: 12px; box-shadow: 0 12px 48px rgba(0,0,0,.6); object-fit: contain; background: #111; }
+    .lb-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45); border: 1.5px solid rgba(255,255,255,.35); color: #fff; font-size: 26px; line-height: 1; display: none; align-items: center; justify-content: center; cursor: pointer; }
+    .lb-prev { left: 10px; } .lb-next { right: 10px; }
+    .lb-arrow.disabled { opacity: .3; pointer-events: none; }
+    .lb-caption { color: #fff; font-size: 13px; font-weight: 600; opacity: .9; }
+    .lb-dots { display: flex; gap: 7px; }
+    .lb-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.35); }
+    .lb-dot.on { background: #fff; }
+    .lb-empty { color: #fff; font-size: 14px; opacity: .85; padding: 40px 20px; }
+    .lb-close { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; border: none; font-size: 17px; z-index: 2001; }
+    .lb-spin { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,.25); border-top-color: #fff; border-radius: 50%; animation: lbspin .8s linear infinite; }
+    @keyframes lbspin { to { transform: rotate(360deg); } }
+    /* Edit item button on rows */
+    .item-edit-btn { background: none; border: none; font-size: 15px; padding: 4px; opacity: .6; flex-shrink: 0; cursor: pointer; }
+    .item-edit-btn:active { opacity: 1; }
+    /* Edit modal */
+    #edit-modal { display: none; position: fixed; inset: 0; z-index: 1500; background: rgba(0,0,0,.5); align-items: center; justify-content: center; padding: 20px; }
+    #edit-modal.show { display: flex; }
+    .edit-card { width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 16px; }
+    .edit-head { display: flex; align-items: center; margin-bottom: 12px; }
+    .edit-title { font-size: 15px; font-weight: 800; color: var(--text); flex: 1; }
+    .edit-close { background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; width: 30px; height: 30px; color: var(--text-2); font-size: 15px; cursor: pointer; }
+    .edit-photo-btn { display: block; width: 100%; margin-top: 10px; padding: 11px; border: 1.5px dashed var(--border); border-radius: 12px; background: var(--muted-bg); color: var(--text-2); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .edit-save { display: block; width: 100%; margin-top: 14px; padding: 13px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.15); }
+    /* Confirm dialog */
+    #confirm-modal { display: none; position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,.55); align-items: center; justify-content: center; padding: 24px; }
+    #confirm-modal.show { display: flex; }
+    .confirm-card { width: 100%; max-width: 340px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 22px 20px; text-align: center; }
+    .confirm-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .confirm-msg { font-size: 13px; color: var(--text-2); line-height: 1.55; margin-bottom: 20px; }
+    .confirm-actions { display: flex; gap: 10px; }
+    .confirm-actions button { flex: 1; padding: 12px; border-radius: 11px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .confirm-cancel { background: var(--muted-bg); color: var(--text); border: 1.5px solid var(--border); }
+    .confirm-ok { border: none; background: var(--muted-bg); color: var(--text); }
+    .confirm-ok.danger { background: var(--red); color: #fff; }
+    /* Undo snackbar */
+    #undo-bar { display: none; position: fixed; left: 50%; bottom: calc(70px + var(--sb)); transform: translateX(-50%); z-index: 2200; background: #2B2424; color: #fff; border-radius: 12px; padding: 11px 8px 11px 15px; box-shadow: 0 6px 24px rgba(0,0,0,.35); align-items: center; gap: 12px; font-size: 13px; font-weight: 600; max-width: calc(100vw - 28px); }
+    #undo-bar.show { display: flex; }
+    #undo-bar button { background: none; border: none; color: #FF9D6B; font-weight: 800; font-size: 13px; cursor: pointer; padding: 4px 10px; }
+    .item-thumb, .item-body { touch-action: pan-y; }
+    /* Barcode scanner */
+    .barcode-btn { display: inline-flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 7px 11px; font-size: 12px; font-weight: 700; color: var(--text-2); cursor: pointer; margin: 8px 16px 0; }
+    #barcode-modal { display: none; position: fixed; inset: 0; z-index: 1600; background: rgba(0,0,0,.6); align-items: center; justify-content: center; padding: 20px; }
+    #barcode-modal.show { display: flex; }
+    .bc-card { width: 100%; max-width: 400px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 16px; }
+    .bc-video-wrap { position: relative; border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 4/3; margin-bottom: 10px; }
+    #bc-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bc-frame { position: absolute; inset: 24% 12%; border: 2px solid rgba(255,255,255,.85); border-radius: 10px; box-shadow: 0 0 0 9999px rgba(0,0,0,.22); }
+    .bc-status { font-size: 12.5px; color: var(--text-2); text-align: center; margin-bottom: 10px; min-height: 16px; line-height: 1.4; }
+    .bc-manual { display: flex; gap: 8px; }
+    .bc-manual input { flex: 1; }
+    .item-body { flex: 1; min-width: 0; }
+    .item-name-text { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+    .item-tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; flex-shrink: 0; letter-spacing: .1px; white-space: nowrap; }
+    .tag-red    { background: var(--red-lt);    color: var(--red); }
+    .tag-yellow { background: var(--yellow-lt); color: var(--yellow); }
+    .tag-green  { background: var(--green-lt);  color: var(--green); }
+    .tag-orange { background: var(--accent-lt); color: var(--accent); }
+    .item-del-btn { background: none; border: none; color: var(--text-2); font-size: 16px; padding: 4px; opacity: .5; flex-shrink: 0; }
+    .item-del-btn:active { opacity: 1; }
+    .bao-item::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; }
+    .bao-item.s-red::before    { background: var(--red); }
+    .bao-item.s-yellow::before { background: var(--yellow); }
+    .bao-item.s-orange::before { background: var(--accent); }
+    .bao-item.s-green::before  { background: var(--green); }
+
+    /* ══ ADD BAR ══ */
+    .add-bar { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-top: 1.5px solid var(--border); background: var(--muted-bg); }
+    .add-bar-label { font-size: 13px; color: var(--text-2); font-weight: 500; }
+    .add-bar-btn { display: flex; align-items: center; gap: 5px; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(232,97,58,.3); }
+    .add-bar-btn:active { opacity: .85; }
+
+    /* ══ FORM ══ */
+    .field-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-bottom: 1.5px solid var(--border); }
+    .field-row:last-child { border-bottom: none; }
+    .field-label { font-size: 13px; color: var(--text-2); font-weight: 500; width: 110px; flex-shrink: 0; padding-top: 2px; }
+    .field-value { flex: 1; min-width: 0; }
+    .bao-input { width: 100%; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 14px; color: var(--text); outline: none; -webkit-appearance: none; transition: border-color .2s, box-shadow .2s; font-family: inherit; }
+    .bao-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-lt); }
+    .bao-input::placeholder { color: var(--text-2); }
+    .bao-name-input { width: 100%; background: none; border: none; border-bottom: 1.5px solid var(--border); padding: 12px 16px; font-size: 15px; font-weight: 500; color: var(--text); outline: none; font-family: inherit; }
+    .bao-name-input::placeholder { color: var(--text-2); }
+    .toggle-group { display: flex; flex-direction: column; gap: 10px; }
+    .toggle-row { display: flex; align-items: center; gap: 10px; }
+    .toggle-label { font-size: 13px; color: var(--text); font-weight: 500; flex: 1; }
+    .toggle { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .toggle-track { position: absolute; inset: 0; background: #D0C8C2; border-radius: 24px; transition: background .2s; cursor: pointer; }
+    .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.25); transition: transform .2s; pointer-events: none; }
+    .toggle input:checked ~ .toggle-track { background: var(--accent); }
+    .toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
+    [data-theme="dark"] .toggle-track { background: #4A4040; }
+    .emoji-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-opt { padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--muted-bg); font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; transition: border-color .12s, background .12s, color .12s; }
+    .cat-opt.on { border-color: var(--accent); background: var(--accent-lt); color: var(--accent); }
+
+    /* ══ CAMERA ══ */
+    .camera-wrap { border-radius: var(--r); overflow: hidden; background: #1A1210; aspect-ratio: 4/3; position: relative; margin-bottom: 12px; box-shadow: var(--shadow); }
+    #video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #canvas { display: none; }
+    #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .scan-frame-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .scan-frame { width: 68%; height: 34%; border: 2px solid rgba(232,97,58,.9); border-radius: 14px; box-shadow: 0 0 0 9999px rgba(0,0,0,.45); }
+    .scan-label { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.9); }
+    .cam-btn-row { display: flex; gap: 10px; margin-bottom: 12px; }
+    .cam-btn { flex: 1; padding: 13px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; transition: opacity .15s, transform .1s; }
+    .cam-btn:active { transform: scale(.97); opacity: .85; }
+    .cam-btn.primary { background: var(--accent); color: #fff; box-shadow: 0 3px 12px rgba(232,97,58,.35); }
+    .cam-btn.secondary { background: var(--card-bg); color: var(--text); border: 1.5px solid var(--border); box-shadow: var(--shadow-sm); }
+    .ocr-row { display: none; align-items: center; gap: 10px; padding: 11px 16px; background: var(--card-bg); border-radius: 12px; border: 1.5px solid var(--border); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+    .ocr-row.show { display: flex; }
+    .spin { width: 18px; height: 18px; border: 2.5px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #ocr-text { font-size: 13px; color: var(--text-2); font-weight: 500; }
+    #date-choices { display: none; padding: 2px 16px 12px; }
+    .dc-hint { font-size: 11px; color: var(--text-2); font-weight: 600; margin-bottom: 7px; }
+    .dc-chip { display: inline-block; margin: 0 7px 7px 0; padding: 7px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--muted-bg); color: var(--text); font-size: 12.5px; font-weight: 700; }
+    .dc-chip.on { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    #add-form { display: none; }
+    #add-form.show { display: block; }
+
+    /* ══ SYNC BAR ══ */
+    .sync-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--card-bg); border-top: 1.5px solid var(--border); }
+    .sync-bar-left { display: flex; align-items: center; gap: 6px; }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+    .sync-label { font-size: 11px; color: var(--text-2); font-weight: 500; }
+    .sync-refresh { display: flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+
+    /* ══ BOTTOM NAV ══ */
+    .bottom-nav { display: flex; background: var(--card-bg); border-top: 1.5px solid var(--border); padding-bottom: var(--sb); }
+    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 4px 8px; background: none; border: none; color: var(--text-2); font-size: 11px; font-weight: 600; transition: color .15s; }
+    .nav-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn.active { color: var(--accent); }
+    .nav-btn.active svg { stroke: var(--accent); }
+
+    /* ══ NOTIFY ══ */
+    #notify-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--accent); color: #fff; padding: 14px 20px; text-align: center; font-size: 14px; font-weight: 600; z-index: 9999; transform: translateY(-100%); transition: transform .3s cubic-bezier(.34,1.56,.64,1); border-radius: 0 0 14px 14px; }
+    #notify-bar.show { transform: translateY(0); }
+
+    /* ══ EMPTY STATE ══ */
+    .empty { text-align: center; padding: 32px 20px; color: var(--text-2); }
+    .empty .e-icon { font-size: 40px; margin-bottom: 10px; opacity: .65; }
+    .empty p { font-size: 14px; line-height: 1.6; }
+
+    /* ══ SETTINGS ══ */
+    .settings-section { padding: 14px 16px; border-bottom: 1.5px solid var(--border); }
+    .settings-section:last-child { border-bottom: none; }
+    .settings-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-2); margin-bottom: 12px; }
+    .settings-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .settings-row:last-child { margin-bottom: 0; }
+    .settings-lbl { font-size: 13px; color: var(--text); font-weight: 500; flex: 1; }
+    .settings-val { font-size: 13px; font-weight: 800; color: var(--accent); min-width: 34px; text-align: right; }
+    .range-input { -webkit-appearance: none; width: 100%; height: 4px; border-radius: 4px; background: var(--border); outline: none; margin-top: 6px; cursor: pointer; }
+    .range-input::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 2px 6px rgba(232,97,58,.4); }
+    .range-input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-2); margin-top: 4px; }
+    .cat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .cat-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 8px 5px 12px; }
+    .cat-chip-name { font-size: 12px; font-weight: 500; color: var(--text); }
+    .cat-chip-del { background: none; border: none; color: var(--text-2); font-size: 15px; cursor: pointer; padding: 0 0 0 3px; line-height: 1; }
+    .cat-chip-del:hover { color: var(--red); }
+    .cat-add-row { display: flex; gap: 8px; }
+    .cat-name-in { flex: 1; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--text); outline: none; font-family: inherit; }
+    .cat-name-in:focus { border-color: var(--accent); }
+    .cat-add-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; }
+    .danger-btn { background: var(--red-lt); color: var(--red); border: 1.5px solid var(--red); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; }
+    .ghost-btn { background: var(--muted-bg); color: var(--text-2); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 600; }
+
+    /* ══ DASHBOARD: hide add-bar + All Good on mobile ══ */
+    #dashboard-page .add-bar { display: none; }
+    #good-card { display: none; }
+
+    /* ══════════════════════════════════════
+       DESKTOP  ≥ 768px
+    ══════════════════════════════════════ */
+    @media (min-width: 768px) {
+      /* Fixed top bar */
+      .top-bar { position: fixed; left: 0; right: 0; top: 0; z-index: 90; height: 62px; padding: 0 24px; display: flex; align-items: center; }
+
+      /* App shell */
+      #app { padding-left: 220px; padding-top: 62px; }
+
+      /* Left sidebar */
+      .bottom-nav { position: fixed; left: 0; top: 62px; bottom: 54px; width: 220px; flex-direction: column; align-items: stretch; justify-content: flex-start; border-top: none; border-right: 1.5px solid var(--border); padding: 8px 0 0; gap: 0; overflow-y: auto; z-index: 80; background: var(--card-bg); box-shadow: 2px 0 16px rgba(43,36,36,.07); }
+      .nav-btn { flex-direction: row; justify-content: flex-start; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; margin: 2px 8px; font-size: 13px; font-weight: 600; flex: none; width: calc(100% - 16px); }
+      .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+      .nav-btn.active { background: var(--accent-lt); }
+
+      /* Sync bar at bottom of sidebar */
+      .sync-bar { position: fixed; left: 0; bottom: 0; width: 220px; height: 54px; border-right: 1.5px solid var(--border); border-top: 1.5px solid var(--border); background: var(--card-bg); z-index: 80; padding: 0 12px; }
+      .sync-bar-left { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 1px; }
+      .sync-label { font-size: 10px; line-height: 1.3; }
+      .sync-refresh { padding: 4px 8px; font-size: 11px; flex-shrink: 0; }
+
+      /* Main content */
+      .main-scroll { padding: 24px 28px 24px; }
+
+      /* Hide add-bar on dashboard & list pages on desktop */
+      #list-page .add-bar { display: none; }
+      /* (dashboard add-bar already hidden globally above) */
+
+      /* Show All Good card on desktop */
+      #good-card { display: block; }
+
+      /* Cards: compact, content-sized, max 450px */
+      .bao-card { max-width: 450px; margin-bottom: 16px; }
+
+      /* Item lists: scrollable */
+      .bao-item-list { max-height: 260px; overflow-y: auto; }
+      #dashboard-list { max-height: 320px; }   /* desktop: keep it compact in the two-column layout */
+
+      /* Dashboard layout */
+      #dashboard-page.active { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+      /* Stats card full width */
+      #dashboard-page.active > .bao-card:first-child { max-width: 100%; width: 100%; }
+
+      /* Bigger stats on desktop */
+      .stat-num { font-size: 36px; }
+      .stat-icon-wrap { width: 44px; height: 44px; font-size: 20px; }
+
+      /* Camera */
+      .camera-wrap { aspect-ratio: 16/9; max-height: 54vh; max-width: 450px; }
+      .cam-btn-row { max-width: 450px; }
+      .ocr-row { max-width: 450px; }
+
+      /* Field labels wider */
+      .field-label { width: 130px; }
+
+      /* Settings page cards */
+      #settings-page.active { display: block; }
+
+      /* Notification offset */
+      #notify-bar { left: 220px; border-radius: 0 0 14px 14px; }
+    }
+    /* ── Login gate ── */
+    .login-wrap { display:none; position:fixed; inset:0; z-index:1000; align-items:center; justify-content:center; padding:24px; background:var(--page-bg); }
+    .login-card { width:100%; max-width:360px; background:var(--card-bg); border:1.5px solid var(--border); border-radius:22px; padding:34px 26px 28px; box-shadow:var(--shadow); text-align:center; }
+    .login-logo { font-size:46px; line-height:1; }
+    .login-title { font-size:22px; font-weight:800; margin:10px 0 2px; color:var(--text); letter-spacing:-.3px; }
+    .login-sub { font-size:13px; color:var(--text-2); margin-bottom:24px; }
+    .login-card input { width:100%; box-sizing:border-box; padding:13px 14px; margin-bottom:11px; border:1.5px solid var(--border); border-radius:12px; font-size:15px; background:var(--muted-bg); color:var(--text); }
+    .login-card input:focus { outline:none; border-color:var(--accent); }
+    .login-btn { width:100%; padding:13px; border:none; border-radius:12px; background:var(--accent); color:#fff; font-size:15px; font-weight:700; cursor:pointer; margin-top:5px; box-shadow:0 2px 12px rgba(232,97,58,.35); }
+    .login-btn:disabled { opacity:.6; cursor:default; }
+    .login-error { font-size:12.5px; color:#dc2626; margin-top:13px; min-height:16px; line-height:1.45; }
+    .login-toggle { margin-top:18px; font-size:12.5px; color:var(--text-2); }
+    .login-toggle a { color:var(--accent); text-decoration:none; font-weight:600; cursor:pointer; }
+    #app { display:none; }
+    .acct-email { font-size:12px; color:var(--text-2); word-break:break-all; }
+    .logout-btn { margin-top:10px; background:var(--muted-bg); color:var(--text); border:1.5px solid var(--border); border-radius:10px; padding:9px 14px; font-size:13px; font-weight:600; cursor:pointer; }
+    /* Segmented toggle (settings) */
+    .seg { display: inline-flex; background: var(--muted-bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 3px; gap: 3px; }
+    .seg-btn { border: none; background: none; color: var(--text-2); font-size: 13px; font-weight: 700; padding: 8px 15px; border-radius: 9px; cursor: pointer; }
+    .seg-btn.on { background: var(--card-bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+
+    /* ══════════════════════════════════════════════════════════════
+       PRO DESKTOP CARD DESIGN — opt-in (data-cards="pro"), desktop only
+       Elevated, hover-lift cards; gradient stat tiles; roomier rows.
+    ══════════════════════════════════════════════════════════════ */
+    @media (min-width: 768px) {
+      /* Balanced, centered composition (no more stretched-to-1920 whitespace) */
+      [data-cards="pro"] .main-scroll { padding: 32px 40px 44px; }
+      [data-cards="pro"] #dashboard-page.active,
+      [data-cards="pro"] #list-page,
+      [data-cards="pro"] #manual-page,
+      [data-cards="pro"] #settings-page,
+      [data-cards="pro"] #camera-page { max-width: 1180px; margin: 0 auto; }
+      [data-cards="pro"] #dashboard-page.active { gap: 22px; }
+
+      /* Elevated cards with hover lift */
+      [data-cards="pro"] .bao-card {
+        max-width: none; border: none; border-radius: 22px; overflow: hidden;
+        box-shadow: 0 1px 2px rgba(20,14,10,.04), 0 18px 44px -14px rgba(20,14,10,.15);
+        transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s cubic-bezier(.2,.8,.2,1);
+      }
+      [data-cards="pro"] .bao-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 1px 2px rgba(20,14,10,.05), 0 30px 66px -16px rgba(20,14,10,.24);
+      }
+      [data-cards="pro"] .bao-card-head { padding: 18px 22px; }
+      [data-cards="pro"] .head-title { font-size: 15px; letter-spacing: -.3px; }
+      [data-cards="pro"] .head-icon { font-size: 18px; }
+
+      /* Overview → three gradient stat tiles */
+      [data-cards="pro"] #dashboard-page.active > .bao-card:first-child { width: 100%; }
+      [data-cards="pro"] .stats-grid { gap: 16px; padding: 18px; }
+      [data-cards="pro"] .stat-cell {
+        border-right: none; border-radius: 18px; padding: 24px 22px 22px;
+        align-items: flex-start; text-align: left; gap: 3px; position: relative;
+        transition: transform .2s cubic-bezier(.2,.8,.2,1);
+      }
+      [data-cards="pro"] .stat-cell:hover { transform: translateY(-2px); }
+      [data-cards="pro"] .stat-cell.s-red    { background: linear-gradient(155deg, var(--red-lt), transparent 150%); }
+      [data-cards="pro"] .stat-cell.s-yellow { background: linear-gradient(155deg, var(--yellow-lt), transparent 150%); }
+      [data-cards="pro"] .stat-cell.s-green  { background: linear-gradient(155deg, var(--green-lt), transparent 150%); }
+      [data-cards="pro"] .stat-icon-wrap { position: absolute; top: 20px; right: 20px; width: 42px; height: 42px; font-size: 20px; margin: 0; }
+      [data-cards="pro"] .stat-num { font-size: 46px; font-weight: 800; letter-spacing: -1.6px; line-height: 1; margin: 4px 0 2px; }
+      [data-cards="pro"] .stat-lbl { font-size: 11.5px; text-transform: uppercase; letter-spacing: .7px; font-weight: 800; }
+      [data-cards="pro"] .stat-sub { font-size: 12px; opacity: .85; }
+
+      /* List cards grow to fill the row */
+      [data-cards="pro"] #dashboard-page.active > .bao-card:not(:first-child) { flex: 1 1 380px; }
+
+      /* Roomier, hover-highlighted rows (no hard separators) */
+      [data-cards="pro"] .bao-item-list { padding: 6px 10px; max-height: 440px; }
+      [data-cards="pro"] .bao-item {
+        border-bottom: none; border-radius: 14px; padding: 12px 12px; margin-bottom: 2px;
+        transition: background .15s;
+      }
+      [data-cards="pro"] .bao-item:hover { background: var(--muted-bg); }
+
+      /* A touch more depth on primary buttons */
+      [data-cards="pro"] .btn-cta { box-shadow: 0 4px 16px rgba(232,97,58,.4); }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       MODERNIST redesign layer — flat surfaces, 2px section rules,
+       1px row rules, Archivo, flush-left labels, zero radius,
+       traffic-light status. Applies over the whole app.
+       ══════════════════════════════════════════════════════════════ */
+    body { font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    .bao-card,.bao-card-head,.bao-item,.bao-item-list,.item-thumb,.item-tag,.btn-cta,.add-bar,.add-bar-btn,
+    .bao-input,.bao-name-input,.cat-opt,.seg,.seg-btn,.icon-btn,.brand-icon,.badge-pill,.list-export-btn,
+    .field-value,.top-bar,.bottom-nav,.nav-btn,.full-photo-btn,.edit-card,.confirm-card,.bc-card,.dc-chip,
+    .edit-photo-btn,.edit-save,.edit-close,.danger-btn,.cat-add-btn,.cat-name-in,.cat-chip,.stats-grid,
+    .login-card,.login-btn,.login-card input,.confirm-cancel,.confirm-ok,.bc-manual input { border-radius: 0 !important; }
+
+    .top-bar { background: var(--page-bg); border-bottom: 2px solid var(--border); box-shadow: none; }
+    .brand-icon { background: transparent !important; color: var(--accent); box-shadow: none; width: 24px; height: 24px; }
+    .bc-section { font-weight: 800; }
+    /* Lucide icon coloring/alignment */
+    .head-icon { color: var(--accent); display: inline-flex; align-items: center; font-size: 0; }
+    .btn-cta { display: inline-flex; align-items: center; gap: 6px; }
+    .stat-cell.s-red .stat-icon-wrap    { color: var(--red); }
+    .stat-cell.s-yellow .stat-icon-wrap { color: var(--yellow); }
+    .stat-cell.s-green .stat-icon-wrap  { color: var(--green); }
+    .stat-icon-wrap { display: inline-flex; }
+    /* Row action buttons — flat zero-radius blocks, amber edit / red delete */
+    .item-edit-btn, .item-del-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; padding: 0; flex-shrink: 0; opacity: 1;
+      background: transparent; border: 1px solid var(--border); border-radius: 0;
+      cursor: pointer; transition: background .12s, border-color .12s, color .12s; }
+    .item-edit-btn { color: var(--yellow); border-color: color-mix(in srgb, var(--yellow) 42%, transparent); }
+    .item-del-btn  { color: var(--red);    border-color: color-mix(in srgb, var(--red) 42%, transparent); }
+    .item-edit-btn:hover, .item-edit-btn:active { background: var(--yellow); color: var(--page-bg); border-color: var(--yellow); }
+    .item-del-btn:hover,  .item-del-btn:active  { background: var(--red);    color: var(--page-bg); border-color: var(--red); }
+    .barcode-btn, .full-photo-btn, .list-export-btn, .cat-add-btn, .add-bar-btn, .edit-save, .danger-btn,
+    .edit-photo-btn, .cam-btn, .ghost-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .edit-title { display: inline-flex; align-items: center; gap: 7px; }
+    .login-logo { color: var(--accent); display: inline-flex; align-items: center; justify-content: center; }
+    .e-icon { color: var(--text-2); display: inline-flex; align-items: center; justify-content: center; }
+    .icon-btn { background: transparent; border: none; }
+    .badge-pill { box-shadow: none; }
+    .btn-cta { background: var(--accent); color: var(--page-bg); box-shadow: none; font-weight: 800; }
+    /* Segmented sort control (All Items) */
+    .sort-seg { display: flex; margin: 12px 16px 0; border: 1px solid var(--border); }
+    .sort-seg-btn { flex: 1; appearance: none; background: transparent; border: none; cursor: pointer;
+      font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 12px; letter-spacing: .01em;
+      color: var(--text-2); padding: 9px 8px; text-align: center; transition: background .12s, color .12s; }
+    .sort-seg-btn + .sort-seg-btn { border-left: 1px solid var(--border); }
+    .sort-seg-btn:hover:not(.on) { background: color-mix(in srgb, var(--text) 7%, transparent); }
+    .sort-seg-btn.on { background: var(--accent); color: var(--page-bg); }
+
+    .bao-card { background: transparent; border: none; box-shadow: none; margin-bottom: 0; border-top: 2px solid var(--border); overflow: visible; }
+    #dashboard-page > .bao-card:first-child, #list-page > .bao-card:first-child, #manual-page > .bao-card:first-child, #settings-page > .bao-card:first-child { border-top: none; }
+    .bao-card-head { border-bottom: 2px solid var(--border); padding: 16px 20px; }
+    .head-title { font-weight: 800; letter-spacing: .01em; }
+    .add-bar { background: transparent; border-top: 2px solid var(--border); }
+    .add-bar-btn { background: var(--accent); color: var(--page-bg); box-shadow: none; font-weight: 800; }
+
+    .stats-grid { border-top: 2px solid var(--border); border-bottom: 2px solid var(--border); }
+    .stat-cell { text-align: left; align-items: flex-start; padding: 16px 14px 15px; border-top: 3px solid transparent; }
+    .stat-cell.s-red { border-top-color: var(--red); }
+    .stat-cell.s-yellow { border-top-color: var(--yellow); }
+    .stat-cell.s-green { border-top-color: var(--green); }
+    .stat-icon-wrap { background: transparent !important; width: auto; height: auto; margin-bottom: 8px; font-size: 15px; }
+    .stat-num { font-size: 28px; letter-spacing: -1px; }
+    .stat-lbl { color: var(--text-2) !important; margin-top: 3px; }
+    .stat-sub { color: var(--text-2); }
+
+    .bao-item { border-bottom: 1px solid var(--border); }
+    .item-num { display: none; }
+    /* photography prints black & white in this system */
+    .item-thumb.has-photo { filter: grayscale(1) contrast(1.06); }
+    #lightbox-img { filter: grayscale(1) contrast(1.05); }
+    .item-name-text { font-weight: 600; }
+    .item-tag { font-weight: 800; letter-spacing: .01em; }
+    .tag-red    { background: var(--red-lt);    color: var(--red); }
+    .tag-orange { background: var(--red-lt);    color: var(--red); }
+    .tag-yellow { background: var(--yellow-lt); color: var(--yellow); }
+    .tag-green  { background: transparent; color: var(--green); padding-left: 0; }
+
+    .bottom-nav { background: var(--page-bg); border-top: 2px solid var(--border); box-shadow: none; }
+    .nav-btn { font-weight: 700; }
+
+    .bao-input,.bao-name-input,.cat-name-in,.login-card input,.bc-manual input { background: var(--muted-bg); border: 1px solid var(--border); }
+    .cat-opt { font-weight: 700; }
+    .cat-opt.on { background: var(--accent); color: var(--page-bg); border-color: var(--accent); }
+    .full-photo-btn,.edit-photo-btn { border-style: solid; }
+    .edit-save,.cat-add-btn,.login-btn { color: var(--page-bg); font-weight: 800; box-shadow: none; }
+    .edit-card,.confirm-card,.bc-card { box-shadow: var(--shadow); }
+  </style>
+</head>
+<body>
+<div class="login-wrap" id="mode-picker" style="display:flex;z-index:3000"><div class="login-card"><div class="login-title">Expiry Tracker</div><p class="login-sub">Choose where your items live. You can switch in Settings. Data is never copied automatically.</p><button class="login-btn" id="choose-local" onclick="Mobile.selectMode('local')">On this iPhone — no account</button><button class="logout-btn" id="choose-cloud" onclick="Mobile.selectMode('cloud')">Online — sign in</button><p id="mode-error" class="login-error" role="alert"></p></div></div>
+
+<!-- ════ LOGIN GATE ════ -->
+<div class="login-wrap" id="login-page">
+  <div class="login-card">
+    <div class="login-logo" data-ic="package" data-ic-size="34"></div>
+    <div class="login-title">Expiry Tracker</div>
+    <div class="login-sub" id="login-sub">Admin sign in</div>
+    <input id="login-email" type="email" placeholder="Email" autocomplete="username" />
+    <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-toggle">Accounts are created by the administrator.</div><button class="ghost-btn" onclick="Mobile.pickMode()">Change storage mode</button>
+  </div>
+</div>
+
+<div id="notify-bar"></div>
+
+<!-- ════ IMAGE LIGHTBOX (gallery) ════ -->
+<div id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div class="lb-inner">
+    <div id="lightbox-loading" class="lb-spin"></div>
+    <div class="lb-stage">
+      <button class="lb-arrow lb-prev" onclick="lbGo(-1)" aria-label="Previous photo">‹</button>
+      <img id="lightbox-img" alt="photo" />
+      <button class="lb-arrow lb-next" onclick="lbGo(1)" aria-label="Next photo">›</button>
+    </div>
+    <div id="lightbox-empty" class="lb-empty">No photo saved for this item yet.</div>
+    <div class="lb-caption" id="lb-caption"></div>
+    <div class="lb-dots" id="lb-dots"></div>
+  </div>
+</div>
+
+<!-- ════ EDIT ITEM ════ -->
+<div id="edit-modal" onclick="if(event.target===this)closeEdit()">
+  <div class="edit-card">
+    <div class="edit-head"><span class="edit-title"><span data-ic="pencil" data-ic-size="17"></span>Edit Item</span><button class="edit-close" onclick="closeEdit()">✕</button></div>
+    <input class="bao-name-input" id="edit-name" type="text" placeholder="Product name…" list="products-list" autocomplete="off" />
+    <button type="button" class="barcode-btn" onclick="openBarcodeScanner('edit-name')"><span data-ic="tag" data-ic-size="13"></span>Scan barcode</button>
+    <div class="field-row"><span class="field-label">Expiry Date</span><div class="field-value"><input class="bao-input" type="date" id="edit-date" /></div></div>
+    <div class="field-row"><span class="field-label">Category</span><div class="field-value"><div class="emoji-row" id="emoji-picker-edit"></div></div></div>
+    <button type="button" class="edit-photo-btn" id="edit-datephoto-btn" onclick="editPickPhoto(false)"><span data-ic="calendar" data-ic-size="14"></span>Replace expiry date photo</button>
+    <button type="button" class="edit-photo-btn" id="edit-pkgphoto-btn" onclick="editPickPhoto(true)"><span data-ic="package" data-ic-size="14"></span>Add / replace package photo</button>
+    <button class="edit-save" onclick="saveEdit()">Save changes</button>
+  </div>
+</div>
+
+<input type="file" id="full-photo-input" accept="image/*" capture="environment" style="display:none" onchange="onFullPhotoSelected(this)" />
+
+<!-- ════ BARCODE SCANNER ════ -->
+<div id="barcode-modal" onclick="if(event.target===this)closeBarcode()">
+  <div class="bc-card">
+    <div class="edit-head"><span class="edit-title"><span data-ic="scan-line" data-ic-size="17"></span>Scan Barcode</span><button class="edit-close" onclick="closeBarcode()">✕</button></div>
+    <div class="bc-video-wrap" id="bc-video-wrap">
+      <video id="bc-video" playsinline muted></video>
+      <div class="bc-frame"></div>
+    </div>
+    <div class="bc-status" id="bc-status">Point the camera at a barcode…</div>
+    <div class="bc-manual">
+      <input class="bao-input" id="bc-input" type="text" inputmode="numeric" placeholder="…or type the barcode number" onkeydown="if(event.key==='Enter')lookupBarcode(this.value)" />
+      <button class="cat-add-btn" onclick="lookupBarcode(document.getElementById('bc-input').value)">Look up</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ UNDO SNACKBAR ════ -->
+<div id="undo-bar">
+  <span id="undo-text"></span>
+  <button onclick="undoDelete()">Undo</button>
+</div>
+
+<!-- ════ CONFIRM DIALOG ════ -->
+<div id="confirm-modal" onclick="if(event.target===this)confirmNo()">
+  <div class="confirm-card">
+    <div class="confirm-title" id="confirm-title">Are you sure?</div>
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="confirmNo()">Cancel</button>
+      <button class="confirm-ok danger" id="confirm-ok" onclick="confirmYes()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- ════ TOP BAR ════ -->
+  <header class="top-bar">
+    <div class="breadcrumb">
+      <div class="brand-icon" data-ic="package" data-ic-size="24"></div>
+      <div class="bc-titlewrap">
+        <span class="bc-section">Expiry Tracker</span>
+        <span class="bc-version" id="app-version-top"></span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="badge-pill" id="alert-badge" onclick="showAttention()" title="Items needing attention">!</span>
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
+      <button class="btn-cta" onclick="switchTab('camera')"><span data-ic="camera" data-ic-size="15"></span>Scan</button>
+    </div>
+  </header>
+
+  <!-- ════ MAIN SCROLL ════ -->
+  <div class="main-scroll">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="page active" id="dashboard-page">
+
+      <!-- Stats card — spans full width on desktop -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="zap"></span>
+          <span class="head-title">Overview</span>
+          <span style="font-size:11px;color:var(--text-2);font-weight:500;" id="overview-date"></span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-cell s-red" id="stat-expired" onclick="setDashFilter('expired')" title="Show expired">
+            <div class="stat-icon-wrap" data-ic="triangle-alert" data-ic-size="17"></div>
+            <div class="stat-num" id="count-expired">0</div>
+            <div class="stat-lbl">Expired</div>
+            <div class="stat-sub" id="sub-expired">Loading…</div>
+          </div>
+          <div class="stat-cell s-yellow" id="stat-soon" onclick="setDashFilter('soon')" title="Show expiring soon">
+            <div class="stat-icon-wrap" data-ic="clock" data-ic-size="17"></div>
+            <div class="stat-num" id="count-soon">0</div>
+            <div class="stat-lbl">Expiring Soon</div>
+            <div class="stat-sub" id="sub-soon">Loading…</div>
+          </div>
+          <div class="stat-cell s-green" id="stat-good" onclick="setDashFilter('good')" title="Show good">
+            <div class="stat-icon-wrap" data-ic="circle-check" data-ic-size="17"></div>
+            <div class="stat-num" id="count-ok">0</div>
+            <div class="stat-lbl">Good</div>
+            <div class="stat-sub" id="sub-ok">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Needs Attention card -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" id="dash-list-icon" data-ic="triangle-alert"></span>
+          <span class="head-title" id="dash-list-title">Needs Attention</span>
+          <span class="head-badge" id="attention-badge" style="display:none;">0</span>
+        </div>
+        <div class="bao-item-list" id="dashboard-list">
+          <div class="empty"><div class="e-icon">⏳</div><p>Loading…</p></div>
+        </div>
+        <div class="add-bar">
+          <span class="add-bar-label">Add New Item</span>
+          <button class="add-bar-btn" onclick="switchTab('manual')">Add ＋</button>
+        </div>
+      </div>
+
+      <!-- Good Items card (desktop only, second column) -->
+      <div class="bao-card" id="good-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="circle-check"></span>
+          <span class="head-title">All Good</span>
+          <span class="head-badge green" id="good-badge" style="display:none;">0</span>
+        </div>
+        <div class="bao-item-list" id="good-list">
+          <div class="empty"><div class="e-icon" data-ic="package" data-ic-size="26"></div><p>Loading…</p></div>
+        </div>
+        <div class="add-bar">
+          <span class="add-bar-label">View All Items</span>
+          <button class="add-bar-btn" onclick="switchTab('list')" style="background:var(--green);box-shadow:0 2px 8px rgba(0,190,124,.3);">View →</button>
+        </div>
+      </div>
+
+    </div><!-- /dashboard -->
+
+    <!-- ── SCAN ── -->
+    <div class="page" id="camera-page">
+      <div class="camera-wrap">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+        <img id="preview-img" alt="" />
+        <div class="scan-frame-overlay" id="scan-overlay"><div class="scan-frame"></div></div>
+        <div class="scan-label" id="scan-hint">Aim at the expiry date label</div>
+      </div>
+      <div class="cam-btn-row">
+        <button class="cam-btn primary" id="capture-btn" onclick="capturePhoto()"><span data-ic="camera" data-ic-size="16"></span>Capture</button>
+        <button class="cam-btn secondary" id="retake-btn" onclick="retakePhoto()" style="display:none;"><span data-ic="rotate-ccw" data-ic-size="16"></span>Retake</button>
+      </div>
+      <div class="ocr-row" id="ocr-status">
+        <div class="spin"></div>
+        <span id="ocr-text">Reading expiry date…</span>
+      </div>
+      <div id="add-form">
+        <div class="bao-card">
+          <div class="bao-card-head">
+            <span class="head-icon" data-ic="package"></span>
+            <span class="head-title">Confirm Item Details</span>
+            <button class="head-action" onclick="retakePhoto()">↺</button>
+          </div>
+          <input class="bao-name-input" type="text" id="scan-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
+          <button type="button" class="barcode-btn" onclick="openBarcodeScanner('scan-name')"><span data-ic="tag" data-ic-size="13"></span>Scan barcode</button>
+          <div class="field-row">
+            <span class="field-label">Expiry Date</span>
+            <div class="field-value"><input class="bao-input" type="date" id="scan-date" /></div>
+          </div>
+          <div id="date-choices"></div>
+          <div class="field-row">
+            <span class="field-label">Category</span>
+            <div class="field-value"><div class="emoji-row" id="emoji-picker-scan"></div></div>
+          </div>
+          <button type="button" class="full-photo-btn" id="full-photo-btn" onclick="pickFullPhoto('')"><span data-ic="package" data-ic-size="14"></span>Add package photo (optional)</button>
+          <div class="add-bar">
+            <span class="add-bar-label">Save item</span>
+            <button class="add-bar-btn" onclick="saveScannedItem()"><span data-ic="check" data-ic-size="15"></span>Save</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /camera -->
+
+    <!-- ── MANUAL ADD ── -->
+    <div class="page" id="manual-page">
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="file-plus"></span>
+          <span class="head-title">New Item</span>
+        </div>
+        <input class="bao-name-input" type="text" id="manual-name" placeholder="Enter product name…" list="products-list" autocomplete="off" />
+        <button type="button" class="barcode-btn" onclick="openBarcodeScanner('manual-name')"><span data-ic="tag" data-ic-size="13"></span>Scan barcode</button>
+        <div class="field-row">
+          <span class="field-label">Expiry Date</span>
+          <div class="field-value"><input class="bao-input" type="date" id="manual-date" /></div>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Options</span>
+          <div class="field-value">
+            <div class="toggle-group">
+              <div class="toggle-row">
+                <label class="toggle">
+                  <input type="checkbox" id="toggle-alert" checked />
+                  <div class="toggle-track"></div><div class="toggle-thumb"></div>
+                </label>
+                <span class="toggle-label">Enable expiry alerts</span>
+              </div>
+              <div class="toggle-row">
+                <label class="toggle">
+                  <input type="checkbox" id="toggle-notes" />
+                  <div class="toggle-track"></div><div class="toggle-thumb"></div>
+                </label>
+                <span class="toggle-label">Show in dashboard</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field-row" style="border-bottom:none;">
+          <span class="field-label">Category</span>
+          <div class="field-value"><div class="emoji-row" id="emoji-picker-manual"></div></div>
+        </div>
+        <button type="button" class="full-photo-btn" id="manual-photo-btn" onclick="manualPickPhoto(false)"><span data-ic="camera" data-ic-size="14"></span>Add photo (optional)</button>
+        <button type="button" class="full-photo-btn" id="manual-pkg-btn" onclick="manualPickPhoto(true)"><span data-ic="package" data-ic-size="14"></span>Add package photo (optional)</button>
+        <!-- Add bar visible on both mobile AND desktop for this page -->
+        <div class="add-bar">
+          <span class="add-bar-label">Save Item</span>
+          <button class="add-bar-btn" onclick="saveManualItem()">Add ＋</button>
+        </div>
+      </div>
+    </div><!-- /manual -->
+
+    <!-- ── ALL ITEMS ── -->
+    <div class="page" id="list-page">
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="list"></span>
+          <span class="head-title">All Items</span>
+          <button class="list-export-btn" onclick="exportToExcel()" title="Export all items to CSV"><span data-ic="download" data-ic-size="14"></span>CSV</button>
+        </div>
+        <div style="padding:12px 16px 0;">
+          <input class="bao-input" id="search-input" type="search" placeholder="Search products…" oninput="filterAll()" autocomplete="off" style="font-size:13px;" />
+        </div>
+        <div class="sort-seg" id="sort-seg">
+          <button class="sort-seg-btn on" data-sort="expiry" onclick="setSort('expiry')">Soonest</button>
+          <button class="sort-seg-btn" data-sort="name" onclick="setSort('name')">Name</button>
+          <button class="sort-seg-btn" data-sort="added" onclick="setSort('added')">Recent</button>
+        </div>
+        <div class="bao-item-list" id="all-list">
+          <div class="empty"><div class="e-icon" data-ic="package" data-ic-size="26"></div><p>No items yet.</p></div>
+        </div>
+        <div class="add-bar">
+          <span class="add-bar-label">Add New Item</span>
+          <button class="add-bar-btn" onclick="switchTab('manual')">Add ＋</button>
+        </div>
+      </div>
+    </div><!-- /list -->
+
+    <!-- ── SETTINGS ── -->
+    <div class="page" id="settings-page">
+<div class="bao-card"><div class="bao-card-head"><span class="head-title">Storage &amp; Backup</span></div><div class="settings-section"><p id="storage-mode"></p><p style="font-size:12px;color:var(--text-2);margin:12px 0">Local and each online account have separate data, photos and settings. Switching reloads the app; unsaved form changes are discarded. Export a JSON backup to transfer cloud data to local explicitly. Cloud imports are not supported.</p><button class="ghost-btn" id="change-mode" onclick="Mobile.pickMode()">Change storage mode</button><button class="cat-add-btn" id="backup-export" onclick="Mobile.exportBackup()">Export JSON with photos</button><button class="ghost-btn" id="backup-import" onclick="document.getElementById('backup-file').click()">Import JSON to local (replace)</button><input hidden type="file" id="backup-file" accept="application/json,.json" onchange="Mobile.importBackup(this)"/><p id="backup-status" role="status"></p></div></div>
+
+      <!-- Thresholds -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="clock"></span>
+          <span class="head-title">Expiry Thresholds</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Expiring Soon (Yellow)</div>
+          <div class="settings-row">
+            <span class="settings-lbl">Alert me within</span>
+            <span class="settings-val" id="soon-val">14d</span>
+          </div>
+          <input type="range" class="range-input" id="soon-range" min="1" max="60" value="14" oninput="updateSoonDays(this.value)" />
+          <div class="range-labels"><span>1 day</span><span>60 days</span></div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Critical Alert (Orange)</div>
+          <div class="settings-row">
+            <span class="settings-lbl">Critical within</span>
+            <span class="settings-val" id="critical-val">3d</span>
+          </div>
+          <input type="range" class="range-input" id="critical-range" min="1" max="14" value="3" oninput="updateCriticalDays(this.value)" />
+          <div class="range-labels"><span>1 day</span><span>14 days</span></div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="palette"></span>
+          <span class="head-title">Appearance</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Desktop card design</div>
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">Try the new elevated card visuals on desktop. Mobile is unaffected. Switch back anytime.</p>
+          <div class="seg">
+            <button class="seg-btn" id="cards-classic" onclick="applyCardStyle('classic')">Classic</button>
+            <button class="seg-btn" id="cards-pro" onclick="applyCardStyle('pro')">✨ Pro (beta)</button>
+          </div>
+        </div>
+      </div>
+
+<div class="bao-card"><div class="bao-card-head"><span class="head-title">On-device OCR</span></div><div class="settings-section" id="vision-key-status">Apple Vision reads dates on this iPhone; no cloud OCR.</div></div>
+      <!-- Categories -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="tag"></span>
+          <span class="head-title">Product Categories</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Active Categories</div>
+          <div class="cat-list" id="cat-list"></div>
+          <div class="settings-heading">Add Category</div>
+          <div class="cat-add-row">
+            <input class="cat-name-in" type="text" id="new-cat-name" placeholder="New category name…" onkeydown="if(event.key==='Enter')addCategory()" />
+            <button class="cat-add-btn" onclick="addCategory()">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Autocomplete Product List -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="search"></span>
+          <span class="head-title">Autocomplete Products</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Product Suggestions</div>
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">These appear as suggestions when typing a product name. One product per line.</p>
+          <textarea class="bao-input" id="products-textarea" rows="8" style="resize:vertical;font-size:12px;line-height:1.9;"></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button class="cat-add-btn" onclick="saveProductList()"><span data-ic="check" data-ic-size="14"></span>Save List</button>
+            <button class="ghost-btn" onclick="resetProductList()">Reset to Default</button>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="product-count-label"></div>
+        </div>
+      </div>
+
+      <!-- Account -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="user"></span>
+          <span class="head-title">Account</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-row">
+            <span class="settings-lbl">Signed in as</span>
+            <span class="acct-email" id="account-email">—</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-lbl">Role</span>
+            <span class="acct-email" id="account-role">—</span>
+          </div>
+          <p style="font-size:11.5px;color:var(--text-2);margin:8px 0 0;line-height:1.5;">Your items sync to this account and appear on any device you sign in on.</p>
+          <div class="settings-heading" style="margin-top:14px;">Change password</div>
+          <input class="bao-input" type="password" id="new-password" placeholder="New password (6+ chars)…" autocomplete="new-password" style="font-size:13px;" />
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+            <button class="cat-add-btn" onclick="changeMyPassword()">Update password</button>
+            <button class="logout-btn" style="margin-top:0;" onclick="doLogout()">Log out</button>
+          </div>
+          <div style="margin-top:8px;font-size:11px;" id="pw-status"></div>
+        </div>
+      </div>
+
+      <!-- User Management (admin only) -->
+      <div class="bao-card" id="user-mgmt-card" style="display:none;">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="shield"></span>
+          <span class="head-title">User Management</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-heading">Create user (no admin privileges)</div>
+          <input class="bao-input" type="email" id="nu-email" placeholder="Email…" autocomplete="off" style="font-size:13px;margin-bottom:8px;" />
+          <input class="bao-input" type="text" id="nu-pass" placeholder="Temporary password (6+ chars)…" autocomplete="off" style="font-size:13px;" />
+          <div style="margin-top:10px;"><button class="cat-add-btn" onclick="adminCreateUser()"><span data-ic="plus" data-ic-size="14"></span>Create User</button></div>
+          <div style="margin-top:8px;font-size:11px;" id="nu-status"></div>
+          <div class="settings-heading" style="margin-top:16px;">All users</div>
+          <div id="user-list"></div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="download"></span>
+          <span class="head-title">Export Data</span>
+        </div>
+        <div class="settings-section">
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">Download all your tracked items as an CSV file (.csv) — name, expiry date, days left, status and date added.</p>
+          <button class="cat-add-btn" onclick="exportToExcel()">⬇️ Export to CSV</button>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-2);" id="export-status"></div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="bao-card">
+        <div class="bao-card-head">
+          <span class="head-icon" data-ic="info"></span>
+          <span class="head-title">About</span>
+        </div>
+        <div class="settings-section">
+          <div class="settings-row">
+            <span class="settings-lbl">Version</span>
+            <span style="font-size:12px;color:var(--text-2);" id="app-version-settings">—</span>
+          </div>
+          <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <span class="settings-lbl">Device ID</span>
+            <span style="font-size:10px;color:var(--text-2);word-break:break-all;line-height:1.4;" id="device-id-display"></span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button class="danger-btn" onclick="clearLocalImages()">🗑 Clear Cloud Photo Cache</button>
+            <button class="danger-btn" onclick="clearAllItems()">⚠️ Clear All Products</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /settings -->
+
+  </div><!-- /main-scroll -->
+
+  <!-- ════ SYNC BAR ════ -->
+  <div class="sync-bar">
+    <div class="sync-bar-left">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span class="sync-label" id="sync-label">Last synced: —</span>
+    </div>
+    <button class="sync-refresh" onclick="refresh()">↺ Refresh</button>
+  </div>
+
+  <!-- ════ BOTTOM NAV / DESKTOP SIDEBAR ════ -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="tab-dashboard" onclick="switchTab('dashboard')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </button>
+    <button class="nav-btn" id="tab-camera" onclick="switchTab('camera')">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      Scan
+    </button>
+    <button class="nav-btn" id="tab-manual" onclick="switchTab('manual')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add
+    </button>
+    <button class="nav-btn" id="tab-list" onclick="switchTab('list')">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      All
+    </button>
+    <button class="nav-btn" id="tab-settings" onclick="switchTab('settings')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </button>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- Autocomplete datalist — populated dynamically by JS -->
+<datalist id="products-list"></datalist>
+
+<script src="native.js"></script><script src="config.js"></script><script type="module" src="boot.mjs"></script></body></html>
